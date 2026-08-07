@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zug um Zug Langenberg – Online</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+:root{--frame:#5a4632;--board:#dde8c0;--board2:#eef2d8;--brass:#b08d3e;--card:#faf7ee;--ink:#2b2419}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:system-ui,sans-serif;background:var(--frame);color:var(--ink);display:flex;flex-direction:column;overflow:hidden}
+button{font-family:inherit;cursor:pointer}
+h1,h2,.serif{font-family:Georgia,serif;font-weight:normal}
+#top{display:flex;align-items:center;gap:10px;padding:8px 12px;color:#f0e6d2;font-size:14px;flex-wrap:wrap}
+#top .dot{width:14px;height:14px;border-radius:50%;border:2px solid #fff}
+#top b{font-size:16px}
+#top .stat{background:rgba(255,255,255,.12);padding:3px 9px;border-radius:999px}
+#roomtag{margin-left:auto;opacity:.9;letter-spacing:.1em}
+#stage{flex:1;position:relative;background:radial-gradient(ellipse at 50% 40%,var(--board2),var(--board) 70%);touch-action:none;overflow:hidden;border-top:3px solid var(--brass);border-bottom:3px solid var(--brass)}
+svg{position:absolute;inset:0;width:100%;height:100%}
+.seg{stroke:#7a5c33;stroke-width:1;cursor:pointer}
+.wagon{pointer-events:none;stroke:#00000055;stroke-width:1}
+.nodeC{fill:#cfc8ba;stroke:#5a4632;stroke-width:2}
+.nodeL{font-size:11.5px;font-weight:600;fill:#2b2419;paint-order:stroke;stroke:#f2f0e4;stroke-width:3px;pointer-events:none}
+.rand .nodeL{font-family:Georgia,serif;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+.wm{font-family:Georgia,serif;fill:#c9a35e;opacity:.3;letter-spacing:.35em;pointer-events:none}
+#zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px;z-index:5}
+#zoom button{width:38px;height:38px;border-radius:8px;border:1px solid var(--frame);background:var(--card);font-size:20px}
+#bottom{background:var(--card);border-top:3px solid var(--brass);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+#open{display:flex;gap:6px;margin-bottom:8px;align-items:center}
+#open .lbl{font-size:11px;color:#8a7d63;width:52px;line-height:1.2}
+.pcard{width:44px;height:62px;border-radius:6px;border:2px solid #00000030;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px #0006;flex-shrink:0;position:relative}
+.pcard.deck{background:repeating-linear-gradient(45deg,#5a4632,#5a4632 6px,#6d5741 6px,#6d5741 12px);color:#f0e6d2;font-size:20px}
+.pcard.sm{width:38px;height:54px}
+.pcard .n{position:absolute;bottom:2px;right:5px;font-size:13px}
+#hand{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px}
+#actions{display:flex;gap:8px}
+#actions button{flex:1;padding:11px 6px;border-radius:9px;border:1.5px solid var(--frame);background:#fff;font-size:14px;font-weight:600}
+#actions button:disabled{opacity:.4}
+#waitbar{font-size:13px;color:#8a7d63;text-align:center;padding:6px 0 2px}
+.modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.box{background:var(--card);border-radius:14px;border:3px solid var(--brass);padding:18px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto}
+.box h2{font-size:20px;margin-bottom:12px}
+.box .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.box button.opt{display:block;width:100%;text-align:left;padding:12px;border-radius:9px;border:1.5px solid var(--frame);background:#fff;font-size:14px;margin-bottom:8px}
+.box button.opt.sel{background:#efe8d4;border-width:2.5px}
+.box .go{width:100%;padding:13px;border-radius:9px;border:0;background:var(--frame);color:#f0e6d2;font-size:16px;font-weight:600;margin-top:6px}
+.box .go:disabled{opacity:.4}
+.box .cancel{width:100%;padding:10px;border-radius:9px;border:1.5px solid var(--frame);background:#fff;font-size:14px;margin-top:8px}
+.ticket{border:1.5px solid var(--frame);border-radius:9px;padding:10px 12px;margin-bottom:8px;background:#fff;display:flex;justify-content:space-between;align-items:center;font-size:14px}
+.ticket.sel{background:#efe8d4;border-width:2.5px}
+.ticket .pts{font-family:Georgia,serif;font-size:19px}
+.ticket.done{border-color:#3e7d32;background:#eef5ea}
+.chip{display:inline-block;padding:2px 9px;border-radius:999px;color:#fff;font-weight:600;font-size:12px;border:1px solid #0003}
+input[type=text]{padding:11px;border-radius:8px;border:1.5px solid var(--frame);font-size:16px;width:100%}
+.reveal{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.score-row{display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid #00000015;font-size:14px}
+.lob-p{display:flex;align-items:center;gap:10px;padding:9px 4px;font-size:15px}
+.codebig{font-family:Georgia,serif;font-size:34px;letter-spacing:.35em;text-align:center;margin:8px 0 2px;color:var(--frame)}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<div id="top" class="hidden">
+  <span class="dot" id="tDot"></span><b id="tName"></b>
+  <span class="stat">🚃 <span id="tWag"></span></span>
+  <span class="stat">★ <span id="tPts"></span></span>
+  <span id="roomtag"></span>
+</div>
+<div id="stage" class="hidden">
+  <svg id="svg" viewBox="0 0 1000 670"><g id="world"></g></svg>
+  <div id="zoom"><button id="zin">+</button><button id="zout">−</button></div>
+</div>
+<div id="bottom" class="hidden">
+  <div id="waitbar" class="hidden"></div>
+  <div id="open"><span class="lbl">Offene Karten</span></div>
+  <div id="hand"></div>
+  <div id="actions">
+    <button id="btnTickets">Aufträge ziehen</button>
+    <button id="btnMyTickets">Meine Aufträge</button>
+  </div>
+</div>
+<div id="modals"></div>
+
+<script>
+const FIREBASE_CONFIG = {"apiKey": "AIzaSyCST132ElA4TqjCYbubHucrfRCz8bh2EGo", "authDomain": "zug-um-zug-langenberg.firebaseapp.com", "databaseURL": "https://zug-um-zug-langenberg-default-rtdb.europe-west1.firebasedatabase.app", "projectId": "zug-um-zug-langenberg", "storageBucket": "zug-um-zug-langenberg.firebasestorage.app", "messagingSenderId": "775182483445", "appId": "1:775182483445:web:d3f3e19c497a668d862abc"};
+const MAP = {"meta": {"name": "Zug um Zug Langenberg", "version": "1.4", "spieler": "2-5", "wagons_pro_spieler": 48, "hinweis": "ENTWURF: Knoten und Aufträge sind aus den Originaldaten übernommen. Die Streckenliste ist eine erste Lesung aus dem Spielplan-Bild und muss noch korrigiert werden (siehe 'geprueft': false).", "farben": ["rot", "orange", "gelb", "gruen", "blau", "pink", "weiss", "schwarz", "grau"], "staedte_mit_mehreren_ausgaengen": {"essen": ["essen_no", "essen_o"], "hinweis": "Beide Ausgänge zählen für Aufträge und Streckenverbindungen als ein Ort \"Essen\"."}, "s9": "Die grauen Gleis-Strecken Neviges-Bahnhof (8), Bahnhof-Nierenhof Bhf. (8) und Nierenhof Bhf.-Essen (3) bilden die S9-Linie.", "kreuzungen": ["S9 Neviges-Bahnhof kreuzt Rathaus-Sambeck (nur optisch, keine Verbindung)", "S9 Bahnhof-Nierenhof Bhf. kreuzt Heeger Str.-Bonsfelder Str. (nur optisch, keine Verbindung)"], "tunnelregel": "Europa-Regel: Beim Bau eines Tunnels werden 3 Karten vom Stapel aufgedeckt; für jede Karte in der Streckenfarbe (oder Lok) muss eine zusätzliche passende Karte gezahlt werden, sonst darf der Zug abgebrochen werden.", "regeln": {"startauftraege": {"ziehen": 5, "mindestens_behalten": 3}, "auftraege_nachziehen": {"ziehen": 4, "mindestens_behalten": 1}, "doppelstrecken_frei_ab": 3, "punkte_pro_laenge": {"1": 1, "2": 2, "3": 4, "4": 7, "5": 10, "6": 15, "8": 21, "10": 30}, "laengste_strecke_bonus": 10}}, "knoten": [{"id": "velbert", "name": "Velbert", "x": 16, "y": 10, "rand": true}, {"id": "pollen", "name": "Pollen", "x": 42, "y": 10}, {"id": "wilhelmshoehe", "name": "Wilhelmshöhe", "x": 56, "y": 10}, {"id": "essen_no", "name": "Essen (Nordost)", "x": 76, "y": 8, "rand": true, "stadt": "essen"}, {"id": "wiesengrund", "name": "Wiesengrund", "x": 68, "y": 15}, {"id": "suchtklinik", "name": "Suchtklinik", "x": 33, "y": 24}, {"id": "sonnenhang", "name": "Sonnenhang", "x": 81, "y": 27}, {"id": "vogelsiedlung", "name": "Vogelsiedlung", "x": 62, "y": 29}, {"id": "vossnacken", "name": "Voßnacken", "x": 48, "y": 31}, {"id": "boekenbusch", "name": "Bökenbusch", "x": 17, "y": 35}, {"id": "sambeck", "name": "Sambeck", "x": 31, "y": 41}, {"id": "feuerwehr", "name": "Feuerwehr", "x": 52, "y": 39}, {"id": "deutsches_eck", "name": "Deutsches Eck", "x": 58, "y": 43}, {"id": "heeger_str", "name": "Heeger Str.", "x": 70, "y": 44}, {"id": "essen_o", "name": "Essen (Ost)", "x": 93, "y": 42, "rand": true, "stadt": "essen"}, {"id": "neviges", "name": "Neviges", "x": 6, "y": 43, "rand": true}, {"id": "nierenhof_bhf", "name": "Nierenhof Bhf.", "x": 84, "y": 50}, {"id": "feldstr", "name": "Feldstr.", "x": 15, "y": 52}, {"id": "rathaus", "name": "Rathaus", "x": 23, "y": 54}, {"id": "buergerhaus", "name": "Bürgerhaus", "x": 30, "y": 55}, {"id": "bahnhof", "name": "Bahnhof", "x": 49, "y": 52}, {"id": "frowi", "name": "Frowi", "x": 45, "y": 58}, {"id": "steinbruch", "name": "Steinbruch", "x": 58, "y": 58}, {"id": "bonsfelder_str", "name": "Bonsfelder Str.", "x": 67, "y": 58}, {"id": "lsv", "name": "LSV", "x": 77, "y": 58}, {"id": "busbahnhof", "name": "Busbahnhof", "x": 93, "y": 61}, {"id": "alter_markt", "name": "Alter Markt", "x": 36, "y": 62}, {"id": "hohlstr", "name": "Hohlstr.", "x": 16, "y": 69}, {"id": "klippe", "name": "Klippe", "x": 46, "y": 69}, {"id": "laakmannsbusch", "name": "Laakmannsbusch", "x": 60, "y": 71}, {"id": "hueser_str", "name": "Hüser Str.", "x": 72, "y": 72}, {"id": "eventkirche", "name": "Eventkirche", "x": 29, "y": 77}, {"id": "wuppertal", "name": "Wuppertal", "x": 8, "y": 79, "rand": true}, {"id": "pferdemarkt", "name": "Pferdemarkt", "x": 22, "y": 81}, {"id": "gymnasium", "name": "Gymnasium", "x": 20, "y": 86}, {"id": "nizzabad", "name": "Nizzabad", "x": 8, "y": 87}, {"id": "bwl", "name": "BWL", "x": 13, "y": 92}, {"id": "bismarckturm", "name": "Bismarckturm", "x": 48, "y": 85}, {"id": "sender", "name": "Sender", "x": 48, "y": 93}, {"id": "abiwiese", "name": "Abiwiese", "x": 58, "y": 94}, {"id": "felderbach", "name": "Felderbach", "x": 77, "y": 83}, {"id": "wodantal", "name": "Wodantal", "x": 90, "y": 79}, {"id": "sprockhoevel", "name": "Sprockhövel", "x": 66, "y": 96, "rand": true}, {"id": "hattingen", "name": "Hattingen", "x": 88, "y": 96, "rand": true}], "strecken": [{"nr": 1, "von": "boekenbusch", "nach": "neviges", "laenge": 3, "farbe": "weiss", "geprueft": true}, {"nr": 2, "von": "boekenbusch", "nach": "velbert", "laenge": 5, "farbe": "gelb", "geprueft": true, "doppel_mit": 3}, {"nr": 3, "von": "boekenbusch", "nach": "velbert", "laenge": 5, "farbe": "grau", "geprueft": true, "doppel_mit": 2}, {"nr": 4, "von": "boekenbusch", "nach": "sambeck", "laenge": 3, "farbe": "pink", "geprueft": true, "doppel_mit": 5}, {"nr": 5, "von": "boekenbusch", "nach": "sambeck", "laenge": 3, "farbe": "rot", "geprueft": true, "doppel_mit": 4}, {"nr": 6, "von": "sambeck", "nach": "suchtklinik", "laenge": 2, "farbe": "gelb", "geprueft": true}, {"nr": 7, "von": "suchtklinik", "nach": "vossnacken", "laenge": 3, "farbe": "blau", "geprueft": true}, {"nr": 8, "von": "sambeck", "nach": "feuerwehr", "laenge": 5, "farbe": "weiss", "geprueft": true, "doppel_mit": 9}, {"nr": 9, "von": "sambeck", "nach": "feuerwehr", "laenge": 5, "farbe": "grau", "geprueft": true, "doppel_mit": 8}, {"nr": 10, "von": "feuerwehr", "nach": "vossnacken", "laenge": 2, "farbe": "schwarz", "geprueft": true, "doppel_mit": 11}, {"nr": 11, "von": "feuerwehr", "nach": "vossnacken", "laenge": 2, "farbe": "orange", "geprueft": true, "doppel_mit": 10}, {"nr": 12, "von": "vossnacken", "nach": "pollen", "laenge": 4, "farbe": "weiss", "geprueft": true, "doppel_mit": 13}, {"nr": 13, "von": "vossnacken", "nach": "pollen", "laenge": 4, "farbe": "pink", "geprueft": true, "doppel_mit": 12}, {"nr": 14, "von": "pollen", "nach": "velbert", "laenge": 5, "farbe": "schwarz", "geprueft": true}, {"nr": 15, "von": "pollen", "nach": "wilhelmshoehe", "laenge": 3, "farbe": "orange", "geprueft": true, "doppel_mit": 16}, {"nr": 16, "von": "pollen", "nach": "wilhelmshoehe", "laenge": 3, "farbe": "rot", "geprueft": true, "doppel_mit": 15}, {"nr": 17, "von": "wilhelmshoehe", "nach": "deutsches_eck", "laenge": 5, "farbe": "gelb", "geprueft": true}, {"nr": 18, "von": "deutsches_eck", "nach": "vogelsiedlung", "laenge": 4, "farbe": "schwarz", "geprueft": true}, {"nr": 19, "von": "vogelsiedlung", "nach": "wilhelmshoehe", "laenge": 3, "farbe": "weiss", "geprueft": true}, {"nr": 20, "von": "wilhelmshoehe", "nach": "wiesengrund", "laenge": 3, "farbe": "gruen", "geprueft": true}, {"nr": 21, "von": "wiesengrund", "nach": "essen_no", "laenge": 1, "farbe": "gruen", "geprueft": true}, {"nr": 24, "von": "deutsches_eck", "nach": "feuerwehr", "laenge": 2, "farbe": "rot", "geprueft": true, "doppel_mit": 25}, {"nr": 25, "von": "deutsches_eck", "nach": "feuerwehr", "laenge": 2, "farbe": "pink", "geprueft": true, "doppel_mit": 24}, {"nr": 26, "von": "deutsches_eck", "nach": "heeger_str", "laenge": 3, "farbe": "orange", "geprueft": true, "doppel_mit": 27}, {"nr": 27, "von": "deutsches_eck", "nach": "heeger_str", "laenge": 3, "farbe": "blau", "geprueft": true, "doppel_mit": 26}, {"nr": 28, "von": "heeger_str", "nach": "vogelsiedlung", "laenge": 3, "farbe": "rot", "geprueft": true}, {"nr": 29, "von": "heeger_str", "nach": "sonnenhang", "laenge": 4, "farbe": "gruen", "geprueft": true}, {"nr": 30, "von": "wiesengrund", "nach": "sonnenhang", "laenge": 4, "farbe": "blau", "geprueft": true}, {"nr": 31, "von": "sonnenhang", "nach": "nierenhof_bhf", "laenge": 5, "farbe": "orange", "geprueft": true}, {"nr": 32, "von": "feuerwehr", "nach": "frowi", "laenge": 2, "farbe": "weiss", "geprueft": true, "tunnel": true}, {"nr": 33, "von": "bahnhof", "nach": "frowi", "laenge": 1, "farbe": "blau", "geprueft": true, "doppel_mit": 34}, {"nr": 34, "von": "bahnhof", "nach": "frowi", "laenge": 1, "farbe": "gelb", "geprueft": true, "doppel_mit": 33}, {"nr": 35, "von": "frowi", "nach": "rathaus", "laenge": 5, "farbe": "rot", "geprueft": true}, {"nr": 36, "von": "rathaus", "nach": "sambeck", "laenge": 3, "farbe": "orange", "geprueft": true, "doppel_mit": 37, "kreuzt": "S9 Neviges-Bahnhof"}, {"nr": 37, "von": "rathaus", "nach": "sambeck", "laenge": 3, "farbe": "gruen", "geprueft": true, "doppel_mit": 36, "kreuzt": "S9 Neviges-Bahnhof"}, {"nr": 38, "von": "rathaus", "nach": "feldstr", "laenge": 2, "farbe": "gelb", "geprueft": true, "doppel_mit": 39}, {"nr": 39, "von": "rathaus", "nach": "feldstr", "laenge": 2, "farbe": "blau", "geprueft": true, "doppel_mit": 38}, {"nr": 40, "von": "feldstr", "nach": "neviges", "laenge": 3, "farbe": "pink", "geprueft": true}, {"nr": 41, "von": "feldstr", "nach": "hohlstr", "laenge": 2, "farbe": "schwarz", "geprueft": true, "doppel_mit": 42}, {"nr": 42, "von": "feldstr", "nach": "hohlstr", "laenge": 2, "farbe": "orange", "geprueft": true, "doppel_mit": 41}, {"nr": 43, "von": "hohlstr", "nach": "neviges", "laenge": 4, "farbe": "gruen", "geprueft": true}, {"nr": 44, "von": "hohlstr", "nach": "gymnasium", "laenge": 2, "farbe": "weiss", "geprueft": true, "doppel_mit": 45}, {"nr": 45, "von": "hohlstr", "nach": "gymnasium", "laenge": 2, "farbe": "rot", "geprueft": true, "doppel_mit": 44}, {"nr": 46, "von": "gymnasium", "nach": "bwl", "laenge": 1, "farbe": "blau", "geprueft": true, "doppel_mit": 47}, {"nr": 47, "von": "gymnasium", "nach": "bwl", "laenge": 1, "farbe": "weiss", "geprueft": true, "doppel_mit": 46}, {"nr": 48, "von": "bwl", "nach": "nizzabad", "laenge": 1, "farbe": "blau", "geprueft": true, "doppel_mit": 49}, {"nr": 49, "von": "bwl", "nach": "nizzabad", "laenge": 1, "farbe": "weiss", "geprueft": true, "doppel_mit": 48}, {"nr": 50, "von": "nizzabad", "nach": "wuppertal", "laenge": 1, "farbe": "rot", "geprueft": true, "doppel_mit": 51}, {"nr": 51, "von": "nizzabad", "nach": "wuppertal", "laenge": 1, "farbe": "gelb", "geprueft": true, "doppel_mit": 50}, {"nr": 52, "von": "nizzabad", "nach": "sender", "laenge": 10, "farbe": "grau", "geprueft": true}, {"nr": 53, "von": "eventkirche", "nach": "sender", "laenge": 6, "farbe": "grau", "geprueft": true}, {"nr": 54, "von": "gymnasium", "nach": "pferdemarkt", "laenge": 1, "farbe": "schwarz", "geprueft": true, "doppel_mit": 55}, {"nr": 55, "von": "gymnasium", "nach": "pferdemarkt", "laenge": 1, "farbe": "pink", "geprueft": true, "doppel_mit": 54}, {"nr": 56, "von": "pferdemarkt", "nach": "eventkirche", "laenge": 1, "farbe": "orange", "geprueft": true, "doppel_mit": 57}, {"nr": 57, "von": "pferdemarkt", "nach": "eventkirche", "laenge": 1, "farbe": "rot", "geprueft": true, "doppel_mit": 56}, {"nr": 58, "von": "eventkirche", "nach": "rathaus", "laenge": 2, "farbe": "schwarz", "geprueft": true, "doppel_mit": 59, "tunnel": true}, {"nr": 59, "von": "eventkirche", "nach": "rathaus", "laenge": 2, "farbe": "weiss", "geprueft": true, "doppel_mit": 58, "tunnel": true}, {"nr": 60, "von": "hohlstr", "nach": "buergerhaus", "laenge": 4, "farbe": "blau", "geprueft": true}, {"nr": 61, "von": "buergerhaus", "nach": "alter_markt", "laenge": 1, "farbe": "gelb", "geprueft": true, "doppel_mit": 62}, {"nr": 62, "von": "buergerhaus", "nach": "alter_markt", "laenge": 1, "farbe": "schwarz", "geprueft": true, "doppel_mit": 61}, {"nr": 63, "von": "buergerhaus", "nach": "rathaus", "laenge": 1, "farbe": "orange", "geprueft": true, "doppel_mit": 64}, {"nr": 64, "von": "buergerhaus", "nach": "rathaus", "laenge": 1, "farbe": "rot", "geprueft": true, "doppel_mit": 63}, {"nr": 65, "von": "eventkirche", "nach": "alter_markt", "laenge": 3, "farbe": "gelb", "geprueft": true}, {"nr": 66, "von": "eventkirche", "nach": "frowi", "laenge": 5, "farbe": "pink", "geprueft": true}, {"nr": 67, "von": "eventkirche", "nach": "klippe", "laenge": 5, "farbe": "blau", "geprueft": true}, {"nr": 68, "von": "alter_markt", "nach": "frowi", "laenge": 2, "farbe": "orange", "geprueft": true, "doppel_mit": 69}, {"nr": 69, "von": "alter_markt", "nach": "frowi", "laenge": 2, "farbe": "schwarz", "geprueft": true, "doppel_mit": 68}, {"nr": 70, "von": "bahnhof", "nach": "klippe", "laenge": 2, "farbe": "gruen", "geprueft": true}, {"nr": 71, "von": "klippe", "nach": "bismarckturm", "laenge": 3, "farbe": "gruen", "geprueft": true}, {"nr": 72, "von": "bismarckturm", "nach": "sender", "laenge": 1, "farbe": "gruen", "geprueft": true, "doppel_mit": 73}, {"nr": 73, "von": "bismarckturm", "nach": "sender", "laenge": 1, "farbe": "pink", "geprueft": true, "doppel_mit": 72}, {"nr": 74, "von": "bismarckturm", "nach": "laakmannsbusch", "laenge": 4, "farbe": "gelb", "geprueft": true}, {"nr": 75, "von": "klippe", "nach": "laakmannsbusch", "laenge": 3, "farbe": "rot", "geprueft": true, "doppel_mit": 76}, {"nr": 76, "von": "klippe", "nach": "laakmannsbusch", "laenge": 3, "farbe": "orange", "geprueft": true, "doppel_mit": 75}, {"nr": 77, "von": "frowi", "nach": "steinbruch", "laenge": 4, "farbe": "orange", "geprueft": true}, {"nr": 78, "von": "bahnhof", "nach": "steinbruch", "laenge": 3, "farbe": "schwarz", "geprueft": true}, {"nr": 79, "von": "steinbruch", "nach": "bonsfelder_str", "laenge": 3, "farbe": "pink", "geprueft": true, "doppel_mit": 80}, {"nr": 80, "von": "steinbruch", "nach": "bonsfelder_str", "laenge": 3, "farbe": "gelb", "geprueft": true, "doppel_mit": 79}, {"nr": 81, "von": "heeger_str", "nach": "bonsfelder_str", "laenge": 2, "farbe": "weiss", "geprueft": true, "doppel_mit": 82, "kreuzt": "S9 Bahnhof-Nierenhof Bhf."}, {"nr": 82, "von": "heeger_str", "nach": "bonsfelder_str", "laenge": 2, "farbe": "schwarz", "geprueft": true, "doppel_mit": 81, "kreuzt": "S9 Bahnhof-Nierenhof Bhf."}, {"nr": 83, "von": "hueser_str", "nach": "bonsfelder_str", "laenge": 2, "farbe": "gruen", "geprueft": true, "doppel_mit": 84}, {"nr": 84, "von": "hueser_str", "nach": "bonsfelder_str", "laenge": 2, "farbe": "blau", "geprueft": true, "doppel_mit": 83}, {"nr": 85, "von": "laakmannsbusch", "nach": "hueser_str", "laenge": 2, "farbe": "pink", "geprueft": true, "doppel_mit": 86}, {"nr": 86, "von": "laakmannsbusch", "nach": "hueser_str", "laenge": 2, "farbe": "blau", "geprueft": true, "doppel_mit": 85}, {"nr": 87, "von": "hueser_str", "nach": "abiwiese", "laenge": 5, "farbe": "gruen", "geprueft": true}, {"nr": 88, "von": "abiwiese", "nach": "sender", "laenge": 2, "farbe": "schwarz", "geprueft": true}, {"nr": 89, "von": "bonsfelder_str", "nach": "lsv", "laenge": 1, "farbe": "gruen", "geprueft": true, "doppel_mit": 90}, {"nr": 90, "von": "bonsfelder_str", "nach": "lsv", "laenge": 1, "farbe": "weiss", "geprueft": true, "doppel_mit": 89}, {"nr": 91, "von": "lsv", "nach": "busbahnhof", "laenge": 2, "farbe": "gruen", "geprueft": true, "doppel_mit": 92}, {"nr": 92, "von": "lsv", "nach": "busbahnhof", "laenge": 2, "farbe": "weiss", "geprueft": true, "doppel_mit": 91}, {"nr": 93, "von": "busbahnhof", "nach": "nierenhof_bhf", "laenge": 1, "farbe": "rot", "geprueft": true, "doppel_mit": 94}, {"nr": 94, "von": "busbahnhof", "nach": "nierenhof_bhf", "laenge": 1, "farbe": "schwarz", "geprueft": true, "doppel_mit": 93}, {"nr": 95, "von": "busbahnhof", "nach": "essen_o", "laenge": 3, "farbe": "gelb", "geprueft": true}, {"nr": 96, "von": "busbahnhof", "nach": "hattingen", "laenge": 5, "farbe": "grau", "geprueft": true}, {"nr": 97, "von": "busbahnhof", "nach": "wodantal", "laenge": 3, "farbe": "weiss", "geprueft": true, "doppel_mit": 98}, {"nr": 98, "von": "busbahnhof", "nach": "wodantal", "laenge": 3, "farbe": "pink", "geprueft": true, "doppel_mit": 97}, {"nr": 99, "von": "wodantal", "nach": "hattingen", "laenge": 3, "farbe": "rot", "geprueft": true}, {"nr": 100, "von": "wodantal", "nach": "sprockhoevel", "laenge": 3, "farbe": "blau", "geprueft": true}, {"nr": 101, "von": "felderbach", "nach": "sprockhoevel", "laenge": 3, "farbe": "schwarz", "geprueft": true}, {"nr": 102, "von": "felderbach", "nach": "hueser_str", "laenge": 2, "farbe": "rot", "geprueft": true}, {"nr": 103, "von": "felderbach", "nach": "lsv", "laenge": 3, "farbe": "pink", "geprueft": true}, {"nr": 104, "von": "nierenhof_bhf", "nach": "essen_o", "laenge": 3, "farbe": "grau", "geprueft": true, "s9": true}, {"nr": 105, "von": "bahnhof", "nach": "nierenhof_bhf", "laenge": 8, "farbe": "grau", "geprueft": true, "s9": true}, {"nr": 106, "von": "bahnhof", "nach": "neviges", "laenge": 8, "farbe": "grau", "geprueft": true, "s9": true}, {"nr": 107, "von": "bahnhof", "nach": "feuerwehr", "laenge": 1, "farbe": "gruen", "doppel_mit": 108, "geprueft": true}, {"nr": 108, "von": "bahnhof", "nach": "feuerwehr", "laenge": 1, "farbe": "rot", "doppel_mit": 107, "geprueft": true}, {"nr": 109, "von": "vogelsiedlung", "nach": "wiesengrund", "laenge": 2, "farbe": "weiss", "doppel_mit": 110, "geprueft": true}, {"nr": 110, "von": "vogelsiedlung", "nach": "wiesengrund", "laenge": 2, "farbe": "orange", "doppel_mit": 109, "geprueft": true}, {"nr": 111, "von": "deutsches_eck", "nach": "vogelsiedlung", "laenge": 2, "farbe": "gruen", "geprueft": true}], "auftraege": [{"von": "Pollen", "nach": "Busbahnhof", "punkte": 19}, {"von": "Nizzabad", "nach": "Bismarckturm", "punkte": 12}, {"von": "Nizzabad", "nach": "Sonnenhang", "punkte": 25}, {"von": "Pollen", "nach": "Sender", "punkte": 15}, {"von": "Bürgerhaus", "nach": "Sender", "punkte": 11}, {"von": "Bökenbusch", "nach": "Felderbach", "punkte": 21}, {"von": "Laakmannsbusch", "nach": "Nierenhof Bhf.", "punkte": 9}, {"von": "Feuerwehr", "nach": "Sonnenhang", "punkte": 11}, {"von": "Pollen", "nach": "Heeger Str.", "punkte": 13}, {"von": "Wiesengrund", "nach": "Felderbach", "punkte": 13}, {"von": "Hüser Str.", "nach": "Hattingen", "punkte": 9}, {"von": "Eventkirche", "nach": "Wodantal", "punkte": 17}, {"von": "Gymnasium", "nach": "Vogelsiedlung", "punkte": 15}, {"von": "Gymnasium", "nach": "Bahnhof", "punkte": 10}, {"von": "Hohlstr.", "nach": "Klippe", "punkte": 10}, {"von": "Alter Markt", "nach": "Bismarckturm", "punkte": 10}, {"von": "Pferdemarkt", "nach": "Klippe", "punkte": 7}, {"von": "Gymnasium", "nach": "Essen", "punkte": 19}, {"von": "Wuppertal", "nach": "Sprockhövel", "punkte": 25}, {"von": "Neviges", "nach": "Essen", "punkte": 19}, {"von": "Hohlstr.", "nach": "Hüser Str.", "punkte": 17}, {"von": "Neviges", "nach": "Frowi", "punkte": 10}, {"von": "Vogelsiedlung", "nach": "Busbahnhof", "punkte": 10}, {"von": "Rathaus", "nach": "Vogelsiedlung", "punkte": 12}, {"von": "Gymnasium", "nach": "Rathaus", "punkte": 6}, {"von": "Bahnhof", "nach": "Vogelsiedlung", "punkte": 7}, {"von": "Voßnacken", "nach": "Bismarckturm", "punkte": 9}, {"von": "Gymnasium", "nach": "Sender", "punkte": 9}, {"von": "Rathaus", "nach": "Pollen", "punkte": 14}, {"von": "Bökenbusch", "nach": "Feuerwehr", "punkte": 9}, {"von": "Pollen", "nach": "Bahnhof", "punkte": 8}, {"von": "Alter Markt", "nach": "Feuerwehr", "punkte": 5}, {"von": "Nizzabad", "nach": "Bonsfelder Str.", "punkte": 19}, {"von": "LSV", "nach": "BWL", "punkte": 19, "hinweis": "Bewusst doppelt im Stapel enthalten."}, {"von": "BWL", "nach": "LSV", "punkte": 19, "hinweis": "Bewusst doppelt im Stapel enthalten."}, {"von": "Rathaus", "nach": "Busbahnhof", "punkte": 16}, {"von": "Wuppertal", "nach": "Deutsches Eck", "punkte": 16}, {"von": "Voßnacken", "nach": "Klippe", "punkte": 6}, {"von": "Alter Markt", "nach": "Frowi", "punkte": 3}, {"von": "Vogelsiedlung", "nach": "Essen", "punkte": 4}, {"von": "Bökenbusch", "nach": "Steinbruch", "punkte": 14}, {"von": "Eventkirche", "nach": "Felderbach", "punkte": 14}, {"von": "LSV", "nach": "Sprockhövel", "punkte": 8}, {"von": "Suchtklinik", "nach": "Abiwiese", "punkte": 16}, {"von": "Rathaus", "nach": "Sender", "punkte": 10}, {"von": "Bahnhof", "nach": "Nierenhof Bhf.", "punkte": 9}, {"von": "Neviges", "nach": "Hattingen", "punkte": 27}, {"von": "BWL", "nach": "Abiwiese", "punkte": 13}, {"von": "Alter Markt", "nach": "Sprockhövel", "punkte": 19}, {"von": "Wuppertal", "nach": "Frowi", "punkte": 12}, {"von": "Sambeck", "nach": "Heeger Str.", "punkte": 12}, {"von": "Bismarckturm", "nach": "Nierenhof Bhf.", "punkte": 14}, {"von": "Suchtklinik", "nach": "Frowi", "punkte": 8}, {"von": "Steinbruch", "nach": "Essen", "punkte": 11}, {"von": "Bahnhof", "nach": "Bonsfelder Str.", "punkte": 7}, {"von": "Rathaus", "nach": "Bahnhof", "punkte": 6}, {"von": "Rathaus", "nach": "Sonnenhang", "punkte": 18}, {"von": "Voßnacken", "nach": "Hattingen", "punkte": 20}, {"von": "Hohlstr.", "nach": "Deutsches Eck", "punkte": 13}, {"von": "Hohlstr.", "nach": "Bonsfelder Str.", "punkte": 16}, {"von": "Sonnenhang", "nach": "Wodantal", "punkte": 10}, {"von": "Sambeck", "nach": "Laakmannsbusch", "punkte": 16}, {"von": "Pferdemarkt", "nach": "Nierenhof Bhf.", "punkte": 18}, {"von": "Feldstr.", "nach": "Suchtklinik", "punkte": 8}, {"von": "Sender", "nach": "Vogelsiedlung", "punkte": 13}, {"von": "Feldstr.", "nach": "Steinbruch", "punkte": 12}, {"von": "Abiwiese", "nach": "LSV", "punkte": 9}, {"von": "Wilhelmshöhe", "nach": "Hüser Str.", "punkte": 14}, {"von": "Laakmannsbusch", "nach": "LSV", "punkte": 6}, {"von": "Laakmannsbusch", "nach": "Wilhelmshöhe", "punkte": 15}, {"von": "Eventkirche", "nach": "Bürgerhaus", "punkte": 5}, {"von": "Feldstr.", "nach": "Wiesengrund", "punkte": 16}, {"von": "Feldstr.", "nach": "Klippe", "punkte": 10}, {"von": "Deutsches Eck", "nach": "Wodantal", "punkte": 13}, {"von": "BWL", "nach": "Wiesengrund", "punkte": 18}, {"von": "Deutsches Eck", "nach": "Wiesengrund", "punkte": 5}, {"von": "Pollen", "nach": "Vogelsiedlung", "punkte": 10}, {"von": "Neviges", "nach": "Busbahnhof", "punkte": 20}, {"von": "Velbert", "nach": "Voßnacken", "punkte": 11}, {"von": "Velbert", "nach": "Steinbruch", "punkte": 18}, {"von": "Bürgerhaus", "nach": "Hattingen", "punkte": 21}, {"von": "Gymnasium", "nach": "Busbahnhof", "punkte": 20}, {"von": "Gymnasium", "nach": "Pollen", "punkte": 18}, {"von": "Bökenbusch", "nach": "Wilhelmshöhe", "punkte": 18}, {"von": "Feuerwehr", "nach": "Hüser Str.", "punkte": 9}, {"von": "Neviges", "nach": "BWL", "punkte": 8}, {"von": "Bahnhof", "nach": "Busbahnhof", "punkte": 10}, {"von": "Wilhelmshöhe", "nach": "Bonsfelder Str.", "punkte": 12}, {"von": "Eventkirche", "nach": "Heeger Str.", "punkte": 12}, {"von": "Nizzabad", "nach": "Bürgerhaus", "punkte": 10}, {"von": "Pferdemarkt", "nach": "Sambeck", "punkte": 9}, {"von": "Velbert", "nach": "Hattingen", "punkte": 30}, {"von": "Sender", "nach": "Busbahnhof", "punkte": 14}, {"von": "Heeger Str.", "nach": "Felderbach", "punkte": 7}, {"von": "Velbert", "nach": "Pferdemarkt", "punkte": 18}, {"von": "Abiwiese", "nach": "Wodantal", "punkte": 10}, {"von": "Bahnhof", "nach": "Sender", "punkte": 7}, {"von": "Neviges", "nach": "Sambeck", "punkte": 7}]};
+const PTS = {1:1,2:2,3:4,4:7,5:10,6:15,8:21,10:30};
+const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
+const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Lok',grau:'beliebig'};
+const PCOL = [{id:'blau',hex:'#1f5fa8'},{id:'rot',hex:'#b3372c'},{id:'gruen',hex:'#2c7a3f'},{id:'gelb',hex:'#d9a300'},{id:'schwarz',hex:'#333'}];
+const nodes={}; MAP.knoten.forEach(k=>nodes[k.id]=k);
+const nameToIds={}; MAP.knoten.forEach(k=>{const n=k.name.replace(/ \((Nordost|Ost)\)/,'');(nameToIds[n]=nameToIds[n]||[]).push(k.id)});
+const P=id=>({x:nodes[id].x*10,y:nodes[id].y*6.7});
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+firebase.initializeApp(FIREBASE_CONFIG);
+const db=firebase.database();
+
+let CODE=null, SEAT=null, ROOM=null, roomRef=null;
+// Nach RTDB-Roundtrip fehlende Felder wiederherstellen (leere Arrays/Objekte verschwinden)
+function fix(r){
+  if(!r) return r;
+  r.players=(r.players||[]).map(p=>({name:p.name,col:p.col,wagons:p.wagons??48,hand:p.hand||{},tickets:p.tickets||[],score:p.score||0,total:p.total}));
+  if(r.game){const g=r.game;
+    g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
+    g.claims=g.claims||{};g.startOffers=g.startOffers||{};g.picked=g.picked||{};
+    g.turn=g.turn||0;g.drawn=g.drawn||0;if(g.lastRounds===undefined)g.lastRounds=-1;}
+  return r;
+}
+function sync(){return roomRef.set(ROOM)}
+function listen(){
+  roomRef.on('value',snap=>{
+    const v=fix(snap.val());
+    if(!v){toast('Der Raum wurde geschlossen.');return}
+    ROOM=v; onState();
+  });
+}
+
+// ---------- Deck & Spielaufbau ----------
+function newDeck(){const d=[];for(const c of ['rot','orange','gelb','gruen','blau','pink','weiss','schwarz'])for(let i=0;i<12;i++)d.push(c);for(let i=0;i<14;i++)d.push('lok');return shuffle(d)}
+function drawCard(g){if(!g.deck.length){if(!g.discard.length)return null;g.deck=shuffle(g.discard);g.discard=[]}return g.deck.pop()}
+function refillOpen(g){while(g.open.length<5){const c=drawCard(g);if(c===null)break;g.open.push(c)}
+  let guard=0;
+  while(g.open.filter(c=>c==='lok').length>=3&&(g.deck.length+g.discard.length)>=3&&guard++<20){g.discard.push(...g.open);g.open=[];while(g.open.length<5){const c=drawCard(g);if(c===null)break;g.open.push(c)}}}
+
+function hostStart(){
+  const g={deck:newDeck(),discard:[],open:[],ticketDeck:shuffle(MAP.auftraege.map(t=>({von:t.von,nach:t.nach,punkte:t.punkte}))),
+    turn:0,drawn:0,claims:{},startOffers:{},picked:{},lastRounds:-1,over:false};
+  refillOpen(g);
+  ROOM.players.forEach((p,i)=>{p.wagons=48;p.hand={};p.tickets=[];p.score=0;
+    for(let k=0;k<4;k++){const c=drawCard(g);p.hand[c]=(p.hand[c]||0)+1}
+    g.startOffers[i]=g.ticketDeck.splice(0,5)});
+  ROOM.game=g; ROOM.status='picking'; sync();
+}
+
+// ---------- Brett ----------
+const svgNS='http://www.w3.org/2000/svg';
+const world=document.getElementById('world');
+function el(t,a){const e=document.createElementNS(svgNS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
+const conns=[];{const seen=new Set();
+MAP.strecken.forEach(s=>{if(seen.has(s.nr))return;const grp=[s];seen.add(s.nr);
+  if(s.doppel_mit){const p=MAP.strecken.find(x=>x.nr===s.doppel_mit);if(p){grp.push(p);seen.add(p.nr)}}
+  conns.push(grp)})}
+const routeEls={};let boardBuilt=false;
+function buildBoard(){
+  if(boardBuilt)return;boardBuilt=true;
+  world.appendChild(el('text',{x:500,y:330,'text-anchor':'middle','font-size':92,class:'wm'})).textContent='LANGENBERG';
+  const pairCount={},pairIdx={};
+  conns.forEach(g=>{const k=[g[0].von,g[0].nach].sort().join('|');pairCount[k]=(pairCount[k]||0)+1});
+  conns.forEach(g=>{
+    const s0=g[0],a=P(s0.von),b=P(s0.nach);
+    const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,nx=-uy,ny=ux;
+    const pk=[s0.von,s0.nach].sort().join('|'),which=(pairIdx[pk]=(pairIdx[pk]||0)+1);
+    const base=(pairCount[pk]>1)?(which===1?-9:9):0;
+    const pad=16,inner=len-2*pad,n=s0.laenge,gap=Math.min(6,inner*.08/n+2),segL=(inner-gap*(n-1))/n,segW=11;
+    g.forEach((s,gi)=>{
+      const off=base+(g.length===2?(gi===0?-7:7):0);
+      const grp=el('g',{class:'route'});
+      for(let i=0;i<n;i++){
+        const cx=a.x+ux*(pad+segL/2+i*(segL+gap))+nx*off,cy=a.y+uy*(pad+segL/2+i*(segL+gap))+ny*off;
+        const ang=Math.atan2(dy,dx)*180/Math.PI;
+        const r=el('rect',{x:cx-segL/2,y:cy-segW/2,width:segL,height:segW,rx:2.5,fill:CARDCOL[s.farbe]||'#B8B2A6',class:'seg',transform:'rotate('+ang+' '+cx+' '+cy+')'});
+        if(s.s9){r.setAttribute('stroke-dasharray','4 2');r.setAttribute('stroke','#4a4238');r.setAttribute('stroke-width','1.6')}
+        if(s.tunnel){r.setAttribute('stroke-dasharray','2 3');r.setAttribute('stroke','#000');r.setAttribute('stroke-width','2')}
+        grp.appendChild(r)
+      }
+      grp.addEventListener('click',()=>tryClaim(s));
+      world.appendChild(grp);routeEls[s.nr]=grp;
+    })
+  });
+  MAP.knoten.forEach(k=>{const p=P(k.id);
+    const g=el('g',{class:k.rand?'rand':''});
+    g.appendChild(el('circle',{cx:p.x,cy:p.y,r:k.rand?9:7,class:'nodeC'}));
+    const t=el('text',{x:p.x,y:p.y-12,'text-anchor':'middle',class:'nodeL'});
+    t.textContent=k.name.replace(/ \((Nordost|Ost)\)/,'');g.appendChild(t);world.appendChild(g)})
+}
+function renderClaims(){
+  for(const nr in routeEls){routeEls[nr].querySelectorAll('.wagon').forEach(w=>w.remove())}
+  const claims=ROOM.game?ROOM.game.claims:{};
+  for(const nr in claims){const g=routeEls[nr];if(!g)continue;
+    const col=PCOL.find(c=>c.id===ROOM.players[claims[nr]].col).hex;
+    g.querySelectorAll('.seg').forEach(r=>{const w=el('rect',{x:r.getAttribute('x'),y:r.getAttribute('y'),width:r.getAttribute('width'),height:r.getAttribute('height'),rx:3,fill:col,class:'wagon',transform:r.getAttribute('transform')});g.appendChild(w)})}
+}
+
+// ---------- Zuglogik (nur wer dran ist, verändert den Zustand) ----------
+const g=()=>ROOM.game;
+const me=()=>ROOM.players[SEAT];
+const cur=()=>ROOM.players[g().turn];
+const myTurn=()=>g()&&!g().over&&g().turn===SEAT&&ROOM.status==='playing';
+
+function endTurn(){
+  const G=g();G.drawn=0;
+  if(G.lastRounds<0&&cur().wagons<=2){G.lastRounds=ROOM.players.length;G.notice=cur().name+' hat nur noch '+cur().wagons+' Wagons – letzte Runde! '+cur().name+' ist als Letzter noch einmal dran.'}
+  else if(G.lastRounds>0){G.lastRounds--;if(G.lastRounds===0){G.over=true;ROOM.status='over';finalScore();sync();return}}
+  G.turn=(G.turn+1)%ROOM.players.length;sync();
+}
+function takeOpen(i){if(!myTurn()||g().drawn>=2)return;
+  const c=g().open[i];if(c==='lok'&&g().drawn>0){toast('Eine offene Lok zählt als ganzer Zug.');return}
+  g().open.splice(i,1);me().hand[c]=(me().hand[c]||0)+1;refillOpen(g());
+  g().drawn+=(c==='lok')?2:1;g().drawn>=2?endTurn():sync()}
+function takeBlind(){if(!myTurn()||g().drawn>=2)return;const c=drawCard(g());if(c===null){toast('Keine Karten mehr im Stapel.');return}
+  me().hand[c]=(me().hand[c]||0)+1;g().drawn+=1;g().drawn>=2?endTurn():sync()}
+
+function tryClaim(s){
+  if(!myTurn()){toast(ROOM.status==='playing'?'Du bist nicht dran – '+cur().name+' ist am Zug.':'');return}
+  if(g().drawn>0){toast('Du hast schon Karten gezogen – erst den Zug beenden.');return}
+  if(g().claims[s.nr]!==undefined){toast('Diese Strecke ist schon gebaut.');return}
+  const p=me();
+  if(p.wagons<s.laenge){toast('Nicht genug Wagons ('+p.wagons+' übrig).');return}
+  if(s.doppel_mit!==undefined){
+    const other=g().claims[s.doppel_mit];
+    if(other!==undefined){
+      if(ROOM.players.length<=2){toast('Bei 2 Spielern ist nur ein Gleis einer Doppelstrecke nutzbar.');return}
+      if(other===SEAT){toast('Beide Gleise einer Doppelstrecke dürfen nicht demselben Spieler gehören.');return}
+    }
+  }
+  const opts=[];
+  const colors=s.farbe==='grau'?['rot','orange','gelb','gruen','blau','pink','weiss','schwarz']:[s.farbe];
+  for(const col of colors){
+    const have=p.hand[col]||0,loks=p.hand.lok||0;
+    for(let l=0;l<=Math.min(loks,s.laenge);l++){if(have>=s.laenge-l)opts.push({col,use:s.laenge-l,lok:l})}
+  }
+  if(!opts.length){toast('Nicht genug passende Karten ('+s.laenge+' '+CNAME[s.farbe]+').');return}
+  payModal(s,opts);
+}
+function payModal(s,opts){
+  const vn=nodes[s.von].name,nn=nodes[s.nach].name;let sel=0;
+  const m=modal('<h2>'+vn+' – '+nn+'</h2><p style="font-size:14px;margin-bottom:10px">Länge '+s.laenge+' · Farbe: '+CNAME[s.farbe]+(s.tunnel?' · <b>Tunnel</b>':'')+(s.s9?' · S9':'')+'</p><div id="payopts"></div><button class="go" id="payGo">'+(s.tunnel?'Tunnel bauen (3 Karten aufdecken)':'Strecke bauen')+'</button><button class="cancel" id="payNo">Abbrechen</button>');
+  const wrap=m.querySelector('#payopts');
+  opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt'+(i===0?' sel':'');
+    b.innerHTML=(o.use?o.use+'× <span class="chip" style="background:'+CARDCOL[o.col]+';'+(o.col==='gelb'||o.col==='weiss'?'color:#333':'')+'">'+CNAME[o.col]+'</span> ':'')+(o.lok?(o.use?'+ ':'')+o.lok+'× <span class="chip" style="background:'+CARDCOL.lok+'">Lok</span>':'');
+    b.onclick=()=>{sel=i;wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')};
+    wrap.appendChild(b)});
+  m.querySelector('#payNo').onclick=()=>m.remove();
+  m.querySelector('#payGo').onclick=()=>{m.remove();const o=opts[sel];s.tunnel?tunnelStep(s,o):doClaim(s,o)};
+}
+function tunnelStep(s,o){
+  const G=g(),rev=[];for(let i=0;i<3;i++){const c=drawCard(G);if(c!==null)rev.push(c)}
+  const allLok=o.use===0;
+  const extra=rev.filter(c=>allLok?c==='lok':(c===o.col||c==='lok')).length;
+  G.discard.push(...rev);
+  const p=me();
+  let html='<h2>Tunnel: 3 Karten aufgedeckt</h2><div class="reveal">'+rev.map(c=>'<div class="pcard sm" style="background:'+CARDCOL[c]+';'+(c==='gelb'||c==='weiss'?'color:#333;text-shadow:none;':'')+'">'+CNAME[c]+'</div>').join('')+'</div>';
+  if(extra===0){html+='<p style="text-align:center;font-size:15px">Keine zusätzlichen Karten nötig!</p><button class="go" id="tOk">Bauen</button>';
+    const m=modal(html);m.querySelector('#tOk').onclick=()=>{m.remove();doClaim(s,o)};return}
+  const extraCol=(p.hand[o.col]||0)-o.use,extraLok=(p.hand.lok||0)-o.lok;
+  const can=[];
+  for(let l=0;l<=Math.min(extraLok,extra);l++){if((allLok?0:extraCol)>=extra-l||(allLok&&l===extra))can.push({use:allLok?0:extra-l,lok:l})}
+  if(!can.length){html+='<p style="font-size:14px">Du musst <b>'+extra+'</b> zusätzliche Karten zahlen, hast aber nicht genug. Der Bau wird abgebrochen – deine Karten behältst du.</p><button class="go" id="tOk">Verstanden</button>';
+    const m=modal(html);m.querySelector('#tOk').onclick=()=>{m.remove();sync()};return}
+  html+='<p style="font-size:14px;margin-bottom:8px">Zusätzlich fällig: <b>'+extra+'</b> Karte(n) in '+(allLok?'Lok':CNAME[o.col]+'/Lok')+'.</p><div id="topts"></div><button class="go" id="tPay">Zahlen und bauen</button><button class="cancel" id="tNo">Abbrechen (Karten behalten)</button>';
+  const m=modal(html);const wrap=m.querySelector('#topts');let sel=0;
+  can.forEach((c2,i)=>{const b=document.createElement('button');b.className='opt'+(i===0?' sel':'');
+    b.textContent=(c2.use?c2.use+'× '+CNAME[o.col]:'')+(c2.use&&c2.lok?' + ':'')+(c2.lok?c2.lok+'× Lok':'');
+    b.onclick=()=>{sel=i;wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')};wrap.appendChild(b)});
+  m.querySelector('#tNo').onclick=()=>{m.remove();sync()};
+  m.querySelector('#tPay').onclick=()=>{m.remove();const c2=can[sel];doClaim(s,{col:o.col,use:o.use+c2.use,lok:o.lok+c2.lok})};
+}
+function doClaim(s,o){
+  const G=g(),p=me();
+  if(o.use){p.hand[o.col]-=o.use;if(!p.hand[o.col])delete p.hand[o.col];for(let i=0;i<o.use;i++)G.discard.push(o.col)}
+  if(o.lok){p.hand.lok-=o.lok;if(!p.hand.lok)delete p.hand.lok;for(let i=0;i<o.lok;i++)G.discard.push('lok')}
+  p.wagons-=s.laenge;p.score+=PTS[s.laenge]||0;
+  G.claims[s.nr]=SEAT;G.notice=p.name+' baut '+nodes[s.von].name+' – '+nodes[s.nach].name+' (+'+(PTS[s.laenge]||0)+')';
+  endTurn();
+}
+
+// ---------- Aufträge ----------
+function drawTickets(){
+  if(!myTurn())return;
+  if(g().drawn>0){toast('Du hast schon Karten gezogen.');return}
+  if(!g().ticketDeck.length){toast('Keine Aufträge mehr im Stapel.');return}
+  const offer=g().ticketDeck.splice(0,Math.min(4,g().ticketDeck.length));
+  ticketModal(offer,1,keep=>{
+    offer.forEach((t,i)=>{keep.has(i)?me().tickets.push(t):g().ticketDeck.push(t)});
+    endTurn()});
+}
+function ticketModal(offer,minKeep,done){
+  const sel=new Set();
+  const m=modal('<h2>Aufträge wählen</h2><p style="font-size:13px;margin-bottom:10px">Mindestens '+minKeep+' behalten.</p><div id="toff"></div><button class="go" id="tGo" disabled>Behalten</button>');
+  const wrap=m.querySelector('#toff'),go=m.querySelector('#tGo');
+  offer.forEach((t,i)=>{const d=document.createElement('div');d.className='ticket';
+    d.innerHTML='<span>'+t.von+' – '+t.nach+'</span><span class="pts">'+t.punkte+'</span>';
+    d.onclick=()=>{sel.has(i)?sel.delete(i):sel.add(i);d.classList.toggle('sel');go.disabled=sel.size<minKeep;go.textContent='Behalten ('+sel.size+')'};
+    wrap.appendChild(d)});
+  go.onclick=()=>{m.remove();done(sel)};
+}
+function showMyTickets(){
+  const p=me();
+  if(!p.tickets.length){toast('Du hast noch keine Aufträge.');return}
+  let html='<h2>Deine Aufträge</h2>';
+  p.tickets.forEach(t=>{const ok=connected(SEAT,t);
+    html+='<div class="ticket '+(ok?'done':'')+'"><span>'+t.von+' – '+t.nach+(ok?' ✓':'')+'</span><span class="pts">'+t.punkte+'</span></div>'});
+  html+='<button class="go" id="cl">Schließen</button>';
+  const m=modal(html);m.querySelector('#cl').onclick=()=>m.remove();
+}
+function connected(pi,t){
+  const par={};const find=x=>par[x]===x?x:par[x]=find(par[x]);
+  MAP.knoten.forEach(k=>par[k.id]=k.id);
+  const uni=(a,b)=>{par[find(a)]=find(b)};uni('essen_no','essen_o');
+  MAP.strecken.forEach(s=>{if(g().claims[s.nr]===pi)uni(s.von,s.nach)});
+  const A=nameToIds[t.von]||[],B=nameToIds[t.nach]||[];
+  return A.some(a=>B.some(b=>find(a)===find(b)));
+}
+function longestFor(pi){
+  const adj={};MAP.strecken.forEach(s=>{if(g().claims[s.nr]===pi){(adj[s.von]=adj[s.von]||[]).push({to:s.nach,len:s.laenge,nr:s.nr});(adj[s.nach]=adj[s.nach]||[]).push({to:s.von,len:s.laenge,nr:s.nr})}});
+  let best=0;const used=new Set();
+  function dfs(v,acc){best=Math.max(best,acc);for(const e of (adj[v]||[])){if(used.has(e.nr))continue;used.add(e.nr);dfs(e.to,acc+e.len);used.delete(e.nr)}}
+  for(const v in adj)dfs(v,0);return best;
+}
+function finalScore(){
+  const longest=ROOM.players.map((p,i)=>longestFor(i));const maxL=Math.max(...longest);
+  ROOM.players.forEach((p,i)=>{
+    let tP=0,tM=0;p.tickets.forEach(t=>{connected(i,t)?tP+=t.punkte:tM+=t.punkte});
+    p.res={strecken:p.score,plus:tP,minus:tM,laengste:longest[i],bonus:(longest[i]===maxL&&maxL>0)?10:0};
+    p.total=p.score+tP-tM+p.res.bonus;
+  });
+}
+function showFinal(){
+  let html='';
+  const w=[...ROOM.players].sort((a,b)=>b.total-a.total)[0];
+  html+='<p class="serif" style="font-size:22px;text-align:center;margin-bottom:4px">🏆 '+w.name+' gewinnt!</p><h2>Abrechnung</h2>';
+  ROOM.players.forEach(p=>{const r=p.res||{};
+    html+='<div style="margin:14px 0 6px"><b class="serif" style="font-size:17px">'+p.name+'</b></div>'+
+    '<div class="score-row"><span>Strecken</span><span>'+(r.strecken||0)+'</span></div>'+
+    '<div class="score-row"><span>Aufträge erfüllt</span><span>+'+(r.plus||0)+'</span></div>'+
+    '<div class="score-row"><span>Aufträge offen</span><span>−'+(r.minus||0)+'</span></div>'+
+    '<div class="score-row"><span>Längste Strecke ('+(r.laengste||0)+')</span><span>'+(r.bonus?'+10':'–')+'</span></div>'+
+    '<div class="score-row" style="font-weight:700"><span>Gesamt</span><span>'+p.total+'</span></div>'});
+  modal(html+'<p style="text-align:center;font-size:13px;color:#8a7d63;margin-top:10px">Für ein neues Spiel einfach einen neuen Raum erstellen.</p>',true);
+}
+
+// ---------- Zustandsgetriebenes Rendering ----------
+let pickShown=false, finalShown=false, lastNotice='';
+function onState(){
+  if(ROOM.status==='lobby'){renderLobby();return}
+  document.getElementById('lobbyModal')?.remove();
+  document.getElementById('top').classList.remove('hidden');
+  document.getElementById('stage').classList.remove('hidden');
+  document.getElementById('bottom').classList.remove('hidden');
+  buildBoard();
+  if(ROOM.status==='picking'){
+    if(!pickShown&&!g().picked[SEAT]){pickShown=true;
+      const offer=g().startOffers[SEAT]||[];
+      ticketModal(offer,3,keep=>{
+        offer.forEach((t,i)=>{keep.has(i)?me().tickets.push(t):g().ticketDeck.push(t)});
+        g().picked[SEAT]=true;delete g().startOffers[SEAT];
+        if(Object.keys(g().picked).length===ROOM.players.length)ROOM.status='playing';
+        sync()});
+    }
+  }
+  if(ROOM.status==='over'&&!finalShown){finalShown=true;showFinal()}
+  if(g()&&g().notice&&g().notice!==lastNotice){lastNotice=g().notice;toast(g().notice)}
+  renderClaims();renderHud();
+}
+function renderHud(){
+  if(!g())return;
+  const p=cur();
+  document.getElementById('tDot').style.background=PCOL.find(c=>c.id===p.col).hex;
+  document.getElementById('tName').textContent=p.name+(g().turn===SEAT?' (du)':'');
+  document.getElementById('tWag').textContent=me().wagons;
+  document.getElementById('tPts').textContent=me().score;
+  document.getElementById('roomtag').textContent='Raum '+CODE+(g().lastRounds>0?' · Letzte Runde!':'');
+  const wb=document.getElementById('waitbar');
+  if(ROOM.status==='picking'){wb.classList.remove('hidden');wb.textContent='Warten, bis alle ihre Startaufträge gewählt haben …'}
+  else if(ROOM.status==='playing'&&g().turn!==SEAT){wb.classList.remove('hidden');wb.textContent=p.name+' ist am Zug …'}
+  else wb.classList.add('hidden');
+  const o=document.getElementById('open');o.innerHTML='<span class="lbl">Offene Karten</span>';
+  const dk=document.createElement('div');dk.className='pcard deck';dk.textContent='?';dk.onclick=takeBlind;o.appendChild(dk);
+  (g().open||[]).forEach((c,i)=>{const d=document.createElement('div');d.className='pcard';
+    d.style.background=CARDCOL[c];if(c==='gelb'||c==='weiss'){d.style.color='#333';d.style.textShadow='none'}
+    d.textContent=CNAME[c];d.onclick=()=>takeOpen(i);o.appendChild(d)});
+  const h=document.getElementById('hand');h.innerHTML='';
+  Object.keys(CARDCOL).forEach(c=>{const n=(me().hand||{})[c]||0;if(!n)return;
+    const d=document.createElement('div');d.className='pcard';d.style.background=CARDCOL[c];
+    if(c==='gelb'||c==='weiss'){d.style.color='#333';d.style.textShadow='none'}
+    d.innerHTML=CNAME[c]+'<span class="n">'+n+'</span>';h.appendChild(d)});
+  if(!h.children.length)h.innerHTML='<span style="font-size:13px;color:#8a7d63;padding:8px 0">Keine Handkarten</span>';
+  document.getElementById('btnTickets').disabled=!myTurn()||g().drawn>0;
+}
+document.getElementById('btnTickets').onclick=drawTickets;
+document.getElementById('btnMyTickets').onclick=showMyTickets;
+
+// ---------- Lobby ----------
+function renderLobby(){
+  document.getElementById('lobbyModal')?.remove();
+  let html='<h2 style="text-align:center">Warteraum</h2><div class="codebig">'+CODE+'</div>'+
+    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin-bottom:12px">Diesen Code an die Mitspieler weitergeben</p>';
+  ROOM.players.forEach((p,i)=>{html+='<div class="lob-p"><span class="dot" style="width:16px;height:16px;border-radius:50%;background:'+PCOL[i].hex+'"></span>'+p.name+(i===SEAT?' (du)':'')+(i===0?' · Gastgeber':'')+'</div>'});
+  if(SEAT===0)html+='<button class="go" id="lobGo" '+(ROOM.players.length<2?'disabled':'')+'>Spiel starten ('+ROOM.players.length+' Spieler)</button>';
+  else html+='<p style="text-align:center;font-size:14px;margin-top:10px">Warten auf den Gastgeber …</p>';
+  const m=modal(html,true);m.id='lobbyModal';
+  const b=m.querySelector('#lobGo');if(b)b.onclick=hostStart;
+}
+function makeCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ';let c='';for(let i=0;i<5;i++)c+=A[Math.floor(Math.random()*A.length)];return c}
+function createRoom(name){
+  CODE=makeCode();SEAT=0;
+  ROOM={status:'lobby',players:[{name,col:PCOL[0].id,wagons:48,hand:{},tickets:[],score:0}]};
+  roomRef=db.ref('rooms/'+CODE);
+  roomRef.set(ROOM).then(()=>{listen()}).catch(e=>toast('Verbindung fehlgeschlagen: '+e.message));
+}
+function joinRoom(code,name){
+  code=code.toUpperCase().trim();
+  const ref=db.ref('rooms/'+code);
+  ref.get().then(snap=>{
+    const v=fix(snap.val());
+    if(!v){toast('Raum '+code+' nicht gefunden.');return}
+    if(v.status!=='lobby'){toast('Das Spiel in diesem Raum läuft schon.');return}
+    if(v.players.length>=5){toast('Der Raum ist voll (5 Spieler).');return}
+    CODE=code;SEAT=v.players.length;ROOM=v;roomRef=ref;
+    ROOM.players.push({name,col:PCOL[SEAT].id,wagons:48,hand:{},tickets:[],score:0});
+    roomRef.set(ROOM).then(()=>listen());
+  }).catch(e=>toast('Verbindung fehlgeschlagen: '+e.message));
+}
+
+// ---------- UI-Helfer ----------
+function modal(html,keep){const d=document.createElement('div');d.className='modal';d.innerHTML='<div class="box">'+html+'</div>';
+  document.getElementById('modals').appendChild(d);return d}
+function toast(msg){if(!msg)return;const t=document.createElement('div');
+  t.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#2b2419ee;color:#f0e6d2;padding:10px 18px;border-radius:999px;z-index:99;font-size:14px;max-width:88vw;text-align:center';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}
+
+// Zoom & Pan
+let scale=1,tx=0,ty=0;
+function apply(){world.setAttribute('transform','translate('+tx+' '+ty+') scale('+scale+')')}
+document.getElementById('zin').onclick=()=>{scale=Math.min(4,scale*1.35);apply()};
+document.getElementById('zout').onclick=()=>{scale=Math.max(.6,scale/1.35);apply()};
+const stage=document.getElementById('stage');let ptrs=new Map(),lastD=0;
+stage.addEventListener('pointerdown',e=>ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}));
+stage.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;
+  if(ptrs.size===1){const p=ptrs.get(e.pointerId),r=stage.getBoundingClientRect(),f=1000/r.width;
+    tx+=(e.clientX-p.x)*f;ty+=(e.clientY-p.y)*f;apply();ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY})}
+  else if(ptrs.size===2){ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    const[p1,p2]=[...ptrs.values()],d2=Math.hypot(p1.x-p2.x,p1.y-p2.y);
+    if(lastD)scale=Math.min(4,Math.max(.6,scale*d2/lastD)),apply();lastD=d2}});
+['pointerup','pointercancel','pointerleave'].forEach(ev=>stage.addEventListener(ev,e=>{ptrs.delete(e.pointerId);if(ptrs.size<2)lastD=0}));
+stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(.6,scale*(e.deltaY<0?1.1:.9)));apply()},{passive:false});
+
+// ---------- Startbildschirm ----------
+(function landing(){
+  const m=modal('<h2 class="serif" style="text-align:center;letter-spacacing:.08em;letter-spacing:.08em">ZUG UM ZUG<br>LANGENBERG</h2>'+
+    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler</p>'+
+    '<input type="text" id="pname" placeholder="Dein Name" maxlength="14" style="margin-bottom:10px">'+
+    '<button class="go" id="mkRoom">Neuen Raum erstellen</button>'+
+    '<div style="display:flex;gap:8px;margin-top:14px"><input type="text" id="jcode" placeholder="Raum-Code" maxlength="5" style="text-transform:uppercase;letter-spacing:.2em;flex:1"><button class="go" id="jGo" style="width:auto;margin-top:0;padding:0 18px">Beitreten</button></div>',true);
+  const nameOk=()=>{const n=m.querySelector('#pname').value.trim();if(!n){toast('Bitte zuerst deinen Namen eingeben.');return null}return n};
+  m.querySelector('#mkRoom').onclick=()=>{const n=nameOk();if(!n)return;m.remove();createRoom(n)};
+  m.querySelector('#jGo').onclick=()=>{const n=nameOk();if(!n)return;const c=m.querySelector('#jcode').value;
+    if(c.trim().length!==5){toast('Der Raum-Code hat 5 Buchstaben.');return}m.remove();joinRoom(c,n)};
+})();
+</script>
+</body>
+</html>
