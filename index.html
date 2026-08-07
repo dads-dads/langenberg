@@ -103,7 +103,7 @@ let CODE=null, SEAT=null, ROOM=null, roomRef=null;
 // Nach RTDB-Roundtrip fehlende Felder wiederherstellen (leere Arrays/Objekte verschwinden)
 function fix(r){
   if(!r) return r;
-  r.players=(r.players||[]).map(p=>({name:p.name,col:p.col,wagons:p.wagons??48,hand:p.hand||{},tickets:p.tickets||[],score:p.score||0,total:p.total}));
+  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??48,hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.res!==undefined)q.res=p.res;return q});
   if(r.game){const g=r.game;
     g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
     g.claims=g.claims||{};g.startOffers=g.startOffers||{};g.picked=g.picked||{};
