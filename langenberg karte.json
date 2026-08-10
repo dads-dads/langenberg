@@ -1,7 +1,7 @@
 {
  "meta": {
   "name": "Zug um Zug Langenberg",
-  "version": "3.5",
+  "version": "4.5",
   "spieler": "2-5",
   "wagons_pro_spieler": 48,
   "hinweis": "ENTWURF: Knoten und Aufträge sind aus den Originaldaten übernommen. Die Streckenliste ist eine erste Lesung aus dem Spielplan-Bild und muss noch korrigiert werden (siehe 'geprueft': false).",
@@ -49,19 +49,21 @@
     "8": 21,
     "10": 30
    },
-   "laengste_strecke": "keine Punkte in der Langenberg-Edition",
    "zugzeit": "Optional 12/24/48 Stunden pro Zug für mehrtägige Partien; nach Ablauf kann jeder den Zug überspringen.",
-   "kennwort": "Jeder Spieler wählt einen PIN; Wiedereinstieg nur mit Name + PIN."
+   "kennwort": "Jeder Spieler wählt einen PIN; Wiedereinstieg nur mit Name + PIN.",
+   "laengste_strecke_bonus": 0
   },
   "hintergrund": "karte.jpg (Original-Spielplan, 2225x1488, Koordinaten kalibriert)",
-  "aussenstaedte": "Velbert, Neviges, Wuppertal, Sprockhövel, Hattingen und Essen sind Einbahn-Ziele: Strecken führen in das Gebiet hinein, verbinden sich dort aber nicht miteinander (wie die Nachbarländer in der Deutschland-Version). Gilt für Auftragserfüllung und längste Strecke."
+  "aussenstaedte": "Velbert, Neviges, Wuppertal, Sprockhövel, Hattingen und Essen sind Einbahn-Ziele: Strecken führen in das Gebiet hinein, verbinden sich dort aber nicht miteinander (wie die Nachbarländer in der Deutschland-Version). Gilt für Auftragserfüllung und längste Strecke.",
+  "kurz": "Langenberg",
+  "bild": "karte.jpg"
  },
  "knoten": [
   {
    "id": "velbert",
    "name": "Velbert",
-   "x": 17.98,
-   "y": 9.41,
+   "x": 18.02,
+   "y": 10.22,
    "rand": true
   },
   {
@@ -79,8 +81,8 @@
   {
    "id": "essen_no",
    "name": "Essen (Nordost)",
-   "x": 66.79,
-   "y": 8.0,
+   "x": 72.54,
+   "y": 7.26,
    "rand": true,
    "stadt": "essen"
   },
@@ -147,15 +149,15 @@
   {
    "id": "essen_o",
    "name": "Essen (Ost)",
-   "x": 92.13,
-   "y": 45.9,
+   "x": 93.3,
+   "y": 46.37,
    "rand": true,
    "stadt": "essen"
   },
   {
    "id": "neviges",
    "name": "Neviges",
-   "x": 5.39,
+   "x": 5.8,
    "y": 42.74,
    "rand": true
   },
@@ -174,7 +176,7 @@
   {
    "id": "rathaus",
    "name": "Rathaus",
-   "x": 23.96,
+   "x": 24.22,
    "y": 55.65
   },
   {
@@ -216,8 +218,8 @@
   {
    "id": "busbahnhof",
    "name": "Busbahnhof",
-   "x": 84.13,
-   "y": 57.46
+   "x": 85.93,
+   "y": 59.74
   },
   {
    "id": "alter_markt",
@@ -258,8 +260,8 @@
   {
    "id": "wuppertal",
    "name": "Wuppertal",
-   "x": 5.17,
-   "y": 83.0,
+   "x": 8.31,
+   "y": 79.77,
    "rand": true
   },
   {
@@ -319,14 +321,14 @@
   {
    "id": "sprockhoevel",
    "name": "Sprockhövel",
-   "x": 68.58,
-   "y": 91.87,
+   "x": 71.73,
+   "y": 92.07,
    "rand": true
   },
   {
    "id": "hattingen",
    "name": "Hattingen",
-   "x": 88.58,
+   "x": 89.75,
    "y": 91.87,
    "rand": true
   }
