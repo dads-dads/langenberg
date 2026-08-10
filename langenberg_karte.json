@@ -1,7 +1,7 @@
 {
  "meta": {
   "name": "Zug um Zug Langenberg",
-  "version": "4.2",
+  "version": "4.3",
   "spieler": "2-5",
   "wagons_pro_spieler": 48,
   "hinweis": "ENTWURF: Knoten und Aufträge sind aus den Originaldaten übernommen. Die Streckenliste ist eine erste Lesung aus dem Spielplan-Bild und muss noch korrigiert werden (siehe 'geprueft': false).",
@@ -49,12 +49,14 @@
     "8": 21,
     "10": 30
    },
-   "laengste_strecke": "keine Punkte in der Langenberg-Edition",
    "zugzeit": "Optional 12/24/48 Stunden pro Zug für mehrtägige Partien; nach Ablauf kann jeder den Zug überspringen.",
-   "kennwort": "Jeder Spieler wählt einen PIN; Wiedereinstieg nur mit Name + PIN."
+   "kennwort": "Jeder Spieler wählt einen PIN; Wiedereinstieg nur mit Name + PIN.",
+   "laengste_strecke_bonus": 0
   },
   "hintergrund": "karte.jpg (Original-Spielplan, 2225x1488, Koordinaten kalibriert)",
-  "aussenstaedte": "Velbert, Neviges, Wuppertal, Sprockhövel, Hattingen und Essen sind Einbahn-Ziele: Strecken führen in das Gebiet hinein, verbinden sich dort aber nicht miteinander (wie die Nachbarländer in der Deutschland-Version). Gilt für Auftragserfüllung und längste Strecke."
+  "aussenstaedte": "Velbert, Neviges, Wuppertal, Sprockhövel, Hattingen und Essen sind Einbahn-Ziele: Strecken führen in das Gebiet hinein, verbinden sich dort aber nicht miteinander (wie die Nachbarländer in der Deutschland-Version). Gilt für Auftragserfüllung und längste Strecke.",
+  "kurz": "Langenberg",
+  "bild": "karte.jpg"
  },
  "knoten": [
   {
