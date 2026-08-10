@@ -1,7 +1,7 @@
 {
  "meta": {
   "name": "Zug um Zug Langenberg",
-  "version": "3.3",
+  "version": "3.7",
   "spieler": "2-5",
   "wagons_pro_spieler": 48,
   "hinweis": "ENTWURF: Knoten und Aufträge sind aus den Originaldaten übernommen. Die Streckenliste ist eine erste Lesung aus dem Spielplan-Bild und muss noch korrigiert werden (siehe 'geprueft': false).",
@@ -216,8 +216,8 @@
   {
    "id": "busbahnhof",
    "name": "Busbahnhof",
-   "x": 84.13,
-   "y": 57.46
+   "x": 85.93,
+   "y": 59.74
   },
   {
    "id": "alter_markt",
