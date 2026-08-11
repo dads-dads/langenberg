@@ -1,7 +1,7 @@
 {
  "meta": {
   "name": "Zug um Zug Langenberg",
-  "version": "4.8",
+  "version": "4.9",
   "spieler": "2-5",
   "wagons_pro_spieler": 48,
   "hinweis": "ENTWURF: Knoten und Aufträge sind aus den Originaldaten übernommen. Die Streckenliste ist eine erste Lesung aus dem Spielplan-Bild und muss noch korrigiert werden (siehe 'geprueft': false).",
@@ -1848,9 +1848,9 @@
      "w": 1.55
     },
     {
-     "x": 13.08,
-     "y": 91.67,
-     "deg": -1,
+     "x": 12.99,
+     "y": 91.54,
+     "deg": 181,
      "l": 3.61,
      "w": 1.55
     },
