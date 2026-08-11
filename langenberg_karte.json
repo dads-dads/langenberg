@@ -1,7 +1,7 @@
 {
  "meta": {
   "name": "Zug um Zug Langenberg",
-  "version": "4.3",
+  "version": "4.7",
   "spieler": "2-5",
   "wagons_pro_spieler": 48,
   "hinweis": "ENTWURF: Knoten und Aufträge sind aus den Originaldaten übernommen. Die Streckenliste ist eine erste Lesung aus dem Spielplan-Bild und muss noch korrigiert werden (siehe 'geprueft': false).",
@@ -1344,15 +1344,15 @@
    "felder": [
     {
      "x": 46.43,
-     "y": 46.48,
+     "y": 46.35,
      "deg": -40,
      "l": 3.9,
      "w": 1.55
     },
     {
-     "x": 44.13,
+     "x": 44.04,
      "y": 50.57,
-     "deg": -58,
+     "deg": -60,
      "l": 3.51,
      "w": 1.42
     }
@@ -1849,10 +1849,10 @@
     },
     {
      "x": 13.08,
-     "y": 91.8,
-     "deg": 1,
-     "l": 3.64,
-     "w": 1.42
+     "y": 91.67,
+     "deg": -1,
+     "l": 3.61,
+     "w": 1.55
     },
     {
      "x": 16.49,
@@ -2047,16 +2047,16 @@
    "tunnel": true,
    "felder": [
     {
-     "x": 23.19,
-     "y": 60.77,
-     "deg": -89,
+     "x": 23.37,
+     "y": 61.03,
+     "deg": -91,
      "l": 3.77,
      "w": 1.55
     },
     {
-     "x": 24.27,
-     "y": 68.67,
-     "deg": -114,
+     "x": 24.18,
+     "y": 68.93,
+     "deg": -104,
      "l": 3.64,
      "w": 1.55
     }
@@ -2073,16 +2073,16 @@
    "tunnel": true,
    "felder": [
     {
-     "x": 24.81,
+     "x": 24.72,
      "y": 60.89,
-     "deg": -89,
+     "deg": -91,
      "l": 3.64,
      "w": 1.55
     },
     {
-     "x": 25.57,
-     "y": 68.03,
-     "deg": -114,
+     "x": 25.48,
+     "y": 68.29,
+     "deg": -104,
      "l": 3.64,
      "w": 1.55
     }
@@ -3099,17 +3099,17 @@
      "w": 1.56
     },
     {
-     "x": 92.0,
-     "y": 77.42,
-     "deg": 62,
-     "l": 3.64,
+     "x": 92.27,
+     "y": 77.68,
+     "deg": 66,
+     "l": 3.61,
      "w": 1.55
     },
     {
      "x": 93.66,
-     "y": 82.26,
-     "deg": 62,
-     "l": 3.64,
+     "y": 82.39,
+     "deg": 66,
+     "l": 3.61,
      "w": 1.55
     }
    ]
