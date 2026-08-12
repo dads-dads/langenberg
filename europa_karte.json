@@ -58,7 +58,8 @@
    },
    "zugzeit": "Zugzeit pro Spiel frei einstellbar (Stunden + Minuten); nach Ablauf werden automatisch 2 Karten vom verdeckten Stapel gezogen.",
    "kennwort": "Jeder Spieler waehlt einen PIN; Wiedereinstieg nur mit Name + PIN."
-  }
+  },
+  "tkbild": "auftrag_europa.jpg"
  },
  "knoten": [
   {
