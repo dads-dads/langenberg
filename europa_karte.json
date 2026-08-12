@@ -1,0 +1,4065 @@
+{
+ "meta": {
+  "name": "Europa Megagame",
+  "statId": "Zug um Zug Europa",
+  "kurz": "Europa Megagame",
+  "version": "5.6",
+  "spieler": "2-5",
+  "wagons_pro_spieler": 45,
+  "bild": "europa_karte.jpg",
+  "hinweis": "ENTWURF: Streckenliste aus dem Spielplan gelesen, Felder automatisch erkannt bzw. interpoliert. Feinjustage im Editor ausstehend (geprueft: false).",
+  "farben": [
+   "rot",
+   "orange",
+   "gelb",
+   "gruen",
+   "blau",
+   "pink",
+   "weiss",
+   "schwarz",
+   "grau"
+  ],
+  "tunnelregel": "Beim Bau eines Tunnels werden 3 Karten vom Stapel aufgedeckt; fuer jede Karte in der Streckenfarbe (oder Joker) muss eine zusaetzliche passende Karte gezahlt werden, sonst darf der Zug abgebrochen werden.",
+  "faehrenregel": "Faehren sind graue Strecken mit Lok-Symbolen. Pro Lok-Symbol muss zwingend ein Joker gezahlt werden; die restlichen Felder werden mit Karten einer beliebigen Farbe (ggf. mit weiteren Jokern) bezahlt.",
+  "bahnhofregel": "Jeder Spieler hat 3 Bahnhoefe. Ein Bahnhof erlaubt es, genau eine fremde Strecke zu nutzen, die in dieser Stadt endet. Kosten: 1. Bahnhof 1 Karte, 2. Bahnhof 2 gleiche Karten, 3. Bahnhof 3 gleiche Karten. Pro Stadt nur ein Bahnhof, pro Zug nur ein Bahnhof.",
+  "regeln": {
+   "startauftraege": {
+    "lange_ziehen": 2,
+    "lange_max": 1,
+    "normale_ziehen": 5,
+    "min_normale_mit_lang": 2,
+    "min_normale_ohne_lang": 3,
+    "hinweis": "Mega-Europa (Europa 1912): 2 lange Strecken ziehen, hoechstens 1 behalten (beide ablegen erlaubt; abgelegte lange kommen aus dem Spiel). Dazu 5 normale Karten; mit langer Strecke mind. 2 davon behalten, ohne lange mind. 3."
+   },
+   "auftraege_nachziehen": {
+    "ziehen": 3,
+    "mindestens_behalten": 1
+   },
+   "starthandkarten": 4,
+   "doppelstrecken_frei_ab": 3,
+   "punkte_pro_laenge": {
+    "1": 1,
+    "2": 2,
+    "3": 4,
+    "4": 7,
+    "6": 15,
+    "8": 21
+   },
+   "laengste_strecke_bonus": 10,
+   "meiste_auftraege_bonus": 15,
+   "bahnhoefe": {
+    "anzahl": 3,
+    "kosten": [
+     1,
+     2,
+     3
+    ],
+    "punkte_pro_ungebautem": 4
+   },
+   "zugzeit": "Zugzeit pro Spiel frei einstellbar (Stunden + Minuten); nach Ablauf werden automatisch 2 Karten vom verdeckten Stapel gezogen.",
+   "kennwort": "Jeder Spieler waehlt einen PIN; Wiedereinstieg nur mit Name + PIN."
+  }
+ },
+ "knoten": [
+  {
+   "id": "edinburgh",
+   "name": "Edinburgh",
+   "x": 16.56,
+   "y": 9.0,
+   "rand": false
+  },
+  {
+   "id": "stockholm",
+   "name": "Stockholm",
+   "x": 56.13,
+   "y": 6.39,
+   "rand": false
+  },
+  {
+   "id": "petrograd",
+   "name": "Petrograd",
+   "x": 83.62,
+   "y": 9.95,
+   "rand": false
+  },
+  {
+   "id": "riga",
+   "name": "Riga",
+   "x": 67.53,
+   "y": 10.53,
+   "rand": false
+  },
+  {
+   "id": "kobenhavn",
+   "name": "København",
+   "x": 46.25,
+   "y": 17.34,
+   "rand": false
+  },
+  {
+   "id": "danzig",
+   "name": "Danzig",
+   "x": 59.75,
+   "y": 23.39,
+   "rand": false
+  },
+  {
+   "id": "wilno",
+   "name": "Wilno",
+   "x": 74.97,
+   "y": 29.86,
+   "rand": false
+  },
+  {
+   "id": "moskva",
+   "name": "Moskva",
+   "x": 92.78,
+   "y": 27.18,
+   "rand": false
+  },
+  {
+   "id": "london",
+   "name": "London",
+   "x": 22.77,
+   "y": 30.26,
+   "rand": false
+  },
+  {
+   "id": "amsterdam",
+   "name": "Amsterdam",
+   "x": 31.91,
+   "y": 30.83,
+   "rand": false
+  },
+  {
+   "id": "essen",
+   "name": "Essen",
+   "x": 39.42,
+   "y": 32.22,
+   "rand": false
+  },
+  {
+   "id": "warszawa",
+   "name": "Warszawa",
+   "x": 64.38,
+   "y": 33.34,
+   "rand": false
+  },
+  {
+   "id": "smolensk",
+   "name": "Smolensk",
+   "x": 84.68,
+   "y": 30.58,
+   "rand": false
+  },
+  {
+   "id": "bruxelles",
+   "name": "Bruxelles",
+   "x": 29.78,
+   "y": 37.5,
+   "rand": false
+  },
+  {
+   "id": "berlin",
+   "name": "Berlin",
+   "x": 48.86,
+   "y": 34.41,
+   "rand": false
+  },
+  {
+   "id": "kyiv",
+   "name": "Kyiv",
+   "x": 78.65,
+   "y": 41.08,
+   "rand": false
+  },
+  {
+   "id": "dieppe",
+   "name": "Dieppe",
+   "x": 21.71,
+   "y": 43.11,
+   "rand": false
+  },
+  {
+   "id": "frankfurt",
+   "name": "Frankfurt",
+   "x": 37.99,
+   "y": 42.16,
+   "rand": false
+  },
+  {
+   "id": "brest",
+   "name": "Brest",
+   "x": 13.24,
+   "y": 47.12,
+   "rand": false
+  },
+  {
+   "id": "paris",
+   "name": "Paris",
+   "x": 26.36,
+   "y": 49.28,
+   "rand": false
+  },
+  {
+   "id": "muenchen",
+   "name": "München",
+   "x": 43.45,
+   "y": 48.4,
+   "rand": false
+  },
+  {
+   "id": "kharkov",
+   "name": "Kharkov",
+   "x": 91.36,
+   "y": 48.69,
+   "rand": false
+  },
+  {
+   "id": "wien",
+   "name": "Wien",
+   "x": 54.49,
+   "y": 50.82,
+   "rand": false
+  },
+  {
+   "id": "zuerich",
+   "name": "Zürich",
+   "x": 37.32,
+   "y": 57.27,
+   "rand": false
+  },
+  {
+   "id": "budapest",
+   "name": "Budapest",
+   "x": 59.02,
+   "y": 54.32,
+   "rand": false
+  },
+  {
+   "id": "rostov",
+   "name": "Rostov",
+   "x": 95.29,
+   "y": 56.16,
+   "rand": false
+  },
+  {
+   "id": "venezia",
+   "name": "Venezia",
+   "x": 45.24,
+   "y": 61.91,
+   "rand": false
+  },
+  {
+   "id": "zagrab",
+   "name": "Zagrab",
+   "x": 53.27,
+   "y": 63.73,
+   "rand": false
+  },
+  {
+   "id": "bucuresti",
+   "name": "Bucuresti",
+   "x": 73.24,
+   "y": 64.43,
+   "rand": false
+  },
+  {
+   "id": "sevastopol",
+   "name": "Sevastopol",
+   "x": 86.29,
+   "y": 66.68,
+   "rand": false
+  },
+  {
+   "id": "sochi",
+   "name": "Sochi",
+   "x": 94.68,
+   "y": 68.94,
+   "rand": false
+  },
+  {
+   "id": "pamplona",
+   "name": "Pamplona",
+   "x": 20.41,
+   "y": 71.14,
+   "rand": false
+  },
+  {
+   "id": "marseille",
+   "name": "Marseille",
+   "x": 34.7,
+   "y": 70.5,
+   "rand": false
+  },
+  {
+   "id": "sarajevo",
+   "name": "Sarajevo",
+   "x": 61.24,
+   "y": 72.04,
+   "rand": false
+  },
+  {
+   "id": "sofia",
+   "name": "Sofia",
+   "x": 67.38,
+   "y": 73.39,
+   "rand": false
+  },
+  {
+   "id": "roma",
+   "name": "Roma",
+   "x": 45.93,
+   "y": 74.7,
+   "rand": false
+  },
+  {
+   "id": "brindisi",
+   "name": "Brindisi",
+   "x": 54.1,
+   "y": 78.44,
+   "rand": false
+  },
+  {
+   "id": "madrid",
+   "name": "Madrid",
+   "x": 11.13,
+   "y": 82.78,
+   "rand": false
+  },
+  {
+   "id": "barcelona",
+   "name": "Barcelona",
+   "x": 21.6,
+   "y": 84.16,
+   "rand": false
+  },
+  {
+   "id": "constantinople",
+   "name": "Constantinople",
+   "x": 77.91,
+   "y": 82.17,
+   "rand": false
+  },
+  {
+   "id": "lisboa",
+   "name": "Lisboa",
+   "x": 4.7,
+   "y": 86.01,
+   "rand": false
+  },
+  {
+   "id": "athina",
+   "name": "Athina",
+   "x": 65.79,
+   "y": 89.57,
+   "rand": false
+  },
+  {
+   "id": "angora",
+   "name": "Angora",
+   "x": 85.14,
+   "y": 89.99,
+   "rand": false
+  },
+  {
+   "id": "erzurum",
+   "name": "Erzurum",
+   "x": 92.8,
+   "y": 86.75,
+   "rand": false
+  },
+  {
+   "id": "cadiz",
+   "name": "Cadiz",
+   "x": 10.98,
+   "y": 93.35,
+   "rand": false
+  },
+  {
+   "id": "smyrna",
+   "name": "Smyrna",
+   "x": 73.63,
+   "y": 93.34,
+   "rand": false
+  },
+  {
+   "id": "palermo",
+   "name": "Palermo",
+   "x": 49.45,
+   "y": 93.39,
+   "rand": false
+  }
+ ],
+ "strecken": [
+  {
+   "nr": 1,
+   "von": "edinburgh",
+   "nach": "london",
+   "laenge": 4,
+   "farbe": "orange",
+   "geprueft": false,
+   "doppel_mit": 2,
+   "felder": [
+    {
+     "x": 18.26,
+     "y": 12.35,
+     "deg": 67.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 19.59,
+     "y": 17.09,
+     "deg": 67.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 20.93,
+     "y": 21.83,
+     "deg": 67.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 22.26,
+     "y": 26.56,
+     "deg": 67.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 2,
+   "von": "edinburgh",
+   "nach": "london",
+   "laenge": 4,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "doppel_mit": 1,
+   "felder": [
+    {
+     "x": 17.11,
+     "y": 13.06,
+     "deg": 67.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 18.46,
+     "y": 17.82,
+     "deg": 67.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 19.79,
+     "y": 22.54,
+     "deg": 66.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 21.13,
+     "y": 27.27,
+     "deg": 67.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 3,
+   "von": "london",
+   "nach": "amsterdam",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 2,
+   "felder": [
+    {
+     "x": 25.05,
+     "y": 30.4,
+     "deg": 2.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 29.62,
+     "y": 30.69,
+     "deg": 2.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 4,
+   "von": "london",
+   "nach": "dieppe",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "doppel_mit": 5,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 22.78,
+     "y": 34.26,
+     "deg": 95.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 22.49,
+     "y": 39.26,
+     "deg": 95.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 5,
+   "von": "london",
+   "nach": "dieppe",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "doppel_mit": 4,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 21.57,
+     "y": 33.98,
+     "deg": 95.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 21.25,
+     "y": 39.08,
+     "deg": 95.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 6,
+   "von": "amsterdam",
+   "nach": "essen",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 33.49,
+     "y": 29.28,
+     "deg": -13.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 36.26,
+     "y": 28.31,
+     "deg": 7.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 38.5,
+     "y": 30.2,
+     "deg": 29.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 7,
+   "von": "amsterdam",
+   "nach": "bruxelles",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 30.91,
+     "y": 34.21,
+     "deg": 115.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 8,
+   "von": "amsterdam",
+   "nach": "frankfurt",
+   "laenge": 2,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 33.84,
+     "y": 34.23,
+     "deg": 45.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 36.26,
+     "y": 37.88,
+     "deg": 45.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 9,
+   "von": "bruxelles",
+   "nach": "dieppe",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 27.3,
+     "y": 38.46,
+     "deg": 145.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 24.41,
+     "y": 41.46,
+     "deg": 145.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 10,
+   "von": "bruxelles",
+   "nach": "paris",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 28.51,
+     "y": 40.76,
+     "deg": 117.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 26.92,
+     "y": 45.3,
+     "deg": 117.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ],
+   "doppel_mit": 101
+  },
+  {
+   "nr": 101,
+   "von": "bruxelles",
+   "nach": "paris",
+   "laenge": 2,
+   "farbe": "rot",
+   "geprueft": false,
+   "doppel_mit": 10,
+   "felder": [
+    {
+     "x": 29.62,
+     "y": 41.58,
+     "deg": -61.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 28.01,
+     "y": 46.17,
+     "deg": -61.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 11,
+   "von": "bruxelles",
+   "nach": "frankfurt",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 32.09,
+     "y": 37.81,
+     "deg": 16.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 35.43,
+     "y": 39.3,
+     "deg": 16.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 12,
+   "von": "dieppe",
+   "nach": "paris",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 23.91,
+     "y": 45.84,
+     "deg": 41.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 13,
+   "von": "dieppe",
+   "nach": "brest",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 18.85,
+     "y": 42.82,
+     "deg": 162.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 15.43,
+     "y": 44.4,
+     "deg": 162.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 14,
+   "von": "brest",
+   "nach": "paris",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 15.93,
+     "y": 47.64,
+     "deg": 5.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 19.42,
+     "y": 48.18,
+     "deg": 6.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 22.84,
+     "y": 48.79,
+     "deg": 6.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 15,
+   "von": "brest",
+   "nach": "pamplona",
+   "laenge": 4,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 15.81,
+     "y": 50.12,
+     "deg": 40.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 18.37,
+     "y": 53.38,
+     "deg": 55.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 19.62,
+     "y": 58.4,
+     "deg": 77.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 19.84,
+     "y": 63.63,
+     "deg": 86.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 16,
+   "von": "paris",
+   "nach": "pamplona",
+   "laenge": 4,
+   "farbe": "blau",
+   "geprueft": false,
+   "doppel_mit": 17,
+   "felder": [
+    {
+     "x": 24.37,
+     "y": 52.66,
+     "deg": 101.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 23.68,
+     "y": 57.84,
+     "deg": 105.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 22.5,
+     "y": 62.88,
+     "deg": 114.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 20.79,
+     "y": 67.49,
+     "deg": 119.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 17,
+   "von": "paris",
+   "nach": "pamplona",
+   "laenge": 4,
+   "farbe": "gruen",
+   "geprueft": false,
+   "doppel_mit": 16,
+   "felder": [
+    {
+     "x": 25.61,
+     "y": 53.27,
+     "deg": 101.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 24.9,
+     "y": 58.41,
+     "deg": 105.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 23.73,
+     "y": 63.45,
+     "deg": 113.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 22.04,
+     "y": 68.14,
+     "deg": 118.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 18,
+   "von": "paris",
+   "nach": "frankfurt",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "doppel_mit": 19,
+   "felder": [
+    {
+     "x": 29.62,
+     "y": 48.41,
+     "deg": -23.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 32.72,
+     "y": 46.38,
+     "deg": -28.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 35.53,
+     "y": 43.57,
+     "deg": -33.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 19,
+   "von": "paris",
+   "nach": "frankfurt",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": false,
+   "doppel_mit": 18,
+   "felder": [
+    {
+     "x": 30.24,
+     "y": 50.16,
+     "deg": -23.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 33.4,
+     "y": 48.11,
+     "deg": -28.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 36.24,
+     "y": 45.32,
+     "deg": -33.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 20,
+   "von": "paris",
+   "nach": "zuerich",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 27.28,
+     "y": 51.86,
+     "deg": 39.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 30.2,
+     "y": 55.52,
+     "deg": 25.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 34.58,
+     "y": 57.18,
+     "deg": 14.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 21,
+   "von": "paris",
+   "nach": "marseille",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 28.82,
+     "y": 53.54,
+     "deg": 40.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 31.43,
+     "y": 56.94,
+     "deg": 72.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 30.96,
+     "y": 63.46,
+     "deg": 72.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 33.53,
+     "y": 67.05,
+     "deg": 42.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 22,
+   "von": "pamplona",
+   "nach": "madrid",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "doppel_mit": 23,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 21.0,
+     "y": 74.78,
+     "deg": 118.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 19.23,
+     "y": 79.72,
+     "deg": 140.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 14.81,
+     "y": 82.54,
+     "deg": 156.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 23,
+   "von": "pamplona",
+   "nach": "madrid",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "doppel_mit": 22,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 18.11,
+     "y": 72.48,
+     "deg": 143.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 14.8,
+     "y": 76.19,
+     "deg": 140.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 11.92,
+     "y": 80.24,
+     "deg": 136.8,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 24,
+   "von": "pamplona",
+   "nach": "barcelona",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 20.81,
+     "y": 75.02,
+     "deg": 83.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 21.2,
+     "y": 80.21,
+     "deg": 83.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 25,
+   "von": "pamplona",
+   "nach": "marseille",
+   "laenge": 4,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 22.18,
+     "y": 70.65,
+     "deg": -6.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 25.73,
+     "y": 70.02,
+     "deg": -4.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 29.3,
+     "y": 69.86,
+     "deg": 0.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 32.9,
+     "y": 70.17,
+     "deg": 3.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 26,
+   "von": "madrid",
+   "nach": "lisboa",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 9.06,
+     "y": 81.33,
+     "deg": -173.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 6.11,
+     "y": 80.81,
+     "deg": 161.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 4.77,
+     "y": 83.48,
+     "deg": 127.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 27,
+   "von": "madrid",
+   "nach": "cadiz",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 12.85,
+     "y": 84.57,
+     "deg": 60.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 14.19,
+     "y": 88.11,
+     "deg": 91.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 12.75,
+     "y": 91.61,
+     "deg": 121.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 28,
+   "von": "madrid",
+   "nach": "barcelona",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 15.32,
+     "y": 83.64,
+     "deg": 2.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 18.82,
+     "y": 83.84,
+     "deg": 2.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 29,
+   "von": "lisboa",
+   "nach": "cadiz",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 5.82,
+     "y": 89.44,
+     "deg": 38.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 8.58,
+     "y": 92.75,
+     "deg": 38.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 30,
+   "von": "barcelona",
+   "nach": "marseille",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 22.96,
+     "y": 82.19,
+     "deg": -39.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 25.93,
+     "y": 78.48,
+     "deg": -37.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 29.2,
+     "y": 75.06,
+     "deg": -32.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 32.79,
+     "y": 71.95,
+     "deg": -30.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 31,
+   "von": "marseille",
+   "nach": "zuerich",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 36.03,
+     "y": 66.37,
+     "deg": -74.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 37.04,
+     "y": 60.74,
+     "deg": -74.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 32,
+   "von": "marseille",
+   "nach": "roma",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 36.63,
+     "y": 69.62,
+     "deg": -6.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 40.04,
+     "y": 69.06,
+     "deg": 3.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 42.85,
+     "y": 70.11,
+     "deg": 26.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 45.05,
+     "y": 72.77,
+     "deg": 38.8,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 33,
+   "von": "zuerich",
+   "nach": "muenchen",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 39.39,
+     "y": 54.55,
+     "deg": -42.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 41.88,
+     "y": 51.14,
+     "deg": -42.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 34,
+   "von": "zuerich",
+   "nach": "venezia",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 39.3,
+     "y": 58.43,
+     "deg": 21.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 43.26,
+     "y": 60.75,
+     "deg": 21.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 35,
+   "von": "frankfurt",
+   "nach": "essen",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 39.66,
+     "y": 38.59,
+     "deg": -49.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 41.39,
+     "y": 35.61,
+     "deg": -49.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 36,
+   "von": "frankfurt",
+   "nach": "berlin",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "doppel_mit": 37,
+   "felder": [
+    {
+     "x": 40.21,
+     "y": 40.34,
+     "deg": -24.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 43.38,
+     "y": 38.14,
+     "deg": -24.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 46.55,
+     "y": 35.95,
+     "deg": -24.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 37,
+   "von": "frankfurt",
+   "nach": "berlin",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": false,
+   "doppel_mit": 36,
+   "felder": [
+    {
+     "x": 40.73,
+     "y": 42.0,
+     "deg": -24.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 43.89,
+     "y": 39.8,
+     "deg": -24.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 47.06,
+     "y": 37.6,
+     "deg": -24.8,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 38,
+   "von": "frankfurt",
+   "nach": "muenchen",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 38.9,
+     "y": 45.86,
+     "deg": 49.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 40.6,
+     "y": 48.81,
+     "deg": 49.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 39,
+   "von": "essen",
+   "nach": "berlin",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 42.99,
+     "y": 31.94,
+     "deg": 7.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 46.45,
+     "y": 32.63,
+     "deg": 7.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 40,
+   "von": "essen",
+   "nach": "kobenhavn",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": false,
+   "doppel_mit": 41,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 39.37,
+     "y": 29.2,
+     "deg": -62.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 41.15,
+     "y": 24.01,
+     "deg": -55.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 43.93,
+     "y": 19.28,
+     "deg": -48.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 41,
+   "von": "essen",
+   "nach": "kobenhavn",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": false,
+   "doppel_mit": 40,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 41.42,
+     "y": 30.13,
+     "deg": -52.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 43.93,
+     "y": 25.28,
+     "deg": -55.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 45.97,
+     "y": 20.21,
+     "deg": -58.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 42,
+   "von": "kobenhavn",
+   "nach": "stockholm",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": false,
+   "doppel_mit": 43,
+   "felder": [
+    {
+     "x": 47.76,
+     "y": 14.07,
+     "deg": -43.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 50.29,
+     "y": 10.48,
+     "deg": -38.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 53.18,
+     "y": 7.5,
+     "deg": -34.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 43,
+   "von": "kobenhavn",
+   "nach": "stockholm",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "doppel_mit": 42,
+   "felder": [
+    {
+     "x": 48.51,
+     "y": 15.37,
+     "deg": -43.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 51.03,
+     "y": 11.82,
+     "deg": -38.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 53.92,
+     "y": 8.85,
+     "deg": -34.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 44,
+   "von": "stockholm",
+   "nach": "petrograd",
+   "laenge": 8,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 57.89,
+     "y": 6.27,
+     "deg": -1.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 61.4,
+     "y": 6.16,
+     "deg": -0.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 64.88,
+     "y": 6.23,
+     "deg": 1.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 68.34,
+     "y": 6.49,
+     "deg": 3.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 71.78,
+     "y": 6.94,
+     "deg": 6.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 75.19,
+     "y": 7.57,
+     "deg": 8.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 78.58,
+     "y": 8.38,
+     "deg": 10.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 81.95,
+     "y": 9.38,
+     "deg": 11.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 45,
+   "von": "berlin",
+   "nach": "danzig",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 49.04,
+     "y": 31.86,
+     "deg": -63.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 50.41,
+     "y": 27.77,
+     "deg": -48.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 53.13,
+     "y": 25.02,
+     "deg": -22.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 57.21,
+     "y": 23.6,
+     "deg": -13.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 46,
+   "von": "berlin",
+   "nach": "warszawa",
+   "laenge": 4,
+   "farbe": "gelb",
+   "geprueft": false,
+   "doppel_mit": 47,
+   "felder": [
+    {
+     "x": 51.41,
+     "y": 34.89,
+     "deg": -12.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 54.86,
+     "y": 33.73,
+     "deg": -8.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 58.34,
+     "y": 33.44,
+     "deg": 0.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 61.82,
+     "y": 33.84,
+     "deg": 4.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 47,
+   "von": "berlin",
+   "nach": "warszawa",
+   "laenge": 4,
+   "farbe": "pink",
+   "geprueft": false,
+   "doppel_mit": 46,
+   "felder": [
+    {
+     "x": 51.3,
+     "y": 32.93,
+     "deg": -12.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 54.79,
+     "y": 31.76,
+     "deg": -8.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 58.31,
+     "y": 31.43,
+     "deg": 0.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 61.83,
+     "y": 31.82,
+     "deg": 4.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 48,
+   "von": "berlin",
+   "nach": "wien",
+   "laenge": 3,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 49.68,
+     "y": 38.49,
+     "deg": 68.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 51.0,
+     "y": 43.39,
+     "deg": 62.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 52.91,
+     "y": 47.77,
+     "deg": 56.8,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 49,
+   "von": "muenchen",
+   "nach": "wien",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 45.58,
+     "y": 51.46,
+     "deg": 4.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 52.13,
+     "y": 52.17,
+     "deg": -6.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 54.5,
+     "y": 49.89,
+     "deg": -32.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 50,
+   "von": "muenchen",
+   "nach": "venezia",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 44.03,
+     "y": 53.16,
+     "deg": 79.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 44.67,
+     "y": 58.21,
+     "deg": 79.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 51,
+   "von": "venezia",
+   "nach": "roma",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 45.64,
+     "y": 65.85,
+     "deg": 79.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 46.28,
+     "y": 71.02,
+     "deg": 79.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 52,
+   "von": "venezia",
+   "nach": "zagrab",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 47.58,
+     "y": 60.92,
+     "deg": 8.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 51.59,
+     "y": 61.83,
+     "deg": 8.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 53,
+   "von": "roma",
+   "nach": "brindisi",
+   "laenge": 2,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 48.99,
+     "y": 73.5,
+     "deg": 21.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 52.28,
+     "y": 75.48,
+     "deg": 21.8,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 54,
+   "von": "roma",
+   "nach": "palermo",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 47.46,
+     "y": 76.83,
+     "deg": 54.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 49.59,
+     "y": 81.27,
+     "deg": 63.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 50.47,
+     "y": 85.94,
+     "deg": 85.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 50.1,
+     "y": 90.85,
+     "deg": 96.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 55,
+   "von": "brindisi",
+   "nach": "palermo",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 51.34,
+     "y": 80.31,
+     "deg": 136.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 48.2,
+     "y": 84.8,
+     "deg": 115.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 48.24,
+     "y": 90.28,
+     "deg": 89.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 56,
+   "von": "brindisi",
+   "nach": "athina",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 55.56,
+     "y": 79.83,
+     "deg": 32.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 58.48,
+     "y": 82.61,
+     "deg": 32.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 61.41,
+     "y": 85.4,
+     "deg": 32.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 64.33,
+     "y": 88.18,
+     "deg": 32.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 57,
+   "von": "palermo",
+   "nach": "smyrna",
+   "laenge": 6,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 2,
+   "felder": [
+    {
+     "x": 51.47,
+     "y": 93.39,
+     "deg": -0.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 55.5,
+     "y": 93.38,
+     "deg": -0.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 59.52,
+     "y": 93.37,
+     "deg": -0.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 63.55,
+     "y": 93.36,
+     "deg": -0.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 67.58,
+     "y": 93.35,
+     "deg": -0.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 71.61,
+     "y": 93.34,
+     "deg": -0.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 58,
+   "von": "zagrab",
+   "nach": "wien",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 53.46,
+     "y": 59.59,
+     "deg": -85.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 53.74,
+     "y": 54.43,
+     "deg": -85.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 59,
+   "von": "zagrab",
+   "nach": "budapest",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 55.37,
+     "y": 61.57,
+     "deg": -50.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 57.61,
+     "y": 57.47,
+     "deg": -50.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 60,
+   "von": "zagrab",
+   "nach": "sarajevo",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 53.29,
+     "y": 66.37,
+     "deg": 57.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 54.91,
+     "y": 70.14,
+     "deg": 34.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 58.61,
+     "y": 71.91,
+     "deg": 17.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 61,
+   "von": "wien",
+   "nach": "budapest",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": false,
+   "doppel_mit": 62,
+   "felder": [
+    {
+     "x": 56.89,
+     "y": 52.39,
+     "deg": 27.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 62,
+   "von": "wien",
+   "nach": "budapest",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": false,
+   "doppel_mit": 61,
+   "felder": [
+    {
+     "x": 56.14,
+     "y": 53.94,
+     "deg": 27.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 63,
+   "von": "wien",
+   "nach": "warszawa",
+   "laenge": 4,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 56.28,
+     "y": 48.69,
+     "deg": -36.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 59.06,
+     "y": 45.6,
+     "deg": -41.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 61.47,
+     "y": 41.69,
+     "deg": -52.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 63.43,
+     "y": 37.21,
+     "deg": -56.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 64,
+   "von": "budapest",
+   "nach": "sarajevo",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 59.77,
+     "y": 58.1,
+     "deg": 82.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 60.25,
+     "y": 63.27,
+     "deg": 82.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 60.73,
+     "y": 68.49,
+     "deg": 82.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 65,
+   "von": "budapest",
+   "nach": "bucuresti",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 61.32,
+     "y": 55.29,
+     "deg": 27.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 64.4,
+     "y": 57.7,
+     "deg": 28.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 67.39,
+     "y": 60.28,
+     "deg": 28.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 70.7,
+     "y": 62.94,
+     "deg": 28.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 66,
+   "von": "budapest",
+   "nach": "kyiv",
+   "laenge": 6,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 60.23,
+     "y": 51.23,
+     "deg": -43.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 62.64,
+     "y": 47.83,
+     "deg": -36.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 66.0,
+     "y": 44.81,
+     "deg": -27.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 69.05,
+     "y": 42.84,
+     "deg": -16.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 72.78,
+     "y": 41.85,
+     "deg": -5.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 75.94,
+     "y": 41.88,
+     "deg": 0.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 67,
+   "von": "sarajevo",
+   "nach": "athina",
+   "laenge": 4,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 60.71,
+     "y": 74.52,
+     "deg": 92.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 60.59,
+     "y": 79.23,
+     "deg": 80.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 61.72,
+     "y": 83.61,
+     "deg": 57.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 64.12,
+     "y": 87.66,
+     "deg": 48.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 68,
+   "von": "sarajevo",
+   "nach": "sofia",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 63.23,
+     "y": 70.33,
+     "deg": 8.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 66.3,
+     "y": 71.0,
+     "deg": 8.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 69,
+   "von": "sofia",
+   "nach": "athina",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 65.83,
+     "y": 76.08,
+     "deg": 114.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 64.36,
+     "y": 80.83,
+     "deg": 96.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 65.05,
+     "y": 86.16,
+     "deg": 79.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 70,
+   "von": "sofia",
+   "nach": "bucuresti",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 69.77,
+     "y": 71.76,
+     "deg": -46.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 72.25,
+     "y": 67.88,
+     "deg": -46.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 71,
+   "von": "sofia",
+   "nach": "constantinople",
+   "laenge": 3,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 69.58,
+     "y": 75.38,
+     "deg": 29.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 72.62,
+     "y": 77.96,
+     "deg": 29.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 75.66,
+     "y": 80.54,
+     "deg": 29.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 72,
+   "von": "bucuresti",
+   "nach": "constantinople",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 74.22,
+     "y": 68.21,
+     "deg": 67.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 75.55,
+     "y": 73.06,
+     "deg": 67.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 76.88,
+     "y": 77.92,
+     "deg": 67.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 73,
+   "von": "bucuresti",
+   "nach": "kyiv",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 73.58,
+     "y": 60.33,
+     "deg": -70.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 74.75,
+     "y": 55.4,
+     "deg": -71.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 75.73,
+     "y": 50.53,
+     "deg": -55.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 79.52,
+     "y": 44.86,
+     "deg": -44.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 74,
+   "von": "bucuresti",
+   "nach": "sevastopol",
+   "laenge": 4,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 75.16,
+     "y": 63.01,
+     "deg": -14.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 78.76,
+     "y": 61.64,
+     "deg": -4.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 82.02,
+     "y": 62.2,
+     "deg": 18.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 84.95,
+     "y": 64.7,
+     "deg": 29.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 75,
+   "von": "athina",
+   "nach": "smyrna",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 67.75,
+     "y": 90.51,
+     "deg": 17.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 71.67,
+     "y": 92.4,
+     "deg": 17.8,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 76,
+   "von": "constantinople",
+   "nach": "smyrna",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 76.25,
+     "y": 85.34,
+     "deg": 117.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 74.54,
+     "y": 90.28,
+     "deg": 117.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 77,
+   "von": "constantinople",
+   "nach": "angora",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 80.11,
+     "y": 84.45,
+     "deg": 36.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 82.94,
+     "y": 87.63,
+     "deg": 36.8,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 78,
+   "von": "constantinople",
+   "nach": "sevastopol",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 2,
+   "felder": [
+    {
+     "x": 80.04,
+     "y": 80.82,
+     "deg": -32.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 83.37,
+     "y": 77.61,
+     "deg": -41.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 85.46,
+     "y": 73.74,
+     "deg": -62.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 86.32,
+     "y": 69.2,
+     "deg": -74.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 79,
+   "von": "smyrna",
+   "nach": "angora",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 75.55,
+     "y": 92.78,
+     "deg": -11.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 79.38,
+     "y": 91.66,
+     "deg": -11.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 83.22,
+     "y": 90.55,
+     "deg": -11.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 80,
+   "von": "angora",
+   "nach": "erzurum",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 87.18,
+     "y": 91.26,
+     "deg": 4.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 90.34,
+     "y": 91.62,
+     "deg": -15.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 92.29,
+     "y": 89.1,
+     "deg": -40.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 81,
+   "von": "erzurum",
+   "nach": "sochi",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": false,
+   "tunnel": true,
+   "felder": [
+    {
+     "x": 93.23,
+     "y": 83.36,
+     "deg": -81.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 93.77,
+     "y": 77.96,
+     "deg": -81.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 94.3,
+     "y": 72.78,
+     "deg": -81.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 82,
+   "von": "sevastopol",
+   "nach": "rostov",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 86.52,
+     "y": 64.6,
+     "deg": -62.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 87.76,
+     "y": 61.1,
+     "deg": -49.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 90.01,
+     "y": 58.47,
+     "deg": -27.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 93.27,
+     "y": 56.71,
+     "deg": -19.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 83,
+   "von": "sevastopol",
+   "nach": "sochi",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "felder": [
+    {
+     "x": 88.39,
+     "y": 67.25,
+     "deg": 10.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 92.58,
+     "y": 68.38,
+     "deg": 10.2,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 84,
+   "von": "sochi",
+   "nach": "rostov",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 94.92,
+     "y": 65.08,
+     "deg": -85.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 95.2,
+     "y": 59.97,
+     "deg": -85.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 85,
+   "von": "rostov",
+   "nach": "kharkov",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 95.38,
+     "y": 52.7,
+     "deg": -115.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 94.2,
+     "y": 48.91,
+     "deg": -115.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 86,
+   "von": "kharkov",
+   "nach": "kyiv",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 89.06,
+     "y": 48.93,
+     "deg": -174.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 85.06,
+     "y": 48.39,
+     "deg": -167.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 81.89,
+     "y": 46.49,
+     "deg": -148.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 79.53,
+     "y": 43.22,
+     "deg": -137.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 87,
+   "von": "kharkov",
+   "nach": "moskva",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 93.12,
+     "y": 45.8,
+     "deg": -60.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 94.87,
+     "y": 41.1,
+     "deg": -73.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 95.1,
+     "y": 35.74,
+     "deg": -97.2,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 93.99,
+     "y": 30.63,
+     "deg": -108.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 88,
+   "von": "moskva",
+   "nach": "smolensk",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 91.27,
+     "y": 29.26,
+     "deg": 164.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 87.22,
+     "y": 30.96,
+     "deg": 164.4,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 89,
+   "von": "moskva",
+   "nach": "petrograd",
+   "laenge": 4,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 92.39,
+     "y": 23.32,
+     "deg": -105.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 91.44,
+     "y": 18.17,
+     "deg": -116.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 89.22,
+     "y": 13.96,
+     "deg": -139.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 86.09,
+     "y": 11.33,
+     "deg": -150.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 90,
+   "von": "smolensk",
+   "nach": "kyiv",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 85.3,
+     "y": 33.26,
+     "deg": 104.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 84.58,
+     "y": 37.51,
+     "deg": 130.7,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 81.28,
+     "y": 40.26,
+     "deg": 151.0,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 91,
+   "von": "wilno",
+   "nach": "smolensk",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 76.71,
+     "y": 28.41,
+     "deg": -11.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 80.04,
+     "y": 27.39,
+     "deg": 2.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 83.18,
+     "y": 28.89,
+     "deg": 17.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 92,
+   "von": "wilno",
+   "nach": "kyiv",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 77.2,
+     "y": 32.27,
+     "deg": 64.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 78.74,
+     "y": 37.06,
+     "deg": 64.3,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 93,
+   "von": "wilno",
+   "nach": "warszawa",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 72.69,
+     "y": 28.87,
+     "deg": -179.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 68.75,
+     "y": 28.77,
+     "deg": 167.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 65.63,
+     "y": 31.19,
+     "deg": 152.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 94,
+   "von": "wilno",
+   "nach": "riga",
+   "laenge": 4,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 73.15,
+     "y": 26.73,
+     "deg": -147.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 70.2,
+     "y": 23.9,
+     "deg": -139.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 67.84,
+     "y": 19.81,
+     "deg": -113.3,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 67.49,
+     "y": 14.45,
+     "deg": -95.6,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 95,
+   "von": "wilno",
+   "nach": "petrograd",
+   "laenge": 4,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 76.28,
+     "y": 26.37,
+     "deg": -53.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 78.35,
+     "y": 22.13,
+     "deg": -53.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 80.42,
+     "y": 17.88,
+     "deg": -53.9,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 82.49,
+     "y": 13.62,
+     "deg": -53.9,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 96,
+   "von": "riga",
+   "nach": "petrograd",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 70.25,
+     "y": 10.84,
+     "deg": -0.4,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 73.76,
+     "y": 10.8,
+     "deg": -0.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 77.23,
+     "y": 10.75,
+     "deg": -0.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 80.74,
+     "y": 10.69,
+     "deg": -0.7,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 97,
+   "von": "riga",
+   "nach": "danzig",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 65.11,
+     "y": 12.0,
+     "deg": 144.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 62.24,
+     "y": 15.04,
+     "deg": 131.5,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 60.54,
+     "y": 19.73,
+     "deg": 118.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 98,
+   "von": "danzig",
+   "nach": "warszawa",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "doppel_mit": 99,
+   "felder": [
+    {
+     "x": 62.64,
+     "y": 25.07,
+     "deg": 55.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 64.96,
+     "y": 30.04,
+     "deg": 55.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 99,
+   "von": "danzig",
+   "nach": "warszawa",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "doppel_mit": 98,
+   "felder": [
+    {
+     "x": 61.51,
+     "y": 25.6,
+     "deg": 55.1,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 63.82,
+     "y": 30.57,
+     "deg": 55.1,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  },
+  {
+   "nr": 100,
+   "von": "warszawa",
+   "nach": "kyiv",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 66.15,
+     "y": 35.95,
+     "deg": 35.8,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 69.0,
+     "y": 39.03,
+     "deg": 22.6,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 72.5,
+     "y": 39.9,
+     "deg": 5.0,
+     "l": 3.3,
+     "w": 1.15
+    },
+    {
+     "x": 76.0,
+     "y": 39.94,
+     "deg": 0.5,
+     "l": 3.3,
+     "w": 1.15
+    }
+   ]
+  }
+ ],
+ "auftraege": [
+  {
+   "von": "Brest",
+   "nach": "Marseille",
+   "punkte": 7
+  },
+  {
+   "von": "Essen",
+   "nach": "Kyiv",
+   "punkte": 10
+  },
+  {
+   "von": "Frankfurt",
+   "nach": "Smolensk",
+   "punkte": 13
+  },
+  {
+   "von": "Zürich",
+   "nach": "Budapest",
+   "punkte": 6
+  },
+  {
+   "von": "London",
+   "nach": "Wien",
+   "punkte": 10
+  },
+  {
+   "von": "Zagrab",
+   "nach": "Brindisi",
+   "punkte": 6
+  },
+  {
+   "von": "Rostov",
+   "nach": "Erzurum",
+   "punkte": 5
+  },
+  {
+   "von": "Kyiv",
+   "nach": "Petrograd",
+   "punkte": 6
+  },
+  {
+   "von": "Barcelona",
+   "nach": "München",
+   "punkte": 8
+  },
+  {
+   "von": "Stockholm",
+   "nach": "Wien",
+   "punkte": 11
+  },
+  {
+   "von": "Kyiv",
+   "nach": "Sochi",
+   "punkte": 8
+  },
+  {
+   "von": "Sofia",
+   "nach": "Smyrna",
+   "punkte": 5
+  },
+  {
+   "von": "Berlin",
+   "nach": "Moskva",
+   "punkte": 12
+  },
+  {
+   "von": "Madrid",
+   "nach": "Zürich",
+   "punkte": 8
+  },
+  {
+   "von": "Angora",
+   "nach": "Kharkov",
+   "punkte": 10
+  },
+  {
+   "von": "Zürich",
+   "nach": "Brindisi",
+   "punkte": 6
+  },
+  {
+   "von": "Warszawa",
+   "nach": "Smolensk",
+   "punkte": 6
+  },
+  {
+   "von": "Brest",
+   "nach": "Venezia",
+   "punkte": 8
+  },
+  {
+   "von": "Berlin",
+   "nach": "Bucuresti",
+   "punkte": 8
+  },
+  {
+   "von": "Marseille",
+   "nach": "Essen",
+   "punkte": 8
+  },
+  {
+   "von": "Athina",
+   "nach": "Angora",
+   "punkte": 5
+  },
+  {
+   "von": "Frankfurt",
+   "nach": "København",
+   "punkte": 5
+  },
+  {
+   "von": "Roma",
+   "nach": "Smyrna",
+   "punkte": 8
+  },
+  {
+   "von": "Amsterdam",
+   "nach": "Wilno",
+   "punkte": 12
+  },
+  {
+   "von": "Barcelona",
+   "nach": "Bruxelles",
+   "punkte": 8
+  },
+  {
+   "von": "Berlin",
+   "nach": "Roma",
+   "punkte": 9
+  },
+  {
+   "von": "Bruxelles",
+   "nach": "Danzig",
+   "punkte": 9
+  },
+  {
+   "von": "Smolensk",
+   "nach": "Rostov",
+   "punkte": 8
+  },
+  {
+   "von": "London",
+   "nach": "Berlin",
+   "punkte": 7
+  },
+  {
+   "von": "Amsterdam",
+   "nach": "Pamplona",
+   "punkte": 7
+  },
+  {
+   "von": "Sarajevo",
+   "nach": "Sevastopol",
+   "punkte": 8
+  },
+  {
+   "von": "Paris",
+   "nach": "Wien",
+   "punkte": 8
+  },
+  {
+   "von": "Edinburgh",
+   "nach": "Paris",
+   "punkte": 7
+  },
+  {
+   "von": "Paris",
+   "nach": "Zagrab",
+   "punkte": 7
+  },
+  {
+   "von": "Budapest",
+   "nach": "Sofia",
+   "punkte": 5
+  },
+  {
+   "von": "Athina",
+   "nach": "Wilno",
+   "punkte": 11
+  },
+  {
+   "von": "Venezia",
+   "nach": "Constantinople",
+   "punkte": 10
+  },
+  {
+   "von": "Riga",
+   "nach": "Bucuresti",
+   "punkte": 10
+  },
+  {
+   "von": "Madrid",
+   "nach": "Dieppe",
+   "punkte": 8
+  },
+  {
+   "von": "Palermo",
+   "nach": "Constantinople",
+   "punkte": 8
+  },
+  {
+   "von": "Brest",
+   "nach": "Petrograd",
+   "punkte": 20,
+   "lang": true
+  },
+  {
+   "von": "Cadiz",
+   "nach": "Stockholm",
+   "punkte": 21,
+   "lang": true
+  },
+  {
+   "von": "Edinburgh",
+   "nach": "Athina",
+   "punkte": 21,
+   "lang": true
+  },
+  {
+   "von": "Lisboa",
+   "nach": "Danzig",
+   "punkte": 20,
+   "lang": true
+  },
+  {
+   "von": "Palermo",
+   "nach": "Moskva",
+   "punkte": 20,
+   "lang": true
+  },
+  {
+   "von": "København",
+   "nach": "Erzurum",
+   "punkte": 21,
+   "lang": true
+  },
+  {
+   "von": "Amsterdam",
+   "nach": "Rostov",
+   "punkte": 19,
+   "lang": true
+  },
+  {
+   "von": "Essen",
+   "nach": "Angora",
+   "punkte": 18,
+   "lang": true
+  },
+  {
+   "von": "London",
+   "nach": "Sochi",
+   "punkte": 20,
+   "lang": true
+  },
+  {
+   "von": "Pamplona",
+   "nach": "Kyiv",
+   "punkte": 18,
+   "lang": true
+  },
+  {
+   "von": "Paris",
+   "nach": "Sevastopol",
+   "punkte": 17,
+   "lang": true
+  },
+  {
+   "von": "Riga",
+   "nach": "Brindisi",
+   "punkte": 17,
+   "lang": true
+  },
+  {
+   "von": "Amsterdam",
+   "nach": "Venezia",
+   "punkte": 6
+  },
+  {
+   "von": "Bucuresti",
+   "nach": "Erzurum",
+   "punkte": 7
+  },
+  {
+   "von": "Bruxelles",
+   "nach": "Stockholm",
+   "punkte": 10
+  },
+  {
+   "von": "Cadiz",
+   "nach": "Frankfurt",
+   "punkte": 13
+  },
+  {
+   "von": "Danzig",
+   "nach": "Budapest",
+   "punkte": 7
+  },
+  {
+   "von": "Dieppe",
+   "nach": "København",
+   "punkte": 9
+  },
+  {
+   "von": "Dieppe",
+   "nach": "Marseille",
+   "punkte": 5
+  },
+  {
+   "von": "Edinburgh",
+   "nach": "Essen",
+   "punkte": 9
+  },
+  {
+   "von": "Lisboa",
+   "nach": "Cadiz",
+   "punkte": 2
+  },
+  {
+   "von": "München",
+   "nach": "Petrograd",
+   "punkte": 14
+  },
+  {
+   "von": "München",
+   "nach": "Sarajevo",
+   "punkte": 7
+  },
+  {
+   "von": "Pamplona",
+   "nach": "Palermo",
+   "punkte": 12
+  },
+  {
+   "von": "Riga",
+   "nach": "Kharkov",
+   "punkte": 10
+  },
+  {
+   "von": "Sochi",
+   "nach": "Smyrna",
+   "punkte": 9
+  },
+  {
+   "von": "Berlin",
+   "nach": "Angora",
+   "punkte": 13
+  },
+  {
+   "von": "Berlin",
+   "nach": "Athina",
+   "punkte": 11
+  },
+  {
+   "von": "Berlin",
+   "nach": "Wien",
+   "punkte": 3
+  },
+  {
+   "von": "London",
+   "nach": "Angora",
+   "punkte": 20
+  },
+  {
+   "von": "London",
+   "nach": "Athina",
+   "punkte": 16
+  },
+  {
+   "von": "London",
+   "nach": "Madrid",
+   "punkte": 10
+  },
+  {
+   "von": "London",
+   "nach": "Moskva",
+   "punkte": 19
+  },
+  {
+   "von": "London",
+   "nach": "Paris",
+   "punkte": 3
+  },
+  {
+   "von": "London",
+   "nach": "Roma",
+   "punkte": 10
+  },
+  {
+   "von": "Madrid",
+   "nach": "Angora",
+   "punkte": 21
+  },
+  {
+   "von": "Madrid",
+   "nach": "Athina",
+   "punkte": 16
+  },
+  {
+   "von": "Madrid",
+   "nach": "Berlin",
+   "punkte": 13
+  },
+  {
+   "von": "Madrid",
+   "nach": "Moskva",
+   "punkte": 25
+  },
+  {
+   "von": "Madrid",
+   "nach": "Roma",
+   "punkte": 10
+  },
+  {
+   "von": "Madrid",
+   "nach": "Wien",
+   "punkte": 13
+  },
+  {
+   "von": "Moskva",
+   "nach": "Angora",
+   "punkte": 14
+  },
+  {
+   "von": "Moskva",
+   "nach": "Athina",
+   "punkte": 14
+  },
+  {
+   "von": "Paris",
+   "nach": "Angora",
+   "punkte": 17
+  },
+  {
+   "von": "Paris",
+   "nach": "Athina",
+   "punkte": 13
+  },
+  {
+   "von": "Paris",
+   "nach": "Berlin",
+   "punkte": 7
+  },
+  {
+   "von": "Paris",
+   "nach": "Madrid",
+   "punkte": 7
+  },
+  {
+   "von": "Paris",
+   "nach": "Moskva",
+   "punkte": 18
+  },
+  {
+   "von": "Paris",
+   "nach": "Roma",
+   "punkte": 10
+  },
+  {
+   "von": "Roma",
+   "nach": "Angora",
+   "punkte": 11
+  },
+  {
+   "von": "Roma",
+   "nach": "Athina",
+   "punkte": 6
+  },
+  {
+   "von": "Roma",
+   "nach": "Moskva",
+   "punkte": 17
+  },
+  {
+   "von": "Wien",
+   "nach": "Angora",
+   "punkte": 10
+  },
+  {
+   "von": "Wien",
+   "nach": "Athina",
+   "punkte": 8
+  },
+  {
+   "von": "Wien",
+   "nach": "Moskva",
+   "punkte": 12
+  },
+  {
+   "von": "Wien",
+   "nach": "Roma",
+   "punkte": 6
+  },
+  {
+   "von": "Sofia",
+   "nach": "Kyiv",
+   "punkte": 6
+  },
+  {
+   "von": "Stockholm",
+   "nach": "Wilno",
+   "punkte": 12
+  },
+  {
+   "von": "Venezia",
+   "nach": "Warszawa",
+   "punkte": 8
+  },
+  {
+   "von": "Warszawa",
+   "nach": "Budapest",
+   "punkte": 5
+  },
+  {
+   "von": "Warszawa",
+   "nach": "Sevastopol",
+   "punkte": 12
+  }
+ ]
+}
