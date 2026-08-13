@@ -3,9 +3,9 @@
   "name": "Europa Megagame",
   "statId": "Zug um Zug Europa",
   "kurz": "Europa Megagame",
-  "version": "5.8",
+  "version": "5.9",
   "spieler": "2-5",
-  "wagons_pro_spieler": 45,
+  "wagons_pro_spieler": 48,
   "bild": "europa_karte.jpg",
   "hinweis": "Streckenliste aus dem Spielplan gelesen und geprueft. Feldpositionen werden im Editor schrittweise korrigiert (geprueft: true = fertig).",
   "farben": [
@@ -32,7 +32,7 @@
     "hinweis": "Mega-Europa (Europa 1912): 2 lange Strecken ziehen, hoechstens 1 behalten (beide ablegen erlaubt; abgelegte lange kommen aus dem Spiel). Dazu 5 normale Karten; mit langer Strecke mind. 2 davon behalten, ohne lange mind. 3."
    },
    "auftraege_nachziehen": {
-    "ziehen": 3,
+    "ziehen": 4,
     "mindestens_behalten": 1
    },
    "starthandkarten": 4,
