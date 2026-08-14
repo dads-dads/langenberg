@@ -1398,10 +1398,16 @@ function adminPanel(){
     let h='<h2>⚙ Admin</h2><div class="tabs"><button id="ab1" class="on">Spiele</button><button id="ab4">Beendet</button><button id="ab2">Namen</button><button id="ab3">Reset</button></div><div id="abox"></div><button class="go" id="cl">Schließen</button>';
     const m=modal(h,true);
     const box=m.querySelector('#abox'),b1=m.querySelector('#ab1'),b2=m.querySelector('#ab2'),b3=m.querySelector('#ab3'),b4=m.querySelector('#ab4');
+    let zeigeBeendete=false;
     function spiele(){
-      const codes=Object.keys(rooms);
-      if(!codes.length){box.innerHTML='<p style="text-align:center;color:#8a7d63;padding:14px 0">Keine Räume vorhanden.</p>';return}
-      box.innerHTML=codes.map(c=>{const v=rooms[c]||{},pl=(v.players||[]).map(p=>p.name).join(', ');
+      const kopf='<label style="display:flex;gap:8px;align-items:center;font-size:13px;color:#8a7d63;margin-bottom:10px">'
+        +'<input type="checkbox" id="zbe" '+(zeigeBeendete?'checked':'')+' style="width:18px;height:18px"> Auch beendete Räume zeigen</label>';
+      const bind=()=>{const e=box.querySelector('#zbe');if(e)e.onchange=()=>{zeigeBeendete=e.checked;spiele()}};
+      const codes=Object.keys(rooms).filter(c=>zeigeBeendete||(rooms[c]||{}).status!=='over');
+      const beendet=Object.keys(rooms).filter(c=>(rooms[c]||{}).status==='over').length;
+      if(!codes.length){box.innerHTML=kopf+'<p style="text-align:center;color:#8a7d63;padding:14px 0">'
+        +(beendet?'Keine laufenden Räume – '+beendet+' beendete(r) Raum/Räume ausgeblendet.':'Keine Räume vorhanden.')+'</p>';bind();return}
+      box.innerHTML=kopf+codes.map(c=>{const v=rooms[c]||{},pl=(v.players||[]).map(p=>p.name).join(', ');
         const st=v.status==='lobby'?'Warteraum':(v.status==='over'?'beendet':(v.status||'?'));
         const ed=(v.edition&&EDITIONEN[v.edition]&&(EDITIONEN[v.edition].meta.name||v.edition))||'Langenberg';
         const runde=(v.game&&v.players&&v.players.length)?Math.floor((v.game.zuege||0)/v.players.length)+1:0;
@@ -1413,6 +1419,7 @@ function adminPanel(){
           +'<div class="opt" style="flex:1;margin:0"><b style="letter-spacing:.2em">'+c+'</b> · '+ed+(runde?' · Runde '+runde:'')+' · '+st+(dran?' · '+dran+' ist dran':'')+zeit
           +'<div style="font-size:12px;color:#8a7d63;margin-top:3px">'+(pl||'—')+(v.test?' · Testmodus':'')+'</div></div>'
           +'<button class="adel" data-c="'+c+'" style="width:46px;border-radius:9px;border:1.5px solid #b3372c;background:#fff;color:#b3372c;font-size:17px">🗑</button></div>'}).join('');
+      bind();
       box.querySelectorAll('.adel').forEach(b=>b.onclick=()=>raumLoeschen(b.dataset.c,()=>{delete rooms[b.dataset.c];spiele()}));
     }
     function namen(){
@@ -1550,7 +1557,18 @@ function meineSpiele(name){
 
 // ---------- UI-Helfer ----------
 function modal(html,keep){const d=document.createElement('div');d.className='modal';d.innerHTML='<div class="box">'+html+'</div>';
-  document.getElementById('modals').appendChild(d);return d}
+  document.getElementById('modals').appendChild(d);
+  try{
+    const imSpiel=!document.getElementById('bottom').classList.contains('hidden');
+    if(imSpiel&&html.indexOf('id="swPin"')<0){
+      const b=document.createElement('button');b.className='cancel';
+      b.style.cssText='margin-top:6px;font-size:13px;opacity:.85';
+      b.textContent='🔀 Meine laufenden Spiele';
+      b.onclick=()=>spieleWechsler();
+      d.querySelector('.box').appendChild(b);
+    }
+  }catch(e){}
+  return d}
 function toast(msg){if(!msg)return;const t=document.createElement('div');t.className='toastMsg';
   const off=60+document.querySelectorAll('.toastMsg').length*46;
   t.style.cssText='position:fixed;top:'+off+'px;left:50%;transform:translateX(-50%);background:#2b2419ee;color:#f0e6d2;padding:10px 18px;border-radius:999px;z-index:99;font-size:14px;max-width:88vw;text-align:center';
@@ -1576,7 +1594,7 @@ stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(
 (function landing(){
   try{const aj=sessionStorage.getItem('autojoin');if(aj){sessionStorage.removeItem('autojoin');const o=JSON.parse(aj);if(o&&o.code){joinRoom(o.code,o.name||'',o.pin||'');return}}}catch(e){}
   const m=modal('<h2 class="serif" style="text-align:center;letter-spacacing:.08em;letter-spacing:.08em">ZUG UM ZUG</h2>'+
-    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version 6.0</p>'+
+    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version 6.1</p>'+
     '<input type="text" id="pname" placeholder="Dein Name" maxlength="14" style="margin-bottom:8px">'+
     '<input type="password" id="ppin" placeholder="Dein PIN (mind. 4 Zeichen)" maxlength="12" style="margin-bottom:10px">'+
     (Object.keys(EDITIONEN).length>1?'<div style="font-size:13px;color:#8a7d63;margin-bottom:5px">Edition für ein neues Spiel:</div><div class="row" id="edRow" style="justify-content:center;margin:0 0 10px">'
