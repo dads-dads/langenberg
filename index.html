@@ -496,7 +496,7 @@ function tryClaim(s){
 }
 function payModal(s,opts){
   const vn=nodes[s.von].name,nn=nodes[s.nach].name;let sel=0;
-  const m=modal('<h2>'+vn+' – '+nn+'</h2><p style="font-size:14px;margin-bottom:10px">Länge '+s.laenge+' · Farbe: '+CNAME[s.farbe]+(s.tunnel?' · <b>Tunnel</b>':'')+(s.faehre?' · <b>Fähre ('+s.faehre+' Joker Pflicht)</b>':'')+(s.s9?' · S9':'')+'</p><div id="payopts"></div><button class="go" id="payGo">'+(s.tunnel?'Tunnel bauen (3 Karten aufdecken)':'Strecke bauen')+'</button><button class="cancel" id="payNo">Abbrechen</button>');
+  const m=modal('<h2>'+vn+' – '+nn+'</h2><p style="font-size:14px;margin-bottom:10px">Länge '+s.laenge+' · Farbe: '+CNAME[s.farbe]+(s.tunnel?' · <b>Tunnel</b>':'')+(s.faehre?' · <b>Fähre ('+s.faehre+' Joker Pflicht)</b>':'')+(s.s9?' · S9':'')+'</p><div id="payopts"></div><button class="go" id="payGo">'+(s.tunnel?'Tunnel bauen (3 Karten aufdecken)':'Strecke bauen')+(s.tunnel?'<div style=\"font-size:12px;color:#8a7d63;margin-top:6px;text-align:center\">Reichen deine Karten für den Aufschlag nicht oder willst du nicht zahlen, ist dein Zug vorbei.</div>':'')+'</button><button class="cancel" id="payNo">Abbrechen</button>');
   const wrap=m.querySelector('#payopts');
   opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt'+(i===0?' sel':'');
     b.innerHTML=(o.use?o.use+'× <span class="chip" style="background:'+CARDCOL[o.col]+';'+(o.col==='gelb'||o.col==='weiss'?'color:#333':'')+'">'+CNAME[o.col]+'</span> ':'')+(o.lok?(o.use?'+ ':'')+o.lok+'× <span class="chip" style="background:'+CARDCOL.lok+'">Joker</span>':'');
@@ -504,6 +504,12 @@ function payModal(s,opts){
     wrap.appendChild(b)});
   m.querySelector('#payNo').onclick=()=>m.remove();
   m.querySelector('#payGo').onclick=()=>{m.remove();const o=opts[sel];s.tunnel?tunnelStep(s,o):doClaim(s,o)};
+}
+function tunnelAbbruch(s,grund){
+  const G=g(),p=me();
+  p.last='versucht den Tunnel '+nodes[s.von].name+' – '+nodes[s.nach].name+' zu bauen, '+grund;
+  G.notice=p.name+' '+p.last+' – der Zug ist damit vorbei.';
+  endTurn();
 }
 function tunnelStep(s,o){
   const G=g(),rev=[];for(let i=0;i<3;i++){const c=drawCard(G);if(c!==null)rev.push(c)}
@@ -517,14 +523,14 @@ function tunnelStep(s,o){
   const extraCol=(p.hand[o.col]||0)-o.use,extraLok=(p.hand.lok||0)-o.lok;
   const can=[];
   for(let l=0;l<=Math.min(extraLok,extra);l++){if((allLok?0:extraCol)>=extra-l||(allLok&&l===extra))can.push({use:allLok?0:extra-l,lok:l})}
-  if(!can.length){html+='<p style="font-size:14px">Du musst <b>'+extra+'</b> zusätzliche Karten zahlen, hast aber nicht genug. Der Bau wird abgebrochen – deine Karten behältst du.</p><button class="go" id="tOk">Verstanden</button>';
-    const m=modal(html);m.querySelector('#tOk').onclick=()=>{m.remove();sync()};return}
-  html+='<p style="font-size:14px;margin-bottom:8px">Zusätzlich fällig: <b>'+extra+'</b> Karte(n) in '+(allLok?'Joker':CNAME[o.col]+'/Joker')+'.</p><div id="topts"></div><button class="go" id="tPay">Zahlen und bauen</button><button class="cancel" id="tNo">Abbrechen (Karten behalten)</button>';
+  if(!can.length){html+='<p style="font-size:14px">Du musst <b>'+extra+'</b> zusätzliche Karte(n) zahlen, hast aber nicht genug. Du behältst deine Karten – <b>dein Zug ist damit vorbei</b>.</p><button class="go" id="tOk">Verstanden</button>';
+    const m=modal(html);m.querySelector('#tOk').onclick=()=>{m.remove();tunnelAbbruch(s,'kann die '+extra+' zusätzliche(n) Karte(n) aber nicht zahlen')};return}
+  html+='<p style="font-size:14px;margin-bottom:8px">Zusätzlich fällig: <b>'+extra+'</b> Karte(n) in '+(allLok?'Joker':CNAME[o.col]+'/Joker')+'.</p><div id="topts"></div><button class="go" id="tPay">Zahlen und bauen</button><button class="cancel" id="tNo">Nicht zahlen (Zug ist dann vorbei)</button>';
   const m=modal(html);const wrap=m.querySelector('#topts');let sel=0;
   can.forEach((c2,i)=>{const b=document.createElement('button');b.className='opt'+(i===0?' sel':'');
     b.textContent=(c2.use?c2.use+'× '+CNAME[o.col]:'')+(c2.use&&c2.lok?' + ':'')+(c2.lok?c2.lok+'× Joker':'');
     b.onclick=()=>{sel=i;wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')};wrap.appendChild(b)});
-  m.querySelector('#tNo').onclick=()=>{m.remove();sync()};
+  m.querySelector('#tNo').onclick=()=>{m.remove();tunnelAbbruch(s,'zahlt die '+extra+' zusätzliche(n) Karte(n) aber nicht')};
   m.querySelector('#tPay').onclick=()=>{m.remove();const c2=can[sel];doClaim(s,{col:o.col,use:o.use+c2.use,lok:o.lok+c2.lok})};
 }
 function doClaim(s,o){
@@ -1594,7 +1600,7 @@ stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(
 (function landing(){
   try{const aj=sessionStorage.getItem('autojoin');if(aj){sessionStorage.removeItem('autojoin');const o=JSON.parse(aj);if(o&&o.code){joinRoom(o.code,o.name||'',o.pin||'');return}}}catch(e){}
   const m=modal('<h2 class="serif" style="text-align:center;letter-spacacing:.08em;letter-spacing:.08em">ZUG UM ZUG</h2>'+
-    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version 6.1</p>'+
+    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version 6.2</p>'+
     '<input type="text" id="pname" placeholder="Dein Name" maxlength="14" style="margin-bottom:8px">'+
     '<input type="password" id="ppin" placeholder="Dein PIN (mind. 4 Zeichen)" maxlength="12" style="margin-bottom:10px">'+
     (Object.keys(EDITIONEN).length>1?'<div style="font-size:13px;color:#8a7d63;margin-bottom:5px">Edition für ein neues Spiel:</div><div class="row" id="edRow" style="justify-content:center;margin:0 0 10px">'
