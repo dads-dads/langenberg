@@ -1,0 +1,4270 @@
+{
+ "meta": {
+  "name": "Deutschland 1902",
+  "statId": "Zug um Zug Deutschland",
+  "kurz": "Deutschland 1902",
+  "version": "6.4",
+  "spieler": "2-5",
+  "wagons_pro_spieler": 48,
+  "bild": "deutschland_karte.jpg",
+  "tkbild": "auftrag_deutschland.jpg",
+  "board_h": 1497,
+  "tk": {
+   "mx0": 321,
+   "my0": 77,
+   "mw": 340,
+   "mh": 509
+  },
+  "hinweis": "Streckenliste aus dem Spielplan gelesen (Auslands-Einmuendungen als eigene Randknoten). Feldpositionen im Editor korrigiert und abgenommen.",
+  "farben": [
+   "rot",
+   "orange",
+   "gelb",
+   "gruen",
+   "blau",
+   "pink",
+   "weiss",
+   "schwarz",
+   "grau"
+  ],
+  "aussenstaedte": "Daenemark, Niederlande, Frankreich, Schweiz und Oesterreich sind Randziele: Strecken enden dort, eine Verbindung durch das Land ist nicht moeglich. Mehrere Einmuendungen desselben Landes zaehlen fuer Auftraege als ein Ort.",
+  "regeln": {
+   "startauftraege": {
+    "ziehen": 4,
+    "mindestens_behalten": 2,
+    "stapelwahl": true,
+    "hinweis": "4 Karten frei aus kurzen und langen Strecken gemischt (vorher ansagen), mindestens 2 behalten. Zurueckgegebene Karten kommen unter den jeweiligen Stapel."
+   },
+   "auftraege_nachziehen": {
+    "ziehen": 4,
+    "mindestens_behalten": 1,
+    "stapelwahl": true
+   },
+   "starthandkarten": 4,
+   "doppelstrecken_frei_ab": 3,
+   "punkte_pro_laenge": {
+    "1": 1,
+    "2": 2,
+    "3": 4,
+    "4": 7,
+    "5": 10,
+    "6": 15,
+    "7": 18
+   },
+   "laengste_strecke_bonus": 0,
+   "meiste_auftraege_bonus": 15,
+   "zugzeit": "Zugzeit pro Spiel frei einstellbar (Stunden + Minuten); nach Ablauf werden automatisch 2 Karten vom verdeckten Stapel gezogen.",
+   "kennwort": "Jeder Spieler waehlt einen PIN; Wiedereinstieg nur mit Name + PIN."
+  }
+ },
+ "knoten": [
+  {
+   "id": "kiel",
+   "name": "Kiel",
+   "x": 48.89,
+   "y": 11.9,
+   "rand": false
+  },
+  {
+   "id": "rostock",
+   "name": "Rostock",
+   "x": 72.37,
+   "y": 12.22,
+   "rand": false
+  },
+  {
+   "id": "bremerhaven",
+   "name": "Bremerhaven",
+   "x": 33.51,
+   "y": 21.04,
+   "rand": false
+  },
+  {
+   "id": "hamburg",
+   "name": "Hamburg",
+   "x": 50.89,
+   "y": 21.02,
+   "rand": false
+  },
+  {
+   "id": "schwerin",
+   "name": "Schwerin",
+   "x": 64.01,
+   "y": 19.95,
+   "rand": false
+  },
+  {
+   "id": "emden",
+   "name": "Emden",
+   "x": 16.27,
+   "y": 22.82,
+   "rand": false
+  },
+  {
+   "id": "bremen",
+   "name": "Bremen",
+   "x": 34.15,
+   "y": 26.94,
+   "rand": false
+  },
+  {
+   "id": "berlin",
+   "name": "Berlin",
+   "x": 86.17,
+   "y": 32.9,
+   "rand": false
+  },
+  {
+   "id": "hannover",
+   "name": "Hannover",
+   "x": 45.17,
+   "y": 36.1,
+   "rand": false
+  },
+  {
+   "id": "muenster",
+   "name": "Münster",
+   "x": 21.61,
+   "y": 38.27,
+   "rand": false
+  },
+  {
+   "id": "magdeburg",
+   "name": "Magdeburg",
+   "x": 69.02,
+   "y": 38.39,
+   "rand": false
+  },
+  {
+   "id": "dortmund",
+   "name": "Dortmund",
+   "x": 20.0,
+   "y": 44.59,
+   "rand": false
+  },
+  {
+   "id": "duesseldorf",
+   "name": "Düsseldorf",
+   "x": 11.65,
+   "y": 47.17,
+   "rand": false
+  },
+  {
+   "id": "kassel",
+   "name": "Kassel",
+   "x": 43.19,
+   "y": 48.42,
+   "rand": false
+  },
+  {
+   "id": "leipzig",
+   "name": "Leipzig",
+   "x": 74.67,
+   "y": 46.7,
+   "rand": false
+  },
+  {
+   "id": "erfurt",
+   "name": "Erfurt",
+   "x": 59.53,
+   "y": 52.28,
+   "rand": false
+  },
+  {
+   "id": "dresden",
+   "name": "Dresden",
+   "x": 92.35,
+   "y": 51.07,
+   "rand": false
+  },
+  {
+   "id": "koeln",
+   "name": "Köln",
+   "x": 11.17,
+   "y": 53.49,
+   "rand": false
+  },
+  {
+   "id": "chemnitz",
+   "name": "Chemnitz",
+   "x": 83.94,
+   "y": 53.59,
+   "rand": false
+  },
+  {
+   "id": "koblenz",
+   "name": "Koblenz",
+   "x": 13.19,
+   "y": 59.86,
+   "rand": false
+  },
+  {
+   "id": "frankfurt",
+   "name": "Frankfurt",
+   "x": 32.47,
+   "y": 62.03,
+   "rand": false
+  },
+  {
+   "id": "mainz",
+   "name": "Mainz",
+   "x": 24.87,
+   "y": 65.31,
+   "rand": false
+  },
+  {
+   "id": "wuerzburg",
+   "name": "Würzburg",
+   "x": 46.48,
+   "y": 65.31,
+   "rand": false
+  },
+  {
+   "id": "nuernberg",
+   "name": "Nürnberg",
+   "x": 60.11,
+   "y": 67.99,
+   "rand": false
+  },
+  {
+   "id": "saarbruecken",
+   "name": "Saarbrücken",
+   "x": 9.44,
+   "y": 72.46,
+   "rand": false
+  },
+  {
+   "id": "mannheim",
+   "name": "Mannheim",
+   "x": 28.84,
+   "y": 70.86,
+   "rand": false
+  },
+  {
+   "id": "regensburg",
+   "name": "Regensburg",
+   "x": 78.14,
+   "y": 75.05,
+   "rand": false
+  },
+  {
+   "id": "karlsruhe",
+   "name": "Karlsruhe",
+   "x": 28.29,
+   "y": 76.83,
+   "rand": false
+  },
+  {
+   "id": "stuttgart",
+   "name": "Stuttgart",
+   "x": 37.68,
+   "y": 78.11,
+   "rand": false
+  },
+  {
+   "id": "ulm",
+   "name": "Ulm",
+   "x": 49.09,
+   "y": 83.46,
+   "rand": false
+  },
+  {
+   "id": "augsburg",
+   "name": "Augsburg",
+   "x": 57.48,
+   "y": 83.73,
+   "rand": false
+  },
+  {
+   "id": "muenchen",
+   "name": "München",
+   "x": 71.18,
+   "y": 85.84,
+   "rand": false
+  },
+  {
+   "id": "freiburg",
+   "name": "Freiburg",
+   "x": 22.79,
+   "y": 88.87,
+   "rand": false
+  },
+  {
+   "id": "konstanz",
+   "name": "Konstanz",
+   "x": 36.85,
+   "y": 91.06,
+   "rand": false
+  },
+  {
+   "id": "lindau",
+   "name": "Lindau",
+   "x": 45.35,
+   "y": 92.33,
+   "rand": false
+  },
+  {
+   "id": "daenemark_1",
+   "name": "Dänemark",
+   "x": 45.5,
+   "y": 4.5,
+   "rand": true,
+   "stadt": "daenemark"
+  },
+  {
+   "id": "daenemark_2",
+   "name": "Dänemark",
+   "x": 53.0,
+   "y": 5.5,
+   "rand": true,
+   "stadt": "daenemark"
+  },
+  {
+   "id": "niederlande_1",
+   "name": "Niederlande",
+   "x": 8.0,
+   "y": 33.0,
+   "rand": true,
+   "stadt": "niederlande"
+  },
+  {
+   "id": "niederlande_2",
+   "name": "Niederlande",
+   "x": 6.0,
+   "y": 35.5,
+   "rand": true,
+   "stadt": "niederlande"
+  },
+  {
+   "id": "niederlande_3",
+   "name": "Niederlande",
+   "x": 10.0,
+   "y": 35.5,
+   "rand": true,
+   "stadt": "niederlande"
+  },
+  {
+   "id": "frankreich_1",
+   "name": "Frankreich",
+   "x": 7.2,
+   "y": 76.5,
+   "rand": true,
+   "stadt": "frankreich"
+  },
+  {
+   "id": "frankreich_2",
+   "name": "Frankreich",
+   "x": 15.0,
+   "y": 79.5,
+   "rand": true,
+   "stadt": "frankreich"
+  },
+  {
+   "id": "frankreich_3",
+   "name": "Frankreich",
+   "x": 9.0,
+   "y": 85.0,
+   "rand": true,
+   "stadt": "frankreich"
+  },
+  {
+   "id": "schweiz_1",
+   "name": "Schweiz",
+   "x": 23.5,
+   "y": 95.5,
+   "rand": true,
+   "stadt": "schweiz"
+  },
+  {
+   "id": "schweiz_2",
+   "name": "Schweiz",
+   "x": 33.0,
+   "y": 93.5,
+   "rand": true,
+   "stadt": "schweiz"
+  },
+  {
+   "id": "schweiz_3",
+   "name": "Schweiz",
+   "x": 34.5,
+   "y": 95.0,
+   "rand": true,
+   "stadt": "schweiz"
+  },
+  {
+   "id": "oesterreich_1",
+   "name": "Österreich",
+   "x": 56.5,
+   "y": 92.5,
+   "rand": true,
+   "stadt": "oesterreich"
+  },
+  {
+   "id": "oesterreich_2",
+   "name": "Österreich",
+   "x": 82.0,
+   "y": 93.0,
+   "rand": true,
+   "stadt": "oesterreich"
+  },
+  {
+   "id": "oesterreich_3",
+   "name": "Österreich",
+   "x": 89.5,
+   "y": 89.0,
+   "rand": true,
+   "stadt": "oesterreich"
+  }
+ ],
+ "strecken": [
+  {
+   "nr": 1,
+   "von": "daenemark_1",
+   "nach": "bremerhaven",
+   "laenge": 5,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 38.56,
+     "y": 5.32,
+     "deg": 131.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 35.67,
+     "y": 8.07,
+     "deg": 117.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 33.86,
+     "y": 11.24,
+     "deg": 105.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 32.82,
+     "y": 14.61,
+     "deg": 94,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 32.89,
+     "y": 18.02,
+     "deg": 82.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 2,
+   "von": "daenemark_2",
+   "nach": "kiel",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 49.26,
+     "y": 5.68,
+     "deg": 36.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 50.47,
+     "y": 8.83,
+     "deg": 113.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 3,
+   "von": "kiel",
+   "nach": "hamburg",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "doppel_mit": 4,
+   "felder": [
+    {
+     "x": 48.34,
+     "y": 15.05,
+     "deg": 80,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 50.93,
+     "y": 18.09,
+     "deg": 79.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 4,
+   "von": "kiel",
+   "nach": "hamburg",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": true,
+   "doppel_mit": 3,
+   "felder": [
+    {
+     "x": 50.14,
+     "y": 14.83,
+     "deg": 80,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 49.18,
+     "y": 18.26,
+     "deg": 80.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 5,
+   "von": "kiel",
+   "nach": "rostock",
+   "laenge": 4,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 52.91,
+     "y": 10.79,
+     "deg": -16.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 58.02,
+     "y": 10.21,
+     "deg": -4.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 63.32,
+     "y": 10.29,
+     "deg": 6.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 68.14,
+     "y": 10.97,
+     "deg": 20.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 6,
+   "von": "kiel",
+   "nach": "bremerhaven",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 44.51,
+     "y": 14.01,
+     "deg": 138.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 40.7,
+     "y": 16.26,
+     "deg": 137.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 36.87,
+     "y": 18.55,
+     "deg": 137.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 7,
+   "von": "kiel",
+   "nach": "schwerin",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 53.14,
+     "y": 13.16,
+     "deg": 26.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 57.33,
+     "y": 14.94,
+     "deg": 36.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 61.19,
+     "y": 17.2,
+     "deg": 45.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 8,
+   "von": "rostock",
+   "nach": "schwerin",
+   "laenge": 2,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 69.74,
+     "y": 14.73,
+     "deg": 125.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 66.87,
+     "y": 17.33,
+     "deg": 126.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 9,
+   "von": "rostock",
+   "nach": "berlin",
+   "laenge": 6,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 76.07,
+     "y": 14.17,
+     "deg": 37,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 79.79,
+     "y": 16.61,
+     "deg": 49.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 82.66,
+     "y": 19.38,
+     "deg": 61.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 84.85,
+     "y": 22.52,
+     "deg": 69.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 86.33,
+     "y": 25.74,
+     "deg": 78.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 87.1,
+     "y": 29.07,
+     "deg": 89.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 10,
+   "von": "schwerin",
+   "nach": "hamburg",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 59.56,
+     "y": 18.77,
+     "deg": -151.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 54.57,
+     "y": 19.09,
+     "deg": 142.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 11,
+   "von": "schwerin",
+   "nach": "berlin",
+   "laenge": 5,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 68.72,
+     "y": 20.76,
+     "deg": 23.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 73.26,
+     "y": 22.26,
+     "deg": 32.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 77.39,
+     "y": 24.35,
+     "deg": 39.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 81.03,
+     "y": 26.78,
+     "deg": 48.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 83.98,
+     "y": 29.45,
+     "deg": 59.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 12,
+   "von": "hamburg",
+   "nach": "berlin",
+   "laenge": 7,
+   "farbe": "gelb",
+   "geprueft": true,
+   "doppel_mit": 13,
+   "felder": [
+    {
+     "x": 54.51,
+     "y": 22.77,
+     "deg": 29.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 59.05,
+     "y": 24.42,
+     "deg": 27.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 63.58,
+     "y": 25.98,
+     "deg": 27.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 68,
+     "y": 27.59,
+     "deg": 28.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 72.44,
+     "y": 29.16,
+     "deg": 27.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 76.89,
+     "y": 30.75,
+     "deg": 26.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 81.25,
+     "y": 32.34,
+     "deg": 27.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 13,
+   "von": "hamburg",
+   "nach": "berlin",
+   "laenge": 7,
+   "farbe": "blau",
+   "geprueft": true,
+   "doppel_mit": 12,
+   "felder": [
+    {
+     "x": 55.45,
+     "y": 21.73,
+     "deg": 28.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 59.86,
+     "y": 23.33,
+     "deg": 26.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 64.51,
+     "y": 24.94,
+     "deg": 27.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 68.91,
+     "y": 26.45,
+     "deg": 28.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 73.47,
+     "y": 28.02,
+     "deg": 27.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 77.86,
+     "y": 29.63,
+     "deg": 26.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 82.17,
+     "y": 31.2,
+     "deg": 26.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 14,
+   "von": "hamburg",
+   "nach": "bremerhaven",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 46.52,
+     "y": 20.47,
+     "deg": -168.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 41.99,
+     "y": 18.76,
+     "deg": -134.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 38.39,
+     "y": 19.59,
+     "deg": 137.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 15,
+   "von": "hamburg",
+   "nach": "bremen",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 47.17,
+     "y": 23.25,
+     "deg": 102.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 43.5,
+     "y": 25.76,
+     "deg": 165,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 38.57,
+     "y": 26.59,
+     "deg": 166.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 16,
+   "von": "hamburg",
+   "nach": "hannover",
+   "laenge": 4,
+   "farbe": "rot",
+   "geprueft": true,
+   "doppel_mit": 17,
+   "felder": [
+    {
+     "x": 48.99,
+     "y": 23.61,
+     "deg": 103,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 47.91,
+     "y": 26.88,
+     "deg": 103.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 46.61,
+     "y": 30.2,
+     "deg": 105.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 45.46,
+     "y": 33.32,
+     "deg": 104.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 17,
+   "von": "hamburg",
+   "nach": "hannover",
+   "laenge": 4,
+   "farbe": "weiss",
+   "geprueft": true,
+   "doppel_mit": 16,
+   "felder": [
+    {
+     "x": 50.71,
+     "y": 23.86,
+     "deg": 101.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 49.61,
+     "y": 27.1,
+     "deg": 102.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 48.46,
+     "y": 30.42,
+     "deg": 104.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 47.31,
+     "y": 33.55,
+     "deg": 104.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 18,
+   "von": "bremerhaven",
+   "nach": "emden",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 29.25,
+     "y": 19.35,
+     "deg": -151.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 24.06,
+     "y": 18.85,
+     "deg": 170.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 19.4,
+     "y": 20.47,
+     "deg": 133.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 19,
+   "von": "bremerhaven",
+   "nach": "bremen",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 33.76,
+     "y": 23.94,
+     "deg": 83.2,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 20,
+   "von": "emden",
+   "nach": "niederlande_1",
+   "laenge": 2,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 13.21,
+     "y": 25.11,
+     "deg": 130.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 9.76,
+     "y": 27.62,
+     "deg": 130.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 21,
+   "von": "emden",
+   "nach": "bremen",
+   "laenge": 3,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 20.71,
+     "y": 23.74,
+     "deg": 19.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 25.17,
+     "y": 24.85,
+     "deg": 20.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 30.14,
+     "y": 25.86,
+     "deg": 18.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 22,
+   "von": "emden",
+   "nach": "muenster",
+   "laenge": 4,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 17.51,
+     "y": 25.81,
+     "deg": 74.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 18.87,
+     "y": 28.93,
+     "deg": 75.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 20.07,
+     "y": 32.15,
+     "deg": 76.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 21.19,
+     "y": 35.32,
+     "deg": 74.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 23,
+   "von": "bremen",
+   "nach": "hannover",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 35.6,
+     "y": 29.53,
+     "deg": 70.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 36.98,
+     "y": 32.67,
+     "deg": 71.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 41.07,
+     "y": 34.65,
+     "deg": 2.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 24,
+   "von": "bremen",
+   "nach": "muenster",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 31.01,
+     "y": 29.94,
+     "deg": 123.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 28.1,
+     "y": 32.59,
+     "deg": 125.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 25.24,
+     "y": 35.3,
+     "deg": 124.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 25,
+   "von": "niederlande_3",
+   "nach": "muenster",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 12.83,
+     "y": 36.22,
+     "deg": 19.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 17.4,
+     "y": 37.33,
+     "deg": 20.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 26,
+   "von": "niederlande_2",
+   "nach": "duesseldorf",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 6.67,
+     "y": 37.93,
+     "deg": 70.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 8.27,
+     "y": 41.01,
+     "deg": 69.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 10.01,
+     "y": 44.16,
+     "deg": 70.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 27,
+   "von": "hannover",
+   "nach": "berlin",
+   "laenge": 7,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 50.1,
+     "y": 35,
+     "deg": -2.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 55.04,
+     "y": 34.89,
+     "deg": -2.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 60.09,
+     "y": 34.78,
+     "deg": -2.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 65.14,
+     "y": 34.56,
+     "deg": -2.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 70.22,
+     "y": 34.42,
+     "deg": -2.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 75.27,
+     "y": 34.26,
+     "deg": -2.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 80.32,
+     "y": 34.19,
+     "deg": -2,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 28,
+   "von": "hannover",
+   "nach": "magdeburg",
+   "laenge": 4,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 50.22,
+     "y": 37.28,
+     "deg": 42.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 54.61,
+     "y": 38.98,
+     "deg": 19.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 59.77,
+     "y": 39.66,
+     "deg": 2.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 64.89,
+     "y": 39.24,
+     "deg": -15.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 29,
+   "von": "hannover",
+   "nach": "kassel",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 30,
+   "felder": [
+    {
+     "x": 43.14,
+     "y": 38.82,
+     "deg": 95.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 42.77,
+     "y": 42.1,
+     "deg": 90,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 43.15,
+     "y": 45.5,
+     "deg": 81.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 30,
+   "von": "hannover",
+   "nach": "kassel",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 29,
+   "felder": [
+    {
+     "x": 41.18,
+     "y": 38.7,
+     "deg": 95.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 40.78,
+     "y": 42.22,
+     "deg": 90,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 41.09,
+     "y": 45.53,
+     "deg": 82.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 31,
+   "von": "hannover",
+   "nach": "erfurt",
+   "laenge": 5,
+   "farbe": "orange",
+   "geprueft": true,
+   "doppel_mit": 32,
+   "felder": [
+    {
+     "x": 46.38,
+     "y": 38.7,
+     "deg": 60.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 48.9,
+     "y": 41.57,
+     "deg": 59,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 51.36,
+     "y": 44.5,
+     "deg": 58.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 53.93,
+     "y": 47.26,
+     "deg": 58.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 56.39,
+     "y": 50.12,
+     "deg": 59.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 32,
+   "von": "hannover",
+   "nach": "erfurt",
+   "laenge": 5,
+   "farbe": "gruen",
+   "geprueft": true,
+   "doppel_mit": 31,
+   "felder": [
+    {
+     "x": 48.12,
+     "y": 38.1,
+     "deg": 60.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 50.48,
+     "y": 40.97,
+     "deg": 60.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 52.94,
+     "y": 43.89,
+     "deg": 57.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 55.64,
+     "y": 46.62,
+     "deg": 57.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 58.15,
+     "y": 49.43,
+     "deg": 59,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 33,
+   "von": "hannover",
+   "nach": "muenster",
+   "laenge": 4,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 40.78,
+     "y": 36.31,
+     "deg": 172,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 35.8,
+     "y": 37.22,
+     "deg": 159.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 31.14,
+     "y": 38.57,
+     "deg": 151.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 25.96,
+     "y": 39.08,
+     "deg": -168.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 34,
+   "von": "muenster",
+   "nach": "dortmund",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 35,
+   "felder": [
+    {
+     "x": 21.84,
+     "y": 41.73,
+     "deg": 101,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 35,
+   "von": "muenster",
+   "nach": "dortmund",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 34,
+   "felder": [
+    {
+     "x": 19.85,
+     "y": 41.41,
+     "deg": 102.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 36,
+   "von": "dortmund",
+   "nach": "duesseldorf",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": [
+    37,
+    38
+   ],
+   "felder": [
+    {
+     "x": 16.58,
+     "y": 46.85,
+     "deg": 157.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 37,
+   "von": "dortmund",
+   "nach": "duesseldorf",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": [
+    36,
+    38
+   ],
+   "felder": [
+    {
+     "x": 15.86,
+     "y": 45.69,
+     "deg": 158.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 38,
+   "von": "dortmund",
+   "nach": "duesseldorf",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": [
+    36,
+    37
+   ],
+   "felder": [
+    {
+     "x": 15.12,
+     "y": 44.59,
+     "deg": 157.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 39,
+   "von": "dortmund",
+   "nach": "kassel",
+   "laenge": 4,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 23.07,
+     "y": 46.81,
+     "deg": 41.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 27.73,
+     "y": 48.51,
+     "deg": 19.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 32.83,
+     "y": 49.07,
+     "deg": 1.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 38.08,
+     "y": 48.54,
+     "deg": -17.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 40,
+   "von": "duesseldorf",
+   "nach": "koeln",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": [
+    41,
+    42
+   ],
+   "felder": [
+    {
+     "x": 12.99,
+     "y": 50.25,
+     "deg": 89.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 41,
+   "von": "duesseldorf",
+   "nach": "koeln",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": [
+    40,
+    42
+   ],
+   "felder": [
+    {
+     "x": 11.13,
+     "y": 50.25,
+     "deg": 90.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 42,
+   "von": "duesseldorf",
+   "nach": "koeln",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": [
+    40,
+    41
+   ],
+   "felder": [
+    {
+     "x": 9.19,
+     "y": 50.25,
+     "deg": 90.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 43,
+   "von": "koeln",
+   "nach": "koblenz",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 44,
+   "felder": [
+    {
+     "x": 12.34,
+     "y": 56.81,
+     "deg": 74.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 44,
+   "von": "koeln",
+   "nach": "koblenz",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 43,
+   "felder": [
+    {
+     "x": 10.58,
+     "y": 57.17,
+     "deg": 74.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 45,
+   "von": "koeln",
+   "nach": "frankfurt",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 46,
+   "felder": [
+    {
+     "x": 16.13,
+     "y": 53.86,
+     "deg": 30.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 20.39,
+     "y": 55.62,
+     "deg": 31.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 24.79,
+     "y": 57.33,
+     "deg": 30.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 29.03,
+     "y": 59.05,
+     "deg": 31.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 46,
+   "von": "koeln",
+   "nach": "frankfurt",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 45,
+   "felder": [
+    {
+     "x": 15.25,
+     "y": 54.96,
+     "deg": 30.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 19.52,
+     "y": 56.73,
+     "deg": 31.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 23.75,
+     "y": 58.46,
+     "deg": 30,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 28.12,
+     "y": 60.11,
+     "deg": 31.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 47,
+   "von": "kassel",
+   "nach": "frankfurt",
+   "laenge": 4,
+   "farbe": "blau",
+   "geprueft": true,
+   "doppel_mit": 48,
+   "felder": [
+    {
+     "x": 41.07,
+     "y": 50.67,
+     "deg": 90,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 40.65,
+     "y": 54.06,
+     "deg": 104.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 38.28,
+     "y": 57.13,
+     "deg": 131.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 34.44,
+     "y": 59.44,
+     "deg": 148,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 48,
+   "von": "kassel",
+   "nach": "frankfurt",
+   "laenge": 4,
+   "farbe": "weiss",
+   "geprueft": true,
+   "doppel_mit": 47,
+   "felder": [
+    {
+     "x": 43.07,
+     "y": 51.46,
+     "deg": 89.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 42.45,
+     "y": 54.85,
+     "deg": 104.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 39.95,
+     "y": 57.95,
+     "deg": 131.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 36.19,
+     "y": 60.28,
+     "deg": 145.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 49,
+   "von": "kassel",
+   "nach": "erfurt",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 46.08,
+     "y": 50.7,
+     "deg": 58.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 49.9,
+     "y": 52.89,
+     "deg": 23.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 54.91,
+     "y": 53.12,
+     "deg": -16.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 50,
+   "von": "berlin",
+   "nach": "magdeburg",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 83.03,
+     "y": 35.86,
+     "deg": 134.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.27,
+     "y": 37.49,
+     "deg": 171.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 73.42,
+     "y": 38,
+     "deg": 170.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 51,
+   "von": "berlin",
+   "nach": "leipzig",
+   "laenge": 4,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 86.36,
+     "y": 36.27,
+     "deg": 96.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 84.07,
+     "y": 39.47,
+     "deg": 131.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 80.83,
+     "y": 41.95,
+     "deg": 130.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 77.57,
+     "y": 44.52,
+     "deg": 130.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 52,
+   "von": "berlin",
+   "nach": "dresden",
+   "laenge": 5,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 89.33,
+     "y": 35.23,
+     "deg": 57.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 91.55,
+     "y": 38.17,
+     "deg": 67.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 92.71,
+     "y": 41.39,
+     "deg": 82.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 93.2,
+     "y": 44.86,
+     "deg": 88.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 92.95,
+     "y": 48.13,
+     "deg": 99.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 53,
+   "von": "magdeburg",
+   "nach": "leipzig",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 70.81,
+     "y": 41.12,
+     "deg": 68.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 72.63,
+     "y": 44.12,
+     "deg": 67,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 54,
+   "von": "leipzig",
+   "nach": "erfurt",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 70.34,
+     "y": 46.56,
+     "deg": 187,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 65.31,
+     "y": 47.29,
+     "deg": 148.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 61.8,
+     "y": 49.91,
+     "deg": 113.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 55,
+   "von": "leipzig",
+   "nach": "dresden",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 79.11,
+     "y": 47.47,
+     "deg": 19.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 83.73,
+     "y": 48.63,
+     "deg": 19.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 88.49,
+     "y": 49.74,
+     "deg": 19.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 56,
+   "von": "leipzig",
+   "nach": "chemnitz",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 77.18,
+     "y": 49.05,
+     "deg": 44.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 80.65,
+     "y": 51.38,
+     "deg": 44.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 57,
+   "von": "dresden",
+   "nach": "chemnitz",
+   "laenge": 1,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 87.95,
+     "y": 52.25,
+     "deg": 153.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 58,
+   "von": "dresden",
+   "nach": "regensburg",
+   "laenge": 7,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 91.22,
+     "y": 53.83,
+     "deg": 103.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 90.08,
+     "y": 57.09,
+     "deg": 103.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 88.82,
+     "y": 60.3,
+     "deg": 102.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 87.66,
+     "y": 63.51,
+     "deg": 103.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 86.22,
+     "y": 66.77,
+     "deg": 107.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 84.43,
+     "y": 69.87,
+     "deg": 116.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 82.01,
+     "y": 72.79,
+     "deg": 124.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 59,
+   "von": "erfurt",
+   "nach": "chemnitz",
+   "laenge": 4,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 64.16,
+     "y": 52.56,
+     "deg": 5.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 69.18,
+     "y": 52.83,
+     "deg": 5.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 74.21,
+     "y": 53.14,
+     "deg": 4.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 79.19,
+     "y": 53.51,
+     "deg": 5.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 60,
+   "von": "erfurt",
+   "nach": "nuernberg",
+   "laenge": 4,
+   "farbe": "gelb",
+   "geprueft": true,
+   "doppel_mit": 61,
+   "felder": [
+    {
+     "x": 58.47,
+     "y": 55.18,
+     "deg": 88,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 58.61,
+     "y": 58.5,
+     "deg": 87.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 58.7,
+     "y": 61.85,
+     "deg": 88.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 58.88,
+     "y": 65.22,
+     "deg": 88.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 61,
+   "von": "erfurt",
+   "nach": "nuernberg",
+   "laenge": 4,
+   "farbe": "pink",
+   "geprueft": true,
+   "doppel_mit": 60,
+   "felder": [
+    {
+     "x": 60.5,
+     "y": 55.21,
+     "deg": 89,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 60.51,
+     "y": 58.48,
+     "deg": 89.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 60.75,
+     "y": 61.83,
+     "deg": 88.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 60.67,
+     "y": 65.16,
+     "deg": 88.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 62,
+   "von": "erfurt",
+   "nach": "regensburg",
+   "laenge": 7,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 64.11,
+     "y": 54.68,
+     "deg": 31.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 68.23,
+     "y": 56.76,
+     "deg": 43.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 71.7,
+     "y": 59.32,
+     "deg": 52.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 74.23,
+     "y": 62.21,
+     "deg": 62.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 75.97,
+     "y": 65.33,
+     "deg": 75.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 76.76,
+     "y": 68.68,
+     "deg": 90,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 76.66,
+     "y": 72.04,
+     "deg": 91,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 63,
+   "von": "chemnitz",
+   "nach": "regensburg",
+   "laenge": 6,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 80.79,
+     "y": 55.73,
+     "deg": 136.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.72,
+     "y": 58.79,
+     "deg": 90,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.68,
+     "y": 62.11,
+     "deg": 89.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.67,
+     "y": 65.46,
+     "deg": 88.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.79,
+     "y": 68.71,
+     "deg": 89.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.75,
+     "y": 72,
+     "deg": 90.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 64,
+   "von": "koblenz",
+   "nach": "saarbruecken",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 11.64,
+     "y": 62.66,
+     "deg": 101.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 10.67,
+     "y": 65.91,
+     "deg": 100.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 9.88,
+     "y": 69.18,
+     "deg": 100.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 65,
+   "von": "koblenz",
+   "nach": "mainz",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 66,
+   "felder": [
+    {
+     "x": 17.51,
+     "y": 61.27,
+     "deg": 35.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 21.55,
+     "y": 63.14,
+     "deg": 34.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 66,
+   "von": "koblenz",
+   "nach": "mainz",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 65,
+   "felder": [
+    {
+     "x": 16.38,
+     "y": 62.27,
+     "deg": 35.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 20.41,
+     "y": 64.11,
+     "deg": 34.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 67,
+   "von": "frankfurt",
+   "nach": "mainz",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 68,
+   "felder": [
+    {
+     "x": 28.93,
+     "y": 63.98,
+     "deg": 146.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 68,
+   "von": "frankfurt",
+   "nach": "mainz",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 67,
+   "felder": [
+    {
+     "x": 27.84,
+     "y": 62.94,
+     "deg": 145.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 69,
+   "von": "frankfurt",
+   "nach": "wuerzburg",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 70,
+   "felder": [
+    {
+     "x": 37.98,
+     "y": 62.4,
+     "deg": 19,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 42.66,
+     "y": 63.54,
+     "deg": 19.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 70,
+   "von": "frankfurt",
+   "nach": "wuerzburg",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 69,
+   "felder": [
+    {
+     "x": 37.24,
+     "y": 63.63,
+     "deg": 20,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 41.86,
+     "y": 64.87,
+     "deg": 19.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 71,
+   "von": "frankfurt",
+   "nach": "mannheim",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 72,
+   "felder": [
+    {
+     "x": 32.11,
+     "y": 65.12,
+     "deg": 103,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 33.02,
+     "y": 68.59,
+     "deg": 104.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 72,
+   "von": "frankfurt",
+   "nach": "mannheim",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 71,
+   "felder": [
+    {
+     "x": 33.99,
+     "y": 65.39,
+     "deg": 104,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 31.11,
+     "y": 68.26,
+     "deg": 102,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 73,
+   "von": "mainz",
+   "nach": "saarbruecken",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 21.36,
+     "y": 67.01,
+     "deg": 147.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 17.21,
+     "y": 68.8,
+     "deg": 145.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 13.06,
+     "y": 70.7,
+     "deg": 145.9,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 74,
+   "von": "mainz",
+   "nach": "mannheim",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 75,
+   "felder": [
+    {
+     "x": 27.51,
+     "y": 67.81,
+     "deg": 67,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 75,
+   "von": "mainz",
+   "nach": "mannheim",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 74,
+   "felder": [
+    {
+     "x": 25.89,
+     "y": 68.35,
+     "deg": 66.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 76,
+   "von": "mannheim",
+   "nach": "saarbruecken",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 24.56,
+     "y": 71.47,
+     "deg": 173,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 19.54,
+     "y": 71.92,
+     "deg": 172.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 14.51,
+     "y": 72.37,
+     "deg": -188,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 77,
+   "von": "mannheim",
+   "nach": "karlsruhe",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 28.22,
+     "y": 73.86,
+     "deg": 89.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 78,
+   "von": "mannheim",
+   "nach": "stuttgart",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 79,
+   "felder": [
+    {
+     "x": 33.15,
+     "y": 72.45,
+     "deg": 54,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 36.14,
+     "y": 75.28,
+     "deg": 54.2,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 79,
+   "von": "mannheim",
+   "nach": "stuttgart",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 78,
+   "felder": [
+    {
+     "x": 31.53,
+     "y": 73.33,
+     "deg": 55.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 34.52,
+     "y": 76.05,
+     "deg": 54.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 80,
+   "von": "saarbruecken",
+   "nach": "frankreich_1",
+   "laenge": 1,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 8.63,
+     "y": 75.27,
+     "deg": 100.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 81,
+   "von": "saarbruecken",
+   "nach": "karlsruhe",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 13.01,
+     "y": 74.72,
+     "deg": 47.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 17.65,
+     "y": 76.34,
+     "deg": 10.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 22.82,
+     "y": 76.44,
+     "deg": -4.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 82,
+   "von": "karlsruhe",
+   "nach": "frankreich_2",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 23.7,
+     "y": 78.4,
+     "deg": 152.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 19.32,
+     "y": 79.95,
+     "deg": 152.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 83,
+   "von": "karlsruhe",
+   "nach": "stuttgart",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 32.75,
+     "y": 77.89,
+     "deg": 16.5,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 84,
+   "von": "karlsruhe",
+   "nach": "freiburg",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 27.19,
+     "y": 79.59,
+     "deg": 107.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 25.72,
+     "y": 82.67,
+     "deg": 107.9,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 24.29,
+     "y": 85.95,
+     "deg": 108,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 85,
+   "von": "freiburg",
+   "nach": "frankreich_3",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 18.32,
+     "y": 87.93,
+     "deg": -164.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 13.64,
+     "y": 87.14,
+     "deg": -165.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 86,
+   "von": "freiburg",
+   "nach": "schweiz_1",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 19.95,
+     "y": 91.31,
+     "deg": 120.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 20.51,
+     "y": 94.73,
+     "deg": 40.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 87,
+   "von": "freiburg",
+   "nach": "konstanz",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 27.48,
+     "y": 89.39,
+     "deg": 13.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 32.34,
+     "y": 90.14,
+     "deg": 11.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 88,
+   "von": "konstanz",
+   "nach": "schweiz_2",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 33.31,
+     "y": 92.88,
+     "deg": 141.4,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 89,
+   "von": "konstanz",
+   "nach": "stuttgart",
+   "laenge": 3,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 36.99,
+     "y": 88.04,
+     "deg": -88.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 37.05,
+     "y": 84.73,
+     "deg": -87.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 37.21,
+     "y": 81.33,
+     "deg": -90.2,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 90,
+   "von": "konstanz",
+   "nach": "lindau",
+   "laenge": 1,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 41.12,
+     "y": 91.51,
+     "deg": 13,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 91,
+   "von": "lindau",
+   "nach": "schweiz_3",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 42.55,
+     "y": 94.45,
+     "deg": 134.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 37.91,
+     "y": 95.89,
+     "deg": 176,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 92,
+   "von": "lindau",
+   "nach": "ulm",
+   "laenge": 2,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 46.17,
+     "y": 89.26,
+     "deg": -76.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 47.58,
+     "y": 86.22,
+     "deg": -75.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 93,
+   "von": "lindau",
+   "nach": "oesterreich_1",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 49.5,
+     "y": 93.25,
+     "deg": 18.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 54.01,
+     "y": 94.32,
+     "deg": 18.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 94,
+   "von": "stuttgart",
+   "nach": "ulm",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 95,
+   "felder": [
+    {
+     "x": 42.06,
+     "y": 79.06,
+     "deg": 36,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 46.13,
+     "y": 81,
+     "deg": 37,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 95,
+   "von": "stuttgart",
+   "nach": "ulm",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 94,
+   "felder": [
+    {
+     "x": 40.85,
+     "y": 80.08,
+     "deg": 35.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 45.02,
+     "y": 82.12,
+     "deg": 35,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 96,
+   "von": "wuerzburg",
+   "nach": "nuernberg",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 97,
+   "felder": [
+    {
+     "x": 50.63,
+     "y": 65.62,
+     "deg": 21.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 55.28,
+     "y": 66.9,
+     "deg": 21.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 97,
+   "von": "wuerzburg",
+   "nach": "nuernberg",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 96,
+   "felder": [
+    {
+     "x": 50.1,
+     "y": 66.86,
+     "deg": 21.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 54.65,
+     "y": 68.04,
+     "deg": 20,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 98,
+   "von": "ulm",
+   "nach": "augsburg",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 99,
+   "felder": [
+    {
+     "x": 53.14,
+     "y": 82.62,
+     "deg": 2.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 99,
+   "von": "ulm",
+   "nach": "augsburg",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 98,
+   "felder": [
+    {
+     "x": 53.01,
+     "y": 83.87,
+     "deg": 2.6,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 101,
+   "von": "nuernberg",
+   "nach": "augsburg",
+   "laenge": 4,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 57.95,
+     "y": 70.57,
+     "deg": 92.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 57.83,
+     "y": 73.85,
+     "deg": 92,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 57.49,
+     "y": 77.31,
+     "deg": 93.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 57.34,
+     "y": 80.59,
+     "deg": 92,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 102,
+   "von": "nuernberg",
+   "nach": "muenchen",
+   "laenge": 5,
+   "farbe": "blau",
+   "geprueft": true,
+   "doppel_mit": 103,
+   "felder": [
+    {
+     "x": 61.15,
+     "y": 70.7,
+     "deg": 66.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 63.29,
+     "y": 73.9,
+     "deg": 67.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 65.3,
+     "y": 76.89,
+     "deg": 66.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 67.26,
+     "y": 79.96,
+     "deg": 66,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 69.2,
+     "y": 83.11,
+     "deg": 65.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 103,
+   "von": "nuernberg",
+   "nach": "muenchen",
+   "laenge": 5,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "doppel_mit": 102,
+   "felder": [
+    {
+     "x": 62.96,
+     "y": 70.16,
+     "deg": 67,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 65.04,
+     "y": 73.34,
+     "deg": 67.1,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 66.99,
+     "y": 76.39,
+     "deg": 65.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 69.04,
+     "y": 79.5,
+     "deg": 66,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 71.15,
+     "y": 82.57,
+     "deg": 66.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 104,
+   "von": "nuernberg",
+   "nach": "regensburg",
+   "laenge": 3,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 65.03,
+     "y": 68.54,
+     "deg": 33.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 69.14,
+     "y": 70.43,
+     "deg": 35.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 73.14,
+     "y": 72.37,
+     "deg": 37,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 105,
+   "von": "augsburg",
+   "nach": "muenchen",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 106,
+   "felder": [
+    {
+     "x": 61.71,
+     "y": 83.99,
+     "deg": 13.3,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 66.61,
+     "y": 84.8,
+     "deg": 12.7,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 106,
+   "von": "augsburg",
+   "nach": "muenchen",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "doppel_mit": 105,
+   "felder": [
+    {
+     "x": 61.22,
+     "y": 85.2,
+     "deg": 12.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 66.07,
+     "y": 86.03,
+     "deg": 12.3,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 107,
+   "von": "regensburg",
+   "nach": "muenchen",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 79.47,
+     "y": 78.1,
+     "deg": 77,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.94,
+     "y": 81.5,
+     "deg": 113.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 75.14,
+     "y": 84.14,
+     "deg": 153,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 108,
+   "von": "regensburg",
+   "nach": "oesterreich_3",
+   "laenge": 4,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 81.82,
+     "y": 76.95,
+     "deg": 59.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 84.6,
+     "y": 79.63,
+     "deg": 58.5,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 87.32,
+     "y": 82.44,
+     "deg": 56.7,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 90.12,
+     "y": 85.28,
+     "deg": 55.1,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 109,
+   "von": "muenchen",
+   "nach": "oesterreich_2",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 74.64,
+     "y": 87.94,
+     "deg": 43.4,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 78.37,
+     "y": 90.21,
+     "deg": 43.6,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 81.94,
+     "y": 92.49,
+     "deg": 43.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 110,
+   "von": "stuttgart",
+   "nach": "freiburg",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 33.85,
+     "y": 81.07,
+     "deg": 132.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 30.53,
+     "y": 83.53,
+     "deg": 132.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 27.17,
+     "y": 86.12,
+     "deg": 132.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  },
+  {
+   "nr": 111,
+   "von": "konstanz",
+   "nach": "muenchen",
+   "laenge": 5,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 49.82,
+     "y": 91.54,
+     "deg": 5.2,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 54.76,
+     "y": 91.52,
+     "deg": -6.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 59.77,
+     "y": 90.96,
+     "deg": -12.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 64.76,
+     "y": 89.93,
+     "deg": -22.8,
+     "l": 4.4,
+     "w": 1.05
+    },
+    {
+     "x": 69.07,
+     "y": 88.4,
+     "deg": -30.8,
+     "l": 4.4,
+     "w": 1.05
+    }
+   ]
+  }
+ ],
+ "auftraege": [
+  {
+   "von": "Mainz",
+   "nach": "Stuttgart",
+   "punkte": 3
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Rostock",
+   "punkte": 4
+  },
+  {
+   "von": "Dortmund",
+   "nach": "Mannheim",
+   "punkte": 6
+  },
+  {
+   "von": "Berlin",
+   "nach": "Chemnitz",
+   "punkte": 6
+  },
+  {
+   "von": "Dortmund",
+   "nach": "Erfurt",
+   "punkte": 7
+  },
+  {
+   "von": "Mannheim",
+   "nach": "Würzburg",
+   "punkte": 4
+  },
+  {
+   "von": "Karlsruhe",
+   "nach": "Augsburg",
+   "punkte": 4
+  },
+  {
+   "von": "Bremen",
+   "nach": "Düsseldorf",
+   "punkte": 5
+  },
+  {
+   "von": "Hannover",
+   "nach": "Leipzig",
+   "punkte": 6
+  },
+  {
+   "von": "Köln",
+   "nach": "Stuttgart",
+   "punkte": 6
+  },
+  {
+   "von": "Bremen",
+   "nach": "Kassel",
+   "punkte": 6
+  },
+  {
+   "von": "Erfurt",
+   "nach": "Würzburg",
+   "punkte": 6
+  },
+  {
+   "von": "Koblenz",
+   "nach": "Ulm",
+   "punkte": 7
+  },
+  {
+   "von": "Leipzig",
+   "nach": "Nürnberg",
+   "punkte": 7
+  },
+  {
+   "von": "Nürnberg",
+   "nach": "Stuttgart",
+   "punkte": 7
+  },
+  {
+   "von": "Frankreich",
+   "nach": "München",
+   "punkte": 8
+  },
+  {
+   "von": "Köln",
+   "nach": "Nürnberg",
+   "punkte": 8
+  },
+  {
+   "von": "Frankfurt",
+   "nach": "Lindau",
+   "punkte": 8
+  },
+  {
+   "von": "Niederlande",
+   "nach": "Frankfurt",
+   "punkte": 8
+  },
+  {
+   "von": "Karlsruhe",
+   "nach": "Regensburg",
+   "punkte": 9
+  },
+  {
+   "von": "Dortmund",
+   "nach": "Magdeburg",
+   "punkte": 9
+  },
+  {
+   "von": "Münster",
+   "nach": "Stuttgart",
+   "punkte": 9
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Köln",
+   "punkte": 9
+  },
+  {
+   "von": "Niederlande",
+   "nach": "Karlsruhe",
+   "punkte": 9
+  },
+  {
+   "von": "Frankfurt",
+   "nach": "München",
+   "punkte": 9
+  },
+  {
+   "von": "Düsseldorf",
+   "nach": "Konstanz",
+   "punkte": 10
+  },
+  {
+   "von": "Kassel",
+   "nach": "Freiburg",
+   "punkte": 10
+  },
+  {
+   "von": "Köln",
+   "nach": "Schweiz",
+   "punkte": 10
+  },
+  {
+   "von": "Bremen",
+   "nach": "Berlin",
+   "punkte": 10
+  },
+  {
+   "von": "Dänemark",
+   "nach": "Niederlande",
+   "punkte": 10
+  },
+  {
+   "von": "Hannover",
+   "nach": "Saarbrücken",
+   "punkte": 11
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Frankfurt",
+   "punkte": 11
+  },
+  {
+   "von": "Frankfurt",
+   "nach": "Österreich",
+   "punkte": 10
+  },
+  {
+   "von": "Bremerhaven",
+   "nach": "Köln",
+   "punkte": 7
+  },
+  {
+   "von": "Köln",
+   "nach": "Frankfurt",
+   "punkte": 4
+  },
+  {
+   "von": "Hannover",
+   "nach": "Frankfurt",
+   "punkte": 7
+  },
+  {
+   "von": "Köln",
+   "nach": "Regensburg",
+   "punkte": 11
+  },
+  {
+   "von": "München",
+   "nach": "Konstanz",
+   "punkte": 6
+  },
+  {
+   "von": "Emden",
+   "nach": "Hamburg",
+   "punkte": 6
+  },
+  {
+   "von": "Frankfurt",
+   "nach": "Stuttgart",
+   "punkte": 4
+  },
+  {
+   "von": "München",
+   "nach": "Freiburg",
+   "punkte": 8
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Leipzig",
+   "punkte": 10
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Kassel",
+   "punkte": 7
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Berlin",
+   "punkte": 7
+  },
+  {
+   "von": "Dänemark",
+   "nach": "Berlin",
+   "punkte": 10
+  },
+  {
+   "von": "Berlin",
+   "nach": "Leipzig",
+   "punkte": 4
+  },
+  {
+   "von": "München",
+   "nach": "Würzburg",
+   "punkte": 7
+  },
+  {
+   "von": "Magdeburg",
+   "nach": "Köln",
+   "punkte": 11
+  },
+  {
+   "von": "Leipzig",
+   "nach": "Frankfurt",
+   "punkte": 10
+  },
+  {
+   "von": "Leipzig",
+   "nach": "München",
+   "punkte": 11
+  },
+  {
+   "von": "Berlin",
+   "nach": "Erfurt",
+   "punkte": 7
+  },
+  {
+   "von": "Köln",
+   "nach": "Saarbrücken",
+   "punkte": 4
+  },
+  {
+   "von": "München",
+   "nach": "Stuttgart",
+   "punkte": 5
+  },
+  {
+   "von": "Köln",
+   "nach": "München",
+   "punkte": 11
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Koblenz",
+   "punkte": 10
+  },
+  {
+   "von": "Mannheim",
+   "nach": "Stuttgart",
+   "punkte": 2
+  },
+  {
+   "von": "Köln",
+   "nach": "Leipzig",
+   "punkte": 12,
+   "lang": true
+  },
+  {
+   "von": "Leipzig",
+   "nach": "Ulm",
+   "punkte": 12,
+   "lang": true
+  },
+  {
+   "von": "Dresden",
+   "nach": "Augsburg",
+   "punkte": 12,
+   "lang": true
+  },
+  {
+   "von": "Bremerhaven",
+   "nach": "Frankreich",
+   "punkte": 12,
+   "lang": true
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Dresden",
+   "punkte": 12,
+   "lang": true
+  },
+  {
+   "von": "Schwerin",
+   "nach": "Koblenz",
+   "punkte": 12,
+   "lang": true
+  },
+  {
+   "von": "Dortmund",
+   "nach": "München",
+   "punkte": 13,
+   "lang": true
+  },
+  {
+   "von": "Berlin",
+   "nach": "Düsseldorf",
+   "punkte": 13,
+   "lang": true
+  },
+  {
+   "von": "Niederlande",
+   "nach": "Berlin",
+   "punkte": 13,
+   "lang": true
+  },
+  {
+   "von": "Münster",
+   "nach": "München",
+   "punkte": 14,
+   "lang": true
+  },
+  {
+   "von": "Berlin",
+   "nach": "Frankfurt",
+   "punkte": 14,
+   "lang": true
+  },
+  {
+   "von": "Kiel",
+   "nach": "Nürnberg",
+   "punkte": 15,
+   "lang": true
+  },
+  {
+   "von": "Berlin",
+   "nach": "München",
+   "punkte": 15,
+   "lang": true
+  },
+  {
+   "von": "Berlin",
+   "nach": "Mainz",
+   "punkte": 15,
+   "lang": true
+  },
+  {
+   "von": "Frankreich",
+   "nach": "Leipzig",
+   "punkte": 15,
+   "lang": true
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Stuttgart",
+   "punkte": 15,
+   "lang": true
+  },
+  {
+   "von": "Emden",
+   "nach": "Freiburg",
+   "punkte": 15,
+   "lang": true
+  },
+  {
+   "von": "Bremerhaven",
+   "nach": "Regensburg",
+   "punkte": 16,
+   "lang": true
+  },
+  {
+   "von": "Dresden",
+   "nach": "Saarbrücken",
+   "punkte": 16,
+   "lang": true
+  },
+  {
+   "von": "Münster",
+   "nach": "Österreich",
+   "punkte": 15,
+   "lang": true
+  },
+  {
+   "von": "Frankreich",
+   "nach": "Dänemark",
+   "punkte": 17,
+   "lang": true
+  },
+  {
+   "von": "Hamburg",
+   "nach": "München",
+   "punkte": 18,
+   "lang": true
+  },
+  {
+   "von": "Dänemark",
+   "nach": "Regensburg",
+   "punkte": 20,
+   "lang": true
+  },
+  {
+   "von": "Berlin",
+   "nach": "Schweiz",
+   "punkte": 20,
+   "lang": true
+  },
+  {
+   "von": "Kiel",
+   "nach": "Schweiz",
+   "punkte": 20,
+   "lang": true
+  },
+  {
+   "von": "Rostock",
+   "nach": "Österreich",
+   "punkte": 22,
+   "lang": true
+  },
+  {
+   "von": "Rostock",
+   "nach": "Konstanz",
+   "punkte": 22,
+   "lang": true
+  },
+  {
+   "von": "Emden",
+   "nach": "Österreich",
+   "punkte": 19,
+   "lang": true
+  },
+  {
+   "von": "Dänemark",
+   "nach": "Lindau",
+   "punkte": 22,
+   "lang": true
+  },
+  {
+   "von": "Schwerin",
+   "nach": "Frankfurt",
+   "punkte": 13,
+   "lang": true
+  },
+  {
+   "von": "Berlin",
+   "nach": "Stuttgart",
+   "punkte": 18,
+   "lang": true
+  },
+  {
+   "von": "Hamburg",
+   "nach": "Karlsruhe",
+   "punkte": 14,
+   "lang": true
+  },
+  {
+   "von": "Leipzig",
+   "nach": "Stuttgart",
+   "punkte": 14,
+   "lang": true
+  },
+  {
+   "von": "Berlin",
+   "nach": "Köln",
+   "punkte": 14,
+   "lang": true
+  },
+  {
+   "von": "Kiel",
+   "nach": "Stuttgart",
+   "punkte": 17,
+   "lang": true
+  }
+ ]
+}
