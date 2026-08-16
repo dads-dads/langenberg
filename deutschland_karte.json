@@ -3,17 +3,17 @@
   "name": "Deutschland 1902",
   "statId": "Zug um Zug Deutschland",
   "kurz": "Deutschland 1902",
-  "version": "6.5",
+  "version": "6.6",
   "spieler": "2-5",
   "wagons_pro_spieler": 48,
   "bild": "deutschland_karte.jpg",
-  "tkbild": "auftrag_deutschland.jpg",
+  "tkbild": "auftrag_deutschland_hoch.jpg",
   "board_h": 1497,
   "tk": {
-   "mx0": 321,
-   "my0": 77,
-   "mw": 340,
-   "mh": 509
+   "mx0": 68,
+   "my0": 155,
+   "mw": 564,
+   "mh": 845
   },
   "hinweis": "Streckenliste aus dem Spielplan gelesen (Auslands-Einmuendungen als eigene Randknoten). Feldpositionen im Editor korrigiert und abgenommen.",
   "farben": [
@@ -55,7 +55,13 @@
    "meiste_auftraege_bonus": 15,
    "zugzeit": "Zugzeit pro Spiel frei einstellbar (Stunden + Minuten); nach Ablauf werden automatisch 2 Karten vom verdeckten Stapel gezogen.",
    "kennwort": "Jeder Spieler waehlt einen PIN; Wiedereinstieg nur mit Name + PIN."
-  }
+  },
+  "tk_vb": {
+   "w": 700,
+   "h": 1120
+  },
+  "tk_hoch": true,
+  "tk_einzelziel": true
  },
  "knoten": [
   {
