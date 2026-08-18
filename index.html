@@ -108,6 +108,9 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 #chat.zu #chatBody,#chat.zu #chatIn{display:none}
 
 /* ---- Querformat auf dem Handy: unteren Bereich flach halten ---- */
+@media (orientation:portrait){
+  #hand{display:grid;grid-template-columns:repeat(3,max-content);gap:5px;justify-content:start;align-content:start;overflow-x:hidden;overflow-y:auto;max-height:none}
+}
 @media (orientation:landscape) and (max-height:560px){
   body{display:grid;grid-template-columns:minmax(0,1fr) 262px;grid-template-rows:auto minmax(0,1fr)}
   #top{grid-column:1/3;grid-row:1;padding:3px 6px;gap:5px}
@@ -228,6 +231,10 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
+// Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
+const PTEXT = {gelb:'#111111'};
+function pFarbe(col,i){return (PCOL.find(x=>x.id===col)||PCOL[i||0]).hex}
+function pSchrift(col,i){return PTEXT[col]||pFarbe(col,i)}
 let nodes={}; MAP.knoten.forEach(k=>nodes[k.id]=k);
 let nameToIds={}; MAP.knoten.forEach(k=>{const n=k.name.replace(/ \((Nordost|Ost)\)/,'');(nameToIds[n]=nameToIds[n]||[]).push(k.id)});
 const P=id=>({x:nodes[id].x*10,y:nodes[id].y*(BH/100)});
@@ -260,7 +267,7 @@ function fix(r){
     g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
     g.claims=g.claims||{};g.startOffers=g.startOffers||{};g.ticketDeckLang=g.ticketDeckLang||[];g.picked=g.picked||{};g.pend=g.pend||[];g.frist=g.frist||0;g.zuege=g.zuege||0;if(g.rps){g.rps.aktiv=g.rps.aktiv||[];g.rps.wahl=g.rps.wahl||{}}
     g.turn=g.turn||0;g.drawn=g.drawn||0;if(g.lastRounds===undefined)g.lastRounds=-1;
-    g.gel=g.gel||[];g.gelOpen=g.gelOpen||[];g.gelDiscard=g.gelDiscard||[];}
+    g.gel=g.gel||[];g.gelOpen=g.gelOpen||[];g.gelDiscard=g.gelDiscard||[];g.start=g.start||0;}
   return r;
 }
 function sync(){const o={status:ROOM.status,players:ROOM.players};
@@ -314,6 +321,7 @@ function hostStart(){
     else off=g.ticketDeck.splice(0,rs.ziehen||5);
     g.startOffers[i]=off});
   if(GEL())gelNachlegen(g);
+  g.start=Date.now();
   g.frist=limitMs()?Date.now()+limitMs():0;
   if(!ROOM.test&&ROOM.players.length>1){g.rps={runde:1,aktiv:ROOM.players.map((p,i)=>i),wahl:{}};ROOM.game=g;ROOM.status='rps'}
   else{ROOM.game=g;ROOM.status='picking'}
@@ -920,7 +928,10 @@ function statsSchreiben(){
     if(err||!ok)return;
     ROOM.statsDone=true;
     const sieger=[...ROOM.players].sort((a,b)=>(b.total||0)-(a.total||0))[0];
-    db.ref('ergebnisse').push({ts:Date.now(),code:CODE,edition:(MAP.meta.statId||MAP.meta.name||'Langenberg'),
+    const jetzt=Date.now(),beginn=(ROOM.game&&ROOM.game.start)||0;
+    db.ref('ergebnisse').push({ts:jetzt,start:beginn,ende:jetzt,
+      dauerMin:beginn?Math.max(1,Math.round((jetzt-beginn)/60000)):0,
+      code:CODE,edition:(MAP.meta.statId||MAP.meta.name||'Langenberg'),
       spieler:ROOM.players.map(p=>p.name),
       punkte:ROOM.players.map(p=>p.total||0),
       zuege:(ROOM.game&&ROOM.game.zuege)||0,
@@ -1223,8 +1234,8 @@ function renderChat(){
   const msgs=Object.values(ROOM.chat||{});
   const mh=msgs.length?msgs.slice(-25).map(m=>'<div class="msg"><b>'+m.n+':</b> '+m.t+'</div>').join(''):'<div class="msg" style="color:#8a7d63">Noch keine Nachrichten.</div>';
   let ah='';
-  ROOM.players.forEach((p,i)=>{const c=(PCOL.find(x=>x.id===p.col)||PCOL[i]).hex;
-    ah+='<div class="last"><b style="color:'+c+'">'+p.name+':</b> '+(p.last||'—')+'</div>'});
+  ROOM.players.forEach((p,i)=>{
+    ah+='<div class="last"><b style="color:'+pSchrift(p.col,i)+'">'+p.name+':</b> '+(p.last||'—')+'</div>'});
   if(mBox.dataset.h!==mh){mBox.dataset.h=mh;mBox.innerHTML=mh;mBox.scrollTop=mBox.scrollHeight}
   if(aBox.dataset.h!==ah){aBox.dataset.h=ah;aBox.innerHTML=ah}
 }
@@ -1249,8 +1260,9 @@ function renderHud(){
   ROOM.players.forEach((pl,i)=>{const hex=PCOL.find(c=>c.id===pl.col).hex;
     const d=document.createElement('div');d.className='pchip'+(g().turn===i?' aktiv':'');
     d.title=pl.name+(i===SEAT?' (du)':'');
-    d.innerHTML='<span class="ini" style="background:'+hex+'">'+(i===SEAT?'★':pl.name.slice(0,2).toUpperCase())+'</span>'
-      +'<span class="sc" style="background:'+hex+'">'+(pl.score||0)+'</span>'
+    const tf=PTEXT[pl.col]?';color:'+PTEXT[pl.col]:'';
+    d.innerHTML='<span class="ini" style="background:'+hex+tf+'">'+(i===SEAT?'★':pl.name.slice(0,2).toUpperCase())+'</span>'
+      +'<span class="sc" style="background:'+hex+tf+'">'+(pl.score||0)+'</span>'
       +'<span class="wg">'+(pl.wagons??WAGONS())+'<small>🚃</small></span>'
       +'<span class="wg2">'+Object.values(pl.hand||{}).reduce((a,b)=>a+b,0)+'<small>🂠</small>'
       +'<b>'+((pl.tickets||[]).length)+'</b><small>🎫</small>'
@@ -1522,12 +1534,15 @@ function zeigeRangliste(){
       box.innerHTML=(ADMIN_OK?'':'<button class="cancel" id="admUn" style="margin:0 0 10px;font-size:13px">🔓 Als Admin anmelden (zum Löschen)</button>')
         +a.map(k=>{const e=ergObj[k];
           const dt=new Date(e.ts||0).toLocaleDateString('de-DE');
+          const uhr=t=>t?new Date(t).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
+          const dauer=e.dauerMin?(e.dauerMin>=60?Math.floor(e.dauerMin/60)+' h '+(e.dauerMin%60)+' min':e.dauerMin+' min'):'';
+          const zeit=e.start?uhr(e.start)+'–'+uhr(e.ende||e.ts)+' Uhr'+(dauer?' · '+dauer:''):uhr(e.ts)+' Uhr';
           const rang=(e.spieler||[]).map((n,i)=>({n,p:(e.punkte&&e.punkte[i])||0})).sort((x,y)=>y.p-x.p);
           const rd=(e.spieler&&e.spieler.length)?Math.ceil((e.zuege||0)/e.spieler.length):0;
           return '<div style="display:flex;gap:6px;margin-bottom:8px"><div class="opt" style="flex:1;margin:0;cursor:default">'
             +'<b>'+edName(e.edition)+' · '+dt+'</b>'
             +'<div style="font-size:13px;margin:4px 0">'+rang.map((r,i)=>(i?' – ':'')+r.n+' <b>'+r.p+'</b>').join('')+'</div>'
-            +'<div style="font-size:12px;color:#8a7d63">'+rd+' Runden · Raum '+(e.code||'?')+'</div></div>'
+            +'<div style="font-size:12px;color:#8a7d63">'+zeit+' · '+rd+' Runden · Raum '+(e.code||'?')+'</div></div>'
             +(ADMIN_OK?'<button class="edel" data-k="'+k+'" style="width:46px;border-radius:9px;border:1.5px solid #b3372c;background:#fff;color:#b3372c;font-size:17px">🗑</button>':'')
             +'</div>'}).join('');
       const au=box.querySelector('#admUn');
