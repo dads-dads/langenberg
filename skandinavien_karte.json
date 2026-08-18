@@ -3,7 +3,7 @@
   "name": "Skandinavien",
   "statId": "Zug um Zug Skandinavien",
   "kurz": "Skandinavien",
-  "version": "0.94",
+  "version": "0.95",
   "spieler": "2-3",
   "wagons_pro_spieler": 40,
   "bild": "skandinavien_karte.jpg",
@@ -2151,7 +2151,8 @@
      "l": 4.64,
      "w": 1.03
     }
-   ]
+   ],
+   "faehre": 1
   },
   {
    "nr": 61,
@@ -2715,6 +2716,23 @@
      "x": 7.93,
      "y": 74.5,
      "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 83,
+   "von": "lieksa",
+   "nach": "kuopio",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 85.63,
+     "y": 40.45,
+     "deg": 105.8,
      "l": 4.64,
      "w": 1.03
     }
