@@ -1,0 +1,2956 @@
+{
+ "meta": {
+  "name": "Skandinavien",
+  "statId": "Zug um Zug Skandinavien",
+  "kurz": "Skandinavien",
+  "version": "0.94",
+  "spieler": "2-3",
+  "wagons_pro_spieler": 40,
+  "bild": "skandinavien_karte.jpg",
+  "tkbild": "auftrag_skandinavien.jpg",
+  "board_h": 1542,
+  "hinweis": "ENTWURF: Strecken aus dem Spielplan gelesen (Farben/Laengen/Faehren-Loks bitte pruefen, geprueft: false). Feldpositionen automatisch auf Geraden verlegt, Feinjustage im Editor ausstehend. Regeln aus dem Regelheft uebernommen und geprueft (Stand v0.92).",
+  "farben": [
+   "rot",
+   "orange",
+   "gelb",
+   "gruen",
+   "blau",
+   "pink",
+   "weiss",
+   "schwarz",
+   "grau"
+  ],
+  "faehrenregel": "Faehren sind Strecken mit Lok-Symbolen. Pro Lok-Symbol muss zwingend eine Lok gezahlt werden; die restlichen Felder mit Karten einer Farbe (ggf. weiteren Loks).",
+  "tunnelregel": "Beim Bau eines Tunnels werden 3 Karten aufgedeckt; fuer jede Karte in der Streckenfarbe (oder Lok) muss eine zusaetzliche passende Karte gezahlt werden, sonst darf abgebrochen werden.",
+  "lokregel": "Skandinavien-Sonderregel: Loks duerfen nur fuer Faehren und Tunnel eingesetzt werden, niemals fuer normale Strecken. Dafuer gibt es beim Nehmen offener Lokkarten keine Beschraenkung: eine offene Lok zaehlt als eine von zwei Karten.",
+  "bonusregel": "Globetrotter-Bonus: 10 Punkte fuer die meisten vervollstaendigten Zielkarten (bei Gleichstand erhalten alle Beteiligten 10 Punkte). Keinen Bonus fuer die laengste Strecke.",
+  "zielkartenregel": "Zurueckgegebene Zielkarten kommen aus dem Spiel und nicht unter den Stapel.",
+  "regeln": {
+   "startauftraege": {
+    "ziehen": 5,
+    "mindestens_behalten": 2
+   },
+   "auftraege_nachziehen": {
+    "ziehen": 3,
+    "mindestens_behalten": 1
+   },
+   "starthandkarten": 4,
+   "doppelstrecken_frei_ab": 3,
+   "punkte_pro_laenge": {
+    "1": 1,
+    "2": 2,
+    "3": 4,
+    "4": 7,
+    "5": 10,
+    "6": 15,
+    "9": 27
+   },
+   "laengste_strecke_bonus": 0,
+   "meiste_auftraege_bonus": 10,
+   "lok_frei_ziehen": true,
+   "lok_nur_faehre_tunnel": true,
+   "auftraege_raus": true,
+   "zugzeit": "Zugzeit pro Spiel frei einstellbar (Stunden + Minuten); nach Ablauf werden automatisch 2 Karten vom verdeckten Stapel gezogen.",
+   "kennwort": "Jeder Spieler waehlt einen PIN; Wiedereinstieg nur mit Name + PIN."
+  },
+  "tk_vb": {
+   "w": 656,
+   "h": 1008
+  },
+  "tk_hoch": true,
+  "tk_einzelziel": true,
+  "tk": {
+   "mx0": 45,
+   "my0": 205,
+   "mw": 565,
+   "mh": 755
+  },
+  "tk_titel": {
+   "y1": 143,
+   "y2": 183,
+   "font": 30
+  },
+  "tk_punkte": {
+   "x": 540,
+   "y": 925,
+   "font": 56
+  }
+ },
+ "knoten": [
+  {
+   "id": "honningsvaag",
+   "name": "Honningsvåg",
+   "x": 47.17,
+   "y": 6.48,
+   "rand": false,
+   "tkx": 45.81,
+   "tky": 22.87
+  },
+  {
+   "id": "murmansk",
+   "name": "Murmansk",
+   "x": 74.29,
+   "y": 8.73,
+   "rand": false,
+   "tkx": 84.53,
+   "tky": 29.71
+  },
+  {
+   "id": "kirkenes",
+   "name": "Kirkenes",
+   "x": 58.46,
+   "y": 11.16,
+   "rand": false,
+   "tkx": 62.36,
+   "tky": 29.29
+  },
+  {
+   "id": "tromsoe",
+   "name": "Tromsø",
+   "x": 31.54,
+   "y": 18.05,
+   "rand": false,
+   "tkx": 38.64,
+   "tky": 33.38
+  },
+  {
+   "id": "narvik",
+   "name": "Narvik",
+   "x": 27.88,
+   "y": 26.29,
+   "rand": false,
+   "tkx": 33.16,
+   "tky": 38.14
+  },
+  {
+   "id": "rovaniemi",
+   "name": "Rovaniemi",
+   "x": 61.08,
+   "y": 27.29,
+   "rand": false,
+   "tkx": 63.98,
+   "tky": 41.15
+  },
+  {
+   "id": "kiruna",
+   "name": "Kiruna",
+   "x": 35.42,
+   "y": 27.8,
+   "rand": false,
+   "tkx": 39.25,
+   "tky": 39.53
+  },
+  {
+   "id": "tornio",
+   "name": "Tornio",
+   "x": 60.08,
+   "y": 32.64,
+   "rand": false,
+   "tkx": 61.2,
+   "tky": 45.09
+  },
+  {
+   "id": "boden",
+   "name": "Boden",
+   "x": 52.42,
+   "y": 33.37,
+   "rand": false,
+   "tkx": 55.72,
+   "tky": 42.11
+  },
+  {
+   "id": "kajaani",
+   "name": "Kajaani",
+   "x": 79.08,
+   "y": 35.5,
+   "rand": false,
+   "tkx": 80.51,
+   "tky": 48.5
+  },
+  {
+   "id": "oulu",
+   "name": "Oulu",
+   "x": 65.67,
+   "y": 36.67,
+   "rand": false,
+   "tkx": 67.81,
+   "tky": 48.29
+  },
+  {
+   "id": "lieksa",
+   "name": "Lieksa",
+   "x": 86.75,
+   "y": 37.88,
+   "rand": false,
+   "tkx": 88.8,
+   "tky": 48.66
+  },
+  {
+   "id": "mo_i_rana",
+   "name": "Mo i Rana",
+   "x": 25.5,
+   "y": 39.37,
+   "rand": false,
+   "tkx": 28.89,
+   "tky": 47.07
+  },
+  {
+   "id": "kuopio",
+   "name": "Kuopio",
+   "x": 84.5,
+   "y": 43.02,
+   "rand": false,
+   "tkx": 81.33,
+   "tky": 54.61
+  },
+  {
+   "id": "umeaa",
+   "name": "Umeå",
+   "x": 55.21,
+   "y": 45.39,
+   "rand": false,
+   "tkx": 58.46,
+   "tky": 54.02
+  },
+  {
+   "id": "vaasa",
+   "name": "Vaasa",
+   "x": 61.62,
+   "y": 48.85,
+   "rand": false,
+   "tkx": 63.35,
+   "tky": 56.78
+  },
+  {
+   "id": "imatra",
+   "name": "Imatra",
+   "x": 93.29,
+   "y": 49.55,
+   "rand": false,
+   "tkx": 93.16,
+   "tky": 59.77
+  },
+  {
+   "id": "lahti",
+   "name": "Lahti",
+   "x": 82.83,
+   "y": 55.07,
+   "rand": false,
+   "tkx": 84.53,
+   "tky": 64.93
+  },
+  {
+   "id": "tampere",
+   "name": "Tampere",
+   "x": 74.21,
+   "y": 55.07,
+   "rand": false,
+   "tkx": 74.89,
+   "tky": 62.26
+  },
+  {
+   "id": "oestersund",
+   "name": "Östersund",
+   "x": 37.46,
+   "y": 55.5,
+   "rand": false,
+   "tkx": 38.34,
+   "tky": 59.47
+  },
+  {
+   "id": "sundsvall",
+   "name": "Sundsvall",
+   "x": 49.63,
+   "y": 57.08,
+   "rand": false,
+   "tkx": 48.4,
+   "tky": 60.47
+  },
+  {
+   "id": "trondheim",
+   "name": "Trondheim",
+   "x": 25.33,
+   "y": 58.82,
+   "rand": false,
+   "tkx": 29.04,
+   "tky": 61.66
+  },
+  {
+   "id": "turku",
+   "name": "Turku",
+   "x": 73.79,
+   "y": 60.61,
+   "rand": false,
+   "tkx": 75.84,
+   "tky": 67.61
+  },
+  {
+   "id": "helsinki",
+   "name": "Helsinki",
+   "x": 82.83,
+   "y": 60.83,
+   "rand": false,
+   "tkx": 84.53,
+   "tky": 64.93
+  },
+  {
+   "id": "aandalsnes",
+   "name": "Åndalsnes",
+   "x": 18.58,
+   "y": 63.25,
+   "rand": false,
+   "tkx": 23.7,
+   "tky": 65.03
+  },
+  {
+   "id": "tallinn",
+   "name": "Tallinn",
+   "x": 85.38,
+   "y": 66.85,
+   "rand": false,
+   "tkx": 84.79,
+   "tky": 71.65
+  },
+  {
+   "id": "lillehammer",
+   "name": "Lillehammer",
+   "x": 28.58,
+   "y": 69.68,
+   "rand": false,
+   "tkx": 32.55,
+   "tky": 69.3
+  },
+  {
+   "id": "stockholm",
+   "name": "Stockholm",
+   "x": 63.07,
+   "y": 71.45,
+   "rand": false,
+   "tkx": 64.01,
+   "tky": 73.18
+  },
+  {
+   "id": "oerebro",
+   "name": "Örebro",
+   "x": 48.46,
+   "y": 74.39,
+   "rand": false,
+   "tkx": 48.09,
+   "tky": 73.26
+  },
+  {
+   "id": "oslo",
+   "name": "Oslo",
+   "x": 35.37,
+   "y": 77.82,
+   "rand": false,
+   "tkx": 37.35,
+   "tky": 75.4
+  },
+  {
+   "id": "bergen",
+   "name": "Bergen",
+   "x": 10.25,
+   "y": 77.28,
+   "rand": false,
+   "tkx": 13.03,
+   "tky": 73.27
+  },
+  {
+   "id": "norrkoeping",
+   "name": "Norrköping",
+   "x": 62.29,
+   "y": 78.03,
+   "rand": false,
+   "tkx": 62.44,
+   "tky": 77.92
+  },
+  {
+   "id": "stavanger",
+   "name": "Stavanger",
+   "x": 16.08,
+   "y": 85.03,
+   "rand": false,
+   "tkx": 20.58,
+   "tky": 78.87
+  },
+  {
+   "id": "goeteborg",
+   "name": "Göteborg",
+   "x": 45.67,
+   "y": 85.36,
+   "rand": false,
+   "tkx": 45.2,
+   "tky": 81.5
+  },
+  {
+   "id": "kristiansand",
+   "name": "Kristiansand",
+   "x": 29.5,
+   "y": 85.81,
+   "rand": false,
+   "tkx": 32.55,
+   "tky": 81.3
+  },
+  {
+   "id": "aalborg",
+   "name": "Ålborg",
+   "x": 38.5,
+   "y": 90.76,
+   "rand": false,
+   "tkx": 39.25,
+   "tky": 85.66
+  },
+  {
+   "id": "karlskrona",
+   "name": "Karlskrona",
+   "x": 65.62,
+   "y": 90.87,
+   "rand": false,
+   "tkx": 64.9,
+   "tky": 87.46
+  },
+  {
+   "id": "koebenhavn",
+   "name": "København",
+   "x": 51.58,
+   "y": 95,
+   "rand": false,
+   "tkx": 50.08,
+   "tky": 88.44
+  },
+  {
+   "id": "aarhus",
+   "name": "Århus",
+   "x": 42.67,
+   "y": 95.49,
+   "rand": false,
+   "tkx": 43.02,
+   "tky": 89.01
+  }
+ ],
+ "strecken": [
+  {
+   "nr": 1,
+   "von": "honningsvaag",
+   "nach": "kirkenes",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 50.13,
+     "y": 8.64,
+     "deg": 40.6,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 54.37,
+     "y": 10.35,
+     "deg": 22.6,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 2,
+   "von": "kirkenes",
+   "nach": "murmansk",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 60.12,
+     "y": 8.73,
+     "deg": -47.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 65.01,
+     "y": 7.53,
+     "deg": 1.2,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 70.23,
+     "y": 7.72,
+     "deg": 10.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 3,
+   "von": "kirkenes",
+   "nach": "rovaniemi",
+   "laenge": 5,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 61.99,
+     "y": 12.67,
+     "deg": 39.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 65.62,
+     "y": 15.28,
+     "deg": 53.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 67.62,
+     "y": 18.66,
+     "deg": 84.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 66.84,
+     "y": 22.13,
+     "deg": 114.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 63.72,
+     "y": 25.12,
+     "deg": 128.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 4,
+   "von": "murmansk",
+   "nach": "lieksa",
+   "laenge": 9,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 78.02,
+     "y": 10.34,
+     "deg": 34.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 82.04,
+     "y": 12.51,
+     "deg": 44.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 85.49,
+     "y": 15.16,
+     "deg": 54.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 88.5,
+     "y": 18.23,
+     "deg": 64.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 90.25,
+     "y": 21.66,
+     "deg": 74.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 91.24,
+     "y": 25.14,
+     "deg": 84.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 91.4,
+     "y": 28.58,
+     "deg": 94.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 90.3,
+     "y": 32.17,
+     "deg": 104.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 88.71,
+     "y": 35.45,
+     "deg": 114.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 5,
+   "von": "honningsvaag",
+   "nach": "tromsoe",
+   "laenge": 4,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 43.5,
+     "y": 7.88,
+     "deg": 145.2,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 39.29,
+     "y": 9.93,
+     "deg": 137.2,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 36.14,
+     "y": 12.74,
+     "deg": 126,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 33,
+     "y": 15.54,
+     "deg": 115.2,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 2
+  },
+  {
+   "nr": 6,
+   "von": "tromsoe",
+   "nach": "narvik",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 27.4,
+     "y": 18.49,
+     "deg": 156.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 24.09,
+     "y": 21.1,
+     "deg": 106.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 24.95,
+     "y": 24.46,
+     "deg": 51.1,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 7,
+   "von": "narvik",
+   "nach": "kiruna",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 31.92,
+     "y": 26.48,
+     "deg": 17.2,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 8
+  },
+  {
+   "nr": 8,
+   "von": "narvik",
+   "nach": "kiruna",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 31.38,
+     "y": 27.61,
+     "deg": 17.2,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 7
+  },
+  {
+   "nr": 9,
+   "von": "kiruna",
+   "nach": "boden",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 39.15,
+     "y": 28.79,
+     "deg": 56.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 43.07,
+     "y": 30.99,
+     "deg": 26.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 48.5,
+     "y": 32.22,
+     "deg": 1.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 10
+  },
+  {
+   "nr": 10,
+   "von": "kiruna",
+   "nach": "boden",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 37.83,
+     "y": 30.06,
+     "deg": 56.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 42.06,
+     "y": 32.31,
+     "deg": 26.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 47.25,
+     "y": 33.49,
+     "deg": 1.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 9
+  },
+  {
+   "nr": 11,
+   "von": "rovaniemi",
+   "nach": "tornio",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 59.6,
+     "y": 30.01,
+     "deg": 91.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 12,
+   "von": "rovaniemi",
+   "nach": "oulu",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 62.97,
+     "y": 29.97,
+     "deg": 67.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 65.17,
+     "y": 33.09,
+     "deg": 67.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 13,
+   "von": "tornio",
+   "nach": "boden",
+   "laenge": 1,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 56.25,
+     "y": 33.01,
+     "deg": 171.6,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 14,
+   "von": "tornio",
+   "nach": "oulu",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 62.88,
+     "y": 34.65,
+     "deg": 48,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 15,
+   "von": "oulu",
+   "nach": "kajaani",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 69.78,
+     "y": 35.82,
+     "deg": -7.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 75.04,
+     "y": 35.29,
+     "deg": -7.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 16,
+   "von": "kajaani",
+   "nach": "lieksa",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 82.92,
+     "y": 36.69,
+     "deg": 25.6,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 17,
+   "von": "kajaani",
+   "nach": "kuopio",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 78.9,
+     "y": 38.1,
+     "deg": 89.9,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 81.14,
+     "y": 41.28,
+     "deg": 39.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 18,
+   "von": "oulu",
+   "nach": "kuopio",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 69.25,
+     "y": 38.34,
+     "deg": 32.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 73.9,
+     "y": 40.17,
+     "deg": 32.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 78.29,
+     "y": 42.06,
+     "deg": 32.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 19,
+   "von": "vaasa",
+   "nach": "kuopio",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 65.66,
+     "y": 48.1,
+     "deg": -21.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 70.63,
+     "y": 46.72,
+     "deg": -21.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 75.61,
+     "y": 45.47,
+     "deg": -21.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 80.39,
+     "y": 44.18,
+     "deg": -21.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 20,
+   "von": "oulu",
+   "nach": "vaasa",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 65.16,
+     "y": 39.34,
+     "deg": 102.2,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 64.08,
+     "y": 42.85,
+     "deg": 102.2,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 62.7,
+     "y": 46.11,
+     "deg": 102.2,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 21,
+   "von": "kuopio",
+   "nach": "imatra",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 88.31,
+     "y": 44.01,
+     "deg": 22.9,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 91.94,
+     "y": 46.67,
+     "deg": 70.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 22,
+   "von": "kuopio",
+   "nach": "lahti",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 84.16,
+     "y": 45.5,
+     "deg": 99.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 82.81,
+     "y": 48.95,
+     "deg": 104.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 81.46,
+     "y": 52.39,
+     "deg": 77.1,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 23,
+   "von": "boden",
+   "nach": "umeaa",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 51.19,
+     "y": 36.03,
+     "deg": 81.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 52,
+     "y": 39.58,
+     "deg": 81.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 52.57,
+     "y": 43.01,
+     "deg": 81.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 24
+  },
+  {
+   "nr": 24,
+   "von": "boden",
+   "nach": "umeaa",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 53.35,
+     "y": 35.95,
+     "deg": 81.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 54.17,
+     "y": 39.51,
+     "deg": 81.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 54.86,
+     "y": 42.93,
+     "deg": 81.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 23
+  },
+  {
+   "nr": 25,
+   "von": "umeaa",
+   "nach": "vaasa",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 58.36,
+     "y": 47.04,
+     "deg": 29.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 26,
+   "von": "umeaa",
+   "nach": "sundsvall",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 54.22,
+     "y": 47.88,
+     "deg": 104,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 52.9,
+     "y": 51.33,
+     "deg": 104,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 51.59,
+     "y": 54.7,
+     "deg": 104,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 27
+  },
+  {
+   "nr": 27,
+   "von": "umeaa",
+   "nach": "sundsvall",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 52.11,
+     "y": 47.49,
+     "deg": 104,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 50.92,
+     "y": 50.9,
+     "deg": 104,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 49.54,
+     "y": 54.31,
+     "deg": 104,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 26
+  },
+  {
+   "nr": 28,
+   "von": "vaasa",
+   "nach": "sundsvall",
+   "laenge": 3,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 61.87,
+     "y": 51.62,
+     "deg": 90.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 59.97,
+     "y": 54.8,
+     "deg": 135.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 55.25,
+     "y": 56.46,
+     "deg": 170.3,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 29,
+   "von": "vaasa",
+   "nach": "tampere",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 66.11,
+     "y": 51.13,
+     "deg": 39.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 70.29,
+     "y": 53.33,
+     "deg": 39.3,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 30,
+   "von": "tampere",
+   "nach": "lahti",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 78.52,
+     "y": 55.07,
+     "deg": 0,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 31,
+   "von": "lahti",
+   "nach": "helsinki",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 82.68,
+     "y": 57.57,
+     "deg": 89.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 32,
+   "von": "lahti",
+   "nach": "imatra",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 85.87,
+     "y": 53.28,
+     "deg": -41.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 89.74,
+     "y": 50.93,
+     "deg": -39.1,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 33,
+   "von": "helsinki",
+   "nach": "imatra",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 87.09,
+     "y": 58.7,
+     "deg": -41.6,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 90.15,
+     "y": 55.52,
+     "deg": -69,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 91.87,
+     "y": 52.34,
+     "deg": -69.6,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 34,
+   "von": "tampere",
+   "nach": "helsinki",
+   "laenge": 1,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 78.24,
+     "y": 57.94,
+     "deg": 45.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 35,
+   "von": "tampere",
+   "nach": "turku",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 74.13,
+     "y": 57.96,
+     "deg": 90.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 36,
+   "von": "turku",
+   "nach": "helsinki",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 77.96,
+     "y": 60.49,
+     "deg": 0.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 37,
+   "von": "helsinki",
+   "nach": "tallinn",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 86.66,
+     "y": 62.72,
+     "deg": 43.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 88.46,
+     "y": 64.95,
+     "deg": 131.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 38,
+   "von": "stockholm",
+   "nach": "tallinn",
+   "laenge": 4,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 68.06,
+     "y": 72.52,
+     "deg": -2.6,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 73.28,
+     "y": 72.16,
+     "deg": -12.6,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 78.1,
+     "y": 70.73,
+     "deg": -34.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 82.42,
+     "y": 68.77,
+     "deg": -42.6,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 2
+  },
+  {
+   "nr": 39,
+   "von": "helsinki",
+   "nach": "stockholm",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 80.29,
+     "y": 63.69,
+     "deg": 139.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 76.03,
+     "y": 65.92,
+     "deg": 139.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 71.91,
+     "y": 68.2,
+     "deg": 139.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 67.98,
+     "y": 70.22,
+     "deg": 139.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 2,
+   "doppel_mit": 40
+  },
+  {
+   "nr": 40,
+   "von": "helsinki",
+   "nach": "stockholm",
+   "laenge": 4,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 78.91,
+     "y": 62.65,
+     "deg": 141.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 74.91,
+     "y": 64.91,
+     "deg": 141.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 70.72,
+     "y": 67,
+     "deg": 141.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 66.59,
+     "y": 69.18,
+     "deg": 141.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1,
+   "doppel_mit": 39
+  },
+  {
+   "nr": 41,
+   "von": "turku",
+   "nach": "stockholm",
+   "laenge": 3,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 70.34,
+     "y": 62.35,
+     "deg": 146.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 66.65,
+     "y": 64.69,
+     "deg": 126.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 64.3,
+     "y": 67.81,
+     "deg": 106.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 42,
+   "von": "sundsvall",
+   "nach": "oestersund",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 45.66,
+     "y": 58.17,
+     "deg": -194.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 40.28,
+     "y": 57.44,
+     "deg": -139.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 43,
+   "von": "sundsvall",
+   "nach": "stockholm",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 53.25,
+     "y": 59.02,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 55.77,
+     "y": 62.1,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 58.35,
+     "y": 65.06,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 60.86,
+     "y": 68.09,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 44
+  },
+  {
+   "nr": 44,
+   "von": "sundsvall",
+   "nach": "stockholm",
+   "laenge": 4,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 51.21,
+     "y": 59.63,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 53.72,
+     "y": 62.75,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 56.49,
+     "y": 65.71,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 58.95,
+     "y": 68.7,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 43
+  },
+  {
+   "nr": 45,
+   "von": "sundsvall",
+   "nach": "oerebro",
+   "laenge": 4,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 48.39,
+     "y": 60.58,
+     "deg": 91.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 48.24,
+     "y": 64.05,
+     "deg": 91.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 48.21,
+     "y": 67.59,
+     "deg": 91.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 47.98,
+     "y": 71.01,
+     "deg": 91.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 46,
+   "von": "oestersund",
+   "nach": "trondheim",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 34.41,
+     "y": 57.24,
+     "deg": 147.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 29.51,
+     "y": 58.59,
+     "deg": 167.1,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 47,
+   "von": "mo_i_rana",
+   "nach": "trondheim",
+   "laenge": 5,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 26.1,
+     "y": 42.14,
+     "deg": 90.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 26.02,
+     "y": 45.72,
+     "deg": 90.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 26.12,
+     "y": 49.05,
+     "deg": 90.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 26.22,
+     "y": 52.54,
+     "deg": 90.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 26.07,
+     "y": 56.08,
+     "deg": 90.3,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "tunnel": true
+  },
+  {
+   "nr": 48,
+   "von": "mo_i_rana",
+   "nach": "trondheim",
+   "laenge": 6,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 22.01,
+     "y": 40.94,
+     "deg": 140.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 18.82,
+     "y": 43.59,
+     "deg": 115.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 17.35,
+     "y": 46.9,
+     "deg": 95.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 17.46,
+     "y": 50.25,
+     "deg": 85.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 18.78,
+     "y": 53.63,
+     "deg": 65.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 21.92,
+     "y": 56.29,
+     "deg": 40.3,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 2
+  },
+  {
+   "nr": 49,
+   "von": "narvik",
+   "nach": "mo_i_rana",
+   "laenge": 4,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 24.39,
+     "y": 27.77,
+     "deg": 136.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 21.55,
+     "y": 30.47,
+     "deg": 111.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 20.75,
+     "y": 33.98,
+     "deg": 81.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 22.6,
+     "y": 37.28,
+     "deg": 56.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 2
+  },
+  {
+   "nr": 50,
+   "von": "trondheim",
+   "nach": "aandalsnes",
+   "laenge": 2,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 21.17,
+     "y": 58.69,
+     "deg": 179.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 17.81,
+     "y": 60.75,
+     "deg": 89.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 53,
+   "von": "aandalsnes",
+   "nach": "lillehammer",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 21.8,
+     "y": 65.3,
+     "deg": 44.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 25.59,
+     "y": 67.78,
+     "deg": 44.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 54,
+   "von": "trondheim",
+   "nach": "lillehammer",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 28.26,
+     "y": 61.13,
+     "deg": 49,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 30.87,
+     "y": 64.09,
+     "deg": 79,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 30.57,
+     "y": 67.54,
+     "deg": 109,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 55,
+   "von": "lillehammer",
+   "nach": "oslo",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 32.16,
+     "y": 71.51,
+     "deg": 42.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 34.51,
+     "y": 74.48,
+     "deg": 77.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 56,
+   "von": "bergen",
+   "nach": "oslo",
+   "laenge": 4,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 13.88,
+     "y": 75.34,
+     "deg": -28.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 19.36,
+     "y": 73.71,
+     "deg": -13.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 25.48,
+     "y": 73.88,
+     "deg": 16.9,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 31.14,
+     "y": 75.56,
+     "deg": 36.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 57
+  },
+  {
+   "nr": 57,
+   "von": "bergen",
+   "nach": "oslo",
+   "laenge": 4,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 14.89,
+     "y": 76.5,
+     "deg": -33.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 19.86,
+     "y": 75.36,
+     "deg": -13.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 24.96,
+     "y": 75.35,
+     "deg": 16.9,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 30.14,
+     "y": 76.8,
+     "deg": 36.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 56
+  },
+  {
+   "nr": 58,
+   "von": "bergen",
+   "nach": "stavanger",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 10.18,
+     "y": 80.56,
+     "deg": 87.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 12.38,
+     "y": 83.59,
+     "deg": 47.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 59,
+   "von": "stavanger",
+   "nach": "kristiansand",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 20.45,
+     "y": 85.13,
+     "deg": 3.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 25.63,
+     "y": 85.26,
+     "deg": 3.1,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 60,
+   "von": "stavanger",
+   "nach": "kristiansand",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 17.14,
+     "y": 87.63,
+     "deg": 50.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 21.9,
+     "y": 88.91,
+     "deg": 0.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 26.74,
+     "y": 87.76,
+     "deg": -47.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 61,
+   "von": "oslo",
+   "nach": "kristiansand",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 31.8,
+     "y": 79.73,
+     "deg": 126.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 29.72,
+     "y": 83.12,
+     "deg": 96.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 62,
+   "von": "oslo",
+   "nach": "goeteborg",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 39.22,
+     "y": 80.63,
+     "deg": 47.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 42.54,
+     "y": 83.15,
+     "deg": 47.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 63,
+   "von": "oslo",
+   "nach": "aalborg",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 35.79,
+     "y": 81.26,
+     "deg": 80.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 36.49,
+     "y": 84.66,
+     "deg": 80.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 37.32,
+     "y": 88.06,
+     "deg": 80.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 64,
+   "von": "kristiansand",
+   "nach": "aalborg",
+   "laenge": 2,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 30.85,
+     "y": 88.35,
+     "deg": 64.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 34.75,
+     "y": 90.68,
+     "deg": 26.3,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 65,
+   "von": "oslo",
+   "nach": "oerebro",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 39.11,
+     "y": 75.83,
+     "deg": -18.6,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 44.3,
+     "y": 74.65,
+     "deg": -18.6,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 66
+  },
+  {
+   "nr": 66,
+   "von": "oslo",
+   "nach": "oerebro",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 39.92,
+     "y": 77.15,
+     "deg": -18.6,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 45.03,
+     "y": 75.89,
+     "deg": -18.6,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 65
+  },
+  {
+   "nr": 67,
+   "von": "oerebro",
+   "nach": "stockholm",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 52.24,
+     "y": 72.82,
+     "deg": -17.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 57.23,
+     "y": 71.76,
+     "deg": -17.3,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 68
+  },
+  {
+   "nr": 68,
+   "von": "oerebro",
+   "nach": "stockholm",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 52.85,
+     "y": 74.21,
+     "deg": -17.3,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 58.04,
+     "y": 72.98,
+     "deg": -17.3,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 67
+  },
+  {
+   "nr": 69,
+   "von": "stockholm",
+   "nach": "norrkoeping",
+   "laenge": 1,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 63.9,
+     "y": 75.2,
+     "deg": 102.1,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 70
+  },
+  {
+   "nr": 70,
+   "von": "stockholm",
+   "nach": "norrkoeping",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 61.78,
+     "y": 74.94,
+     "deg": 102.1,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 69
+  },
+  {
+   "nr": 71,
+   "von": "oerebro",
+   "nach": "norrkoeping",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 51.97,
+     "y": 76.78,
+     "deg": 27.1,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 57.52,
+     "y": 77.4,
+     "deg": -2.9,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 72,
+   "von": "oerebro",
+   "nach": "goeteborg",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 47.86,
+     "y": 78.64,
+     "deg": 103.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 46.68,
+     "y": 82.01,
+     "deg": 101.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 73,
+   "von": "norrkoeping",
+   "nach": "goeteborg",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 58.19,
+     "y": 79.64,
+     "deg": 140.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 53.98,
+     "y": 81.7,
+     "deg": 140.8,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 49.83,
+     "y": 83.8,
+     "deg": 140.8,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 74,
+   "von": "norrkoeping",
+   "nach": "karlskrona",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 64.23,
+     "y": 80.9,
+     "deg": 82.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 64.86,
+     "y": 84.24,
+     "deg": 82.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 65.69,
+     "y": 87.7,
+     "deg": 82.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 75
+  },
+  {
+   "nr": 75,
+   "von": "norrkoeping",
+   "nach": "karlskrona",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 62.23,
+     "y": 81.05,
+     "deg": 82.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 62.79,
+     "y": 84.44,
+     "deg": 82.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 63.63,
+     "y": 87.94,
+     "deg": 82.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "doppel_mit": 74
+  },
+  {
+   "nr": 76,
+   "von": "goeteborg",
+   "nach": "aalborg",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 44.87,
+     "y": 88.35,
+     "deg": 98.7,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 42.77,
+     "y": 90.64,
+     "deg": 180.7,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 77,
+   "von": "goeteborg",
+   "nach": "koebenhavn",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 48.36,
+     "y": 88.44,
+     "deg": 69.4,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 49.96,
+     "y": 91.67,
+     "deg": 69.4,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 78,
+   "von": "karlskrona",
+   "nach": "koebenhavn",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 60.94,
+     "y": 91.49,
+     "deg": 155.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 55.81,
+     "y": 92.8,
+     "deg": 155.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1,
+   "doppel_mit": 79
+  },
+  {
+   "nr": 79,
+   "von": "karlskrona",
+   "nach": "koebenhavn",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 61.7,
+     "y": 92.82,
+     "deg": 155.5,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 56.69,
+     "y": 94.17,
+     "deg": 155.5,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1,
+   "doppel_mit": 78
+  },
+  {
+   "nr": 80,
+   "von": "aalborg",
+   "nach": "aarhus",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 40.59,
+     "y": 93.12,
+     "deg": 60.2,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  },
+  {
+   "nr": 81,
+   "von": "aarhus",
+   "nach": "koebenhavn",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 46.66,
+     "y": 95.27,
+     "deg": -0.2,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 82,
+   "von": "aandalsnes",
+   "nach": "bergen",
+   "laenge": 5,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "faehre": 2,
+   "felder": [
+    {
+     "x": 14.34,
+     "y": 62.75,
+     "deg": 177,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 9.86,
+     "y": 64.55,
+     "deg": 122,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 7.73,
+     "y": 67.65,
+     "deg": 107,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 6.78,
+     "y": 71.18,
+     "deg": 92,
+     "l": 4.64,
+     "w": 1.03
+    },
+    {
+     "x": 7.93,
+     "y": 74.5,
+     "deg": 62,
+     "l": 4.64,
+     "w": 1.03
+    }
+   ]
+  }
+ ],
+ "auftraege": [
+  {
+   "von": "Tornio",
+   "nach": "Imatra",
+   "punkte": 6
+  },
+  {
+   "von": "Helsinki",
+   "nach": "København",
+   "punkte": 10
+  },
+  {
+   "von": "Stockholm",
+   "nach": "Bergen",
+   "punkte": 8
+  },
+  {
+   "von": "Tampere",
+   "nach": "Boden",
+   "punkte": 6
+  },
+  {
+   "von": "Narvik",
+   "nach": "Murmansk",
+   "punkte": 12
+  },
+  {
+   "von": "Ålborg",
+   "nach": "Norrköping",
+   "punkte": 5
+  },
+  {
+   "von": "Helsinki",
+   "nach": "Bergen",
+   "punkte": 12
+  },
+  {
+   "von": "Örebro",
+   "nach": "Kuopio",
+   "punkte": 10
+  },
+  {
+   "von": "Oslo",
+   "nach": "Stockholm",
+   "punkte": 4
+  },
+  {
+   "von": "Bergen",
+   "nach": "Trondheim",
+   "punkte": 7
+  },
+  {
+   "von": "Bergen",
+   "nach": "Narvik",
+   "punkte": 16
+  },
+  {
+   "von": "Narvik",
+   "nach": "Tallinn",
+   "punkte": 13
+  },
+  {
+   "von": "Stavanger",
+   "nach": "Rovaniemi",
+   "punkte": 18
+  },
+  {
+   "von": "Stockholm",
+   "nach": "Tromsø",
+   "punkte": 17
+  },
+  {
+   "von": "Sundsvall",
+   "nach": "Lahti",
+   "punkte": 6
+  },
+  {
+   "von": "Oslo",
+   "nach": "Stavanger",
+   "punkte": 4
+  },
+  {
+   "von": "Bergen",
+   "nach": "Tornio",
+   "punkte": 17
+  },
+  {
+   "von": "Stockholm",
+   "nach": "Kajaani",
+   "punkte": 10
+  },
+  {
+   "von": "København",
+   "nach": "Narvik",
+   "punkte": 18
+  },
+  {
+   "von": "Göteborg",
+   "nach": "Turku",
+   "punkte": 7
+  },
+  {
+   "von": "Göteborg",
+   "nach": "Åndalsnes",
+   "punkte": 6
+  },
+  {
+   "von": "Oslo",
+   "nach": "København",
+   "punkte": 4
+  },
+  {
+   "von": "Göteborg",
+   "nach": "Oulu",
+   "punkte": 12
+  },
+  {
+   "von": "Tromsø",
+   "nach": "Vaasa",
+   "punkte": 11
+  },
+  {
+   "von": "Oslo",
+   "nach": "Vaasa",
+   "punkte": 9
+  },
+  {
+   "von": "Stavanger",
+   "nach": "Karlskrona",
+   "punkte": 8
+  },
+  {
+   "von": "Helsinki",
+   "nach": "Kiruna",
+   "punkte": 10
+  },
+  {
+   "von": "Ålborg",
+   "nach": "Umeå",
+   "punkte": 11
+  },
+  {
+   "von": "København",
+   "nach": "Oulu",
+   "punkte": 14
+  },
+  {
+   "von": "Kristiansand",
+   "nach": "Mo i Rana",
+   "punkte": 12
+  },
+  {
+   "von": "Helsinki",
+   "nach": "Östersund",
+   "punkte": 8
+  },
+  {
+   "von": "Oslo",
+   "nach": "Honningsvåg",
+   "punkte": 21
+  },
+  {
+   "von": "Helsinki",
+   "nach": "Lieksa",
+   "punkte": 5
+  },
+  {
+   "von": "Oslo",
+   "nach": "Mo i Rana",
+   "punkte": 10
+  },
+  {
+   "von": "Tampere",
+   "nach": "Tallinn",
+   "punkte": 3
+  },
+  {
+   "von": "Turku",
+   "nach": "Trondheim",
+   "punkte": 10
+  },
+  {
+   "von": "København",
+   "nach": "Murmansk",
+   "punkte": 24
+  },
+  {
+   "von": "Norrköping",
+   "nach": "Boden",
+   "punkte": 11
+  },
+  {
+   "von": "Stockholm",
+   "nach": "Umeå",
+   "punkte": 7
+  },
+  {
+   "von": "Helsinki",
+   "nach": "Kirkenes",
+   "punkte": 13
+  },
+  {
+   "von": "Stockholm",
+   "nach": "Imatra",
+   "punkte": 7
+  },
+  {
+   "von": "Oslo",
+   "nach": "Helsinki",
+   "punkte": 8
+  },
+  {
+   "von": "Tampere",
+   "nach": "Kristiansand",
+   "punkte": 10
+  },
+  {
+   "von": "Stockholm",
+   "nach": "København",
+   "punkte": 6
+  },
+  {
+   "von": "Århus",
+   "nach": "Lillehammer",
+   "punkte": 6
+  },
+  {
+   "von": "Bergen",
+   "nach": "København",
+   "punkte": 8
+  }
+ ]
+}
