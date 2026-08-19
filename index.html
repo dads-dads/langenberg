@@ -230,6 +230,8 @@ function setEdition(id){
 }
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
+// Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
+const APP_VERSION='7.0 · 19.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -936,14 +938,6 @@ function statsSchreiben(){
       punkte:ROOM.players.map(p=>p.total||0),
       zuege:(ROOM.game&&ROOM.game.zuege)||0,
       sieger:sieger.name,custom:!!ROOM.custom,test:!!ROOM.test});
-    if(!ROOM.test&&!ROOM.custom)ROOM.players.forEach(p=>{
-      const key=p.name.toLowerCase().replace(/[.#$\/\[\]]/g,'_');
-      db.ref('stats/'+key).transaction(c=>{
-        c=c||{name:p.name,spiele:0,siege:0,punkte:0};
-        c.name=p.name;c.spiele++;c.punkte+=(p.total||0);
-        if(p.name===sieger.name)c.siege++;
-        return c;});
-    });
   });
 }
 let sdAsked=false;
@@ -1451,33 +1445,26 @@ let ADMIN_OK=false;
 function ergebnisLoeschen(key,e,then){
   const m=modal('<h2>Eintrag löschen?</h2><p style="font-size:14px;margin-bottom:12px">Das Spiel vom '
     +new Date(e.ts||0).toLocaleDateString('de-DE')+' (Raum '+(e.code||'?')+') wird aus der Rangliste entfernt. '
-    +'Die Gesamtwertung der beteiligten Spieler wird entsprechend korrigiert.</p>'
+    +'Die Gesamtwertung berechnet sich automatisch neu.</p>'
     +'<button class="go" id="ja">Endgültig löschen</button><button class="cancel" id="nein">Abbrechen</button>');
   m.querySelector('#nein').onclick=()=>m.remove();
   m.querySelector('#ja').onclick=()=>{
     m.remove();
-    const auf=[db.ref('ergebnisse/'+key).remove()];
-    (e.spieler||[]).forEach((n,i)=>{
-      const key2=n.toLowerCase().replace(/[.#$\/\[\]]/g,'_');
-      auf.push(db.ref('stats/'+key2).transaction(c=>{
-        if(!c)return c;
-        c.spiele=Math.max(0,(c.spiele||0)-1);
-        c.punkte=(c.punkte||0)-((e.punkte&&e.punkte[i])||0);
-        if(e.sieger&&e.sieger.toLowerCase()===n.toLowerCase())c.siege=Math.max(0,(c.siege||0)-1);
-        return c.spiele?c:null;}));
-    });
-    Promise.all(auf).then(()=>{toast('Eintrag gelöscht.');then&&then()})
+    Promise.all([db.ref('ergebnisse/'+key).remove()]).then(()=>{toast('Eintrag gelöscht.');then&&then()})
       .catch(err=>toast('Fehlgeschlagen: '+err.message));
   };
 }
 function arrOf(v){return Array.isArray(v)?v:(v&&typeof v==='object'?Object.values(v):[])}
 function zeigeRangliste(){
-  Promise.all([db.ref('stats').get(),db.ref('ergebnisse').get()]).then(([s1,s2])=>{
-    const stats=Object.values(s1.val()||{}), ergObj=s2.val()||{}, erg=Object.values(ergObj);
+  // Alten Summenspeicher entfernen – die Gesamtwertung wird jetzt immer
+  // direkt aus den gespeicherten Spielergebnissen berechnet.
+  try{const r=db.ref('stats').remove();r&&r.catch&&r.catch(()=>{})}catch(e){}
+  db.ref('ergebnisse').get().then(s2=>{
+    const ergObj=s2.val()||{}, erg=Object.values(ergObj);
     // Firebase kann Arrays als Objekte zurueckgeben – vorab normalisieren,
     // damit ein einzelner alter Datensatz nicht die ganze Rangliste blockiert.
     erg.forEach(e=>{e.spieler=arrOf(e.spieler).filter(x=>x!=null);e.punkte=arrOf(e.punkte)});
-    if(!stats.length&&!erg.length){toast('Noch keine beendeten Spiele in der Wertung.');return}
+    if(!erg.length){toast('Noch keine beendeten Spiele in der Wertung.');return}
     const namen=[...new Set([].concat(...erg.map(e=>e.spieler||[])))].sort();
     const edOpts=Object.values(EDITIONEN).map(e=>({id:(e.meta.statId||e.meta.name),name:e.meta.name}));
     const edName=id=>{const t=edOpts.find(o=>o.id===id);return t?t.name:(id||'Langenberg')};
@@ -1499,13 +1486,13 @@ function zeigeRangliste(){
       return true}
     const zeile=(i,n,rechts)=>'<div class="score-row"><span><b>'+i+'.</b> '+n+'</span><span style="font-size:13px">'+rechts+'</span></div>';
     function gesamt(){
-      let a,quelle;
-      if(!filterAktiv()){a=[...stats];quelle='Über alle beendeten Spiele'}
-      else{const tab={};erg.filter(passt).forEach(e=>{(e.spieler||[]).forEach((n,i)=>{
-          const k=n.toLowerCase();tab[k]=tab[k]||{name:n,siege:0,spiele:0,punkte:0};
-          tab[k].spiele++;tab[k].punkte+=(e.punkte&&e.punkte[i])||0;
-          if(e.sieger&&e.sieger.toLowerCase()===k)tab[k].siege++})});
-        a=Object.values(tab);quelle='Gefiltert: '+erg.filter(passt).length+' Spiel(e)'}
+      const rel=erg.filter(passt),tab={};
+      rel.forEach(e=>{(e.spieler||[]).forEach((n,i)=>{
+        const k=n.toLowerCase();tab[k]=tab[k]||{name:n,siege:0,spiele:0,punkte:0};
+        tab[k].spiele++;tab[k].punkte+=(e.punkte&&e.punkte[i])||0;
+        if(e.sieger&&e.sieger.toLowerCase()===k)tab[k].siege++})});
+      const a=Object.values(tab);
+      const quelle=filterAktiv()?'Gefiltert: '+rel.length+' Spiel(e)':'Über alle beendeten Spiele ('+rel.length+')';
       if(!a.length){box.innerHTML='<p style="text-align:center;color:#8a7d63;padding:14px 0">Keine Spiele im gewählten Filter.</p>';return}
       a.sort((x,y)=>(y.siege-x.siege)||(y.punkte-x.punkte));
       box.innerHTML='<div style="font-size:13px;color:#8a7d63;margin-bottom:8px">'+quelle+'</div>'
@@ -1791,7 +1778,7 @@ stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(
 (function landing(){
   try{const aj=sessionStorage.getItem('autojoin');if(aj){sessionStorage.removeItem('autojoin');const o=JSON.parse(aj);if(o&&o.code){joinRoom(o.code,o.name||'',o.pin||'');return}}}catch(e){}
   const m=modal('<h2 class="serif" style="text-align:center;letter-spacacing:.08em;letter-spacing:.08em">ZUG UM ZUG</h2>'+
-    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version 6.3</p>'+
+    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version '+APP_VERSION+'</p>'+
     '<input type="text" id="pname" placeholder="Dein Name" maxlength="14" style="margin-bottom:8px">'+
     '<input type="password" id="ppin" placeholder="Dein PIN (mind. 4 Zeichen)" maxlength="12" style="margin-bottom:10px">'+
     (Object.keys(EDITIONEN).length>1?'<div style="font-size:13px;color:#8a7d63;margin-bottom:5px">Edition für ein neues Spiel:</div><div class="row" id="edRow" style="justify-content:center;margin:0 0 10px">'
