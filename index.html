@@ -231,7 +231,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.5 · 22.08.2026';
+const APP_VERSION='7.6 · 22.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -1337,7 +1337,11 @@ function renderHud(){
       +'<b>'+((pl.tickets||[]).length)+'</b><small>🎫</small>'
       +(bhAnzahl()?'<b>'+(bhAnzahl()-((pl.bahnhoefe||[]).length))+'</b><small>🏛</small>':'')+'</span>';
     ch.appendChild(d)});
-  document.getElementById('roomtag').textContent=CODE+(limitMs()?' · '+(Math.floor(limitMs()/3600000)>0?Math.floor(limitMs()/3600000)+'h':'')+((Math.floor(limitMs()/60000)%60)>0?(Math.floor(limitMs()/60000)%60)+'m':'')+'/Zug':'')+(ROOM.custom?' · Eigene Regeln':'')+(ROOM.test?' · TESTMODUS':'')+(g().lastRounds>0?' · Letzte Runde!':'');
+  // Kopfzeile bleibt den Spieler-Chips vorbehalten; nur echte Warnungen erscheinen hier.
+  document.getElementById('roomtag').textContent=(ROOM.custom?'Eigene Regeln':'')+(ROOM.test?(ROOM.custom?' · ':'')+'TESTMODUS':'')+(g().lastRounds>0?((ROOM.custom||ROOM.test)?' · ':'')+'Letzte Runde!':'');
+  // Raumcode und Zugzeit stehen jetzt in der Kopfzeile von "Verlauf & Chat".
+  const ct=document.getElementById('chatTitle');
+  if(ct)ct.textContent='Verlauf & Chat · '+CODE+(limitMs()?' · '+(Math.floor(limitMs()/3600000)>0?Math.floor(limitMs()/3600000)+'h':'')+((Math.floor(limitMs()/60000)%60)>0?(Math.floor(limitMs()/60000)%60)+'m':'')+'/Zug':'');
   const wb=document.getElementById('waitbar');
   const rz=restText();wb.innerHTML='';
   if(ROOM.status==='picking'){wb.classList.remove('hidden');wb.textContent='Warten, bis alle ihre Startaufträge gewählt haben …'}
