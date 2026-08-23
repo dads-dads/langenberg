@@ -231,7 +231,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.6 · 22.08.2026';
+const APP_VERSION='7.7 · 23.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -264,7 +264,7 @@ let pickShown=false, finalShown=false, lastNotice='';
 // Nach RTDB-Roundtrip fehlende Felder wiederherstellen (leere Arrays/Objekte verschwinden)
 function fix(r){
   if(!r) return r;
-  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;return q});
+  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fertig!==undefined)q.fertig=p.fertig;return q});
   if(r.game){const g=r.game;
     g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
     g.claims=g.claims||{};g.startOffers=g.startOffers||{};g.ticketDeckLang=g.ticketDeckLang||[];g.picked=g.picked||{};g.pend=g.pend||[];g.frist=g.frist||0;g.zuege=g.zuege||0;if(g.rps){g.rps.aktiv=g.rps.aktiv||[];g.rps.wahl=g.rps.wahl||{}}
@@ -313,7 +313,7 @@ function hostStart(){
   if(rs.stapelwahl)g.ticketDeckLang=langD;
   refillOpen(g);
   if(GEL()){g.gel=gelNeu();g.gelOpen=[];g.gelDiscard=[]}
-  ROOM.players.forEach((p,i)=>{p.wagons=ROOM.test?9999:WAGONS();p.hand={};p.tickets=[];p.score=0;p.bahnhoefe=[];
+  ROOM.players.forEach((p,i)=>{p.wagons=ROOM.test?9999:WAGONS();p.hand={};p.tickets=[];p.score=0;p.bahnhoefe=[];delete p.fertig;delete p.res;delete p.total;
     for(let k=0;k<4;k++){const c=drawCard(g);p.hand[c]=(p.hand[c]||0)+1}
     if(GEL()){p.gel={};const gc=gelZiehen(g);if(gc)p.gel[gc]=1}
     let off;
@@ -325,6 +325,7 @@ function hostStart(){
   if(GEL())gelNachlegen(g);
   g.start=Date.now();
   g.frist=limitMs()?Date.now()+limitMs():0;
+  sdReset();
   if(!ROOM.test&&ROOM.players.length>1){g.rps={runde:1,aktiv:ROOM.players.map((p,i)=>i),wahl:{}};ROOM.game=g;ROOM.status='rps'}
   else{ROOM.game=g;ROOM.status='picking'}
   sync();
@@ -1011,24 +1012,37 @@ function statsSchreiben(){
   });
 }
 let sdAsked=false;
+// SDL = lokaler Showdown-Zustand. Jeder Spieler entscheidet für sich, wie ausgewertet wird;
+// niemand muss auf den Gastgeber warten. Geteilt wird nur, wer schon fertig ist (players[i].fertig).
+let SDL=null;
+function sdReset(){SDL=null;sdAsked=false;finalShown=false;if(window._sdT){clearInterval(window._sdT);window._sdT=null}}
+function sdFertigMelden(){
+  try{if(roomRef&&SEAT!==null&&ROOM&&ROOM.players[SEAT]){ROOM.players[SEAT].fertig=true;roomRef.child('players/'+SEAT+'/fertig').set(true)}}catch(e){}
+}
+function sdStandHtml(){
+  if(!ROOM||!ROOM.players)return '';
+  return '<div style="font-size:12px;color:#8a7d63;text-align:center;margin-top:8px">Auswertung: '
+    +ROOM.players.map((p,i)=>(p.fertig?'✓ ':'⏳ ')+p.name+(i===SEAT?' (du)':'')).join(' · ')+'</div>';
+}
 function sdCompleted(i){return ROOM.players[i].tickets.filter(t=>tkErfuellt(i,t)).sort((a,b)=>tkWert(i,a)-tkWert(i,b)||a.von.localeCompare(b.von))}
 function sdFrage(){
   if(document.getElementById('sdFrageM'))return;
-  const m=modal('<h2>Auswertung</h2><p style="font-size:14px;margin-bottom:10px">Wie soll abgerechnet werden?</p>'
+  const m=modal('<h2>Auswertung</h2><p style="font-size:14px;margin-bottom:10px">Wie möchtest <b>du</b> abrechnen? Jeder entscheidet das für sich – niemand muss warten.</p>'
     +'<button class="opt" id="sdN">📋 Normale Abrechnung</button>'
+    +'<button class="opt" id="sdM2">🎬 Showdown – Schritt für Schritt</button>'
     +'<button class="opt" id="sdA">🎬 Showdown – automatisch (alle 3 Sek.)</button>'
-    +'<button class="opt" id="sdM2">🎬 Showdown – manuell (jeder deckt selbst auf)</button>');
+    +sdStandHtml());
   m.id='sdFrageM';
-  m.querySelector('#sdN').onclick=()=>{m.remove();roomRef.child('game/sdWahl').set('normal')};
-  m.querySelector('#sdA').onclick=()=>{m.remove();sdBauen('auto')};
+  m.querySelector('#sdN').onclick=()=>{m.remove();SDL=null;finalShown=true;showFinal()};
   m.querySelector('#sdM2').onclick=()=>{m.remove();sdBauen('man')};
+  m.querySelector('#sdA').onclick=()=>{m.remove();sdBauen('auto')};
 }
 function sdTkEvent(pi,tk){const e={t:'tk',pi,von:tk.von,punkte:tkWert(pi,tk)};
   if(tkLand(tk)){e.land=true;e.ziele=tkZiele(tk);const bz=tkBestZiel(pi,tk);e.nach=bz?bz.nach:''}
   else{e.nach=tk.nach;if(tk.lang)e.lang=true}
   return e}
 function sdBauen(mode){
-  finalScore();
+  finalScore();   // nur lokal – der Endstand steht bereits fest
   const n=ROOM.players.length;
   const start=ROOM.players.map((p,i)=>i).sort((a,b)=>{
     const ra=ROOM.players[a].res||{},rb=ROOM.players[b].res||{};
@@ -1044,59 +1058,27 @@ function sdBauen(mode){
   ring.forEach(pi=>{const r=ROOM.players[pi].res||{};
     const anz=ROOM.players[pi].tickets.filter(t=>!tkErfuellt(pi,t)).length;
     ev.push({t:'fail',pi,minus:r.minus||0,anz})});
-  if(mode==='auto'){
-    const rem=ROOM.players.map((p,i)=>sdCompleted(i));
-    let any=true;
-    while(any){any=false;
-      for(const pi of ring){const tk=rem[pi].shift();
-        if(tk){any=true;ev.push(sdTkEvent(pi,tk))}}}
-  }
-  roomRef.child('game/sd').set({mode,step:0,ring,ev,done:mode==='auto'&&!ev.length});
+  const rem=ROOM.players.map((p,i)=>sdCompleted(i));
+  let any=true;
+  while(any){any=false;
+    for(const pi of ring){const tk=rem[pi].shift();
+      if(tk){any=true;ev.push(sdTkEvent(pi,tk))}}}
+  SDL={mode,step:0,ring,ev,done:!ev.length};
+  showdownRender();
 }
 function sdTotals(){
-  const sd=g().sd,t=ROOM.players.map(p=>((p.res||{}).strecken)||0);
-  for(let k=0;k<Math.min(sd.step,(sd.ev||[]).length);k++){const e=sd.ev[k];
+  const t=ROOM.players.map(p=>((p.res||{}).strecken)||0);
+  for(let k=0;k<Math.min(SDL.step,(SDL.ev||[]).length);k++){const e=SDL.ev[k];
     if(e.t==='tk')t[e.pi]+=e.punkte;else if(e.t==='fail')t[e.pi]-=e.minus;else t[e.pi]+=e.pts}
   return t;
 }
-function sdRest(){
-  const sd=g().sd,rest=ROOM.players.map((p,i)=>sdCompleted(i));
-  (sd.ev||[]).slice(0,sd.step).forEach(e=>{if(e.t!=='tk')return;
-    const j=rest[e.pi].findIndex(t=>e.land?tkGleich(t,{von:e.von,typ:'land',ziele:e.ziele}):(t.von===e.von&&t.nach===e.nach&&t.punkte===e.punkte));
-    if(j>=0)rest[e.pi].splice(j,1)});
-  return rest;
-}
-function sdNaechster(){
-  const sd=g().sd;
-  if(sd.step<(sd.ev||[]).length)return sd.ev[sd.step].pi;
-  if(sd.mode==='auto')return null;
-  const rest=sdRest();
-  if(!rest.some(r=>r.length))return null;
-  let pos=0;
-  for(let k=(sd.ev||[]).length-1;k>=0;k--){if(sd.ev[k].t==='tk'){pos=sd.ring.indexOf(sd.ev[k].pi)+1;break}}
-  for(let k=0;k<sd.ring.length;k++){const pi=sd.ring[(pos+k)%sd.ring.length];
-    if(rest[pi].length)return pi}
-  return null;
-}
 function sdWeiter(){
-  const sd=g().sd;
-  if(sd.step<(sd.ev||[]).length){roomRef.child('game/sd/step').set(sd.step+1)}
+  if(!SDL)return;
+  if(SDL.step<(SDL.ev||[]).length)SDL.step++;
+  if(SDL.step>=(SDL.ev||[]).length)SDL.done=true;
+  showdownRender();
 }
-function sdTkAufdecken(tk){
-  const sd=g().sd;
-  const ev=(sd.ev||[]).concat([sdTkEvent(SEAT,tk)]);
-  const rest=sdRest();
-  const fertig=rest.reduce((a,r)=>a+r.length,0)<=1;
-  roomRef.child('game/sd').update({ev,step:ev.length,done:fertig});
-}
-function sdSkip(){
-  const sd=g().sd;let ev=(sd.ev||[]).slice();
-  if(sd.mode==='man'){const rest=sdRest();let any=true;
-    while(any){any=false;
-      for(const pi of sd.ring){const tk=rest[pi].shift();
-        if(tk){any=true;ev.push(sdTkEvent(pi,tk))}}}}
-  roomRef.child('game/sd').update({ev,step:ev.length,done:true});
-}
+function sdSkip(){if(!SDL)return;SDL.step=(SDL.ev||[]).length;SDL.done=true;showdownRender()}
 function sdEvHtml(e){
   const nm=ROOM.players[e.pi].name;
   if(e.t==='bonus')return '<b>'+nm+'</b>: '+e.txt+' <b style="color:#3e7d32">+'+e.pts+'</b>';
@@ -1106,8 +1088,8 @@ function sdEvHtml(e){
     +'<div style="text-align:right;font-weight:700;color:#3e7d32">'+(e.land?e.nach+' erreicht: ':'')+'+'+e.punkte+'</div>';
 }
 function showdownRender(){
-  const sd=g().sd;
-  document.getElementById('sdWait')?.remove();document.getElementById('sdFrageM')?.remove();
+  if(!SDL)return;
+  document.getElementById('sdFrageM')?.remove();
   let m=document.getElementById('sdShow');
   if(!m){m=modal('<h2 style="text-align:center">🎬 Showdown</h2><div id="sdBars"></div><div class="sdrev" id="sdRev"></div><div id="sdAct"></div>',true);m.id='sdShow'}
   const tot=sdTotals(),S=Math.max(200,...tot.map(v=>Math.ceil(v/50)*50));
@@ -1122,38 +1104,32 @@ function showdownRender(){
     row.querySelector('.sdfill').style.width=Math.max(0,Math.min(100,tot[i]/S*100))+'%';
   });
   const rev=m.querySelector('#sdRev');
-  const last=sd.step>0?sd.ev[sd.step-1]:null;
+  const last=SDL.step>0?SDL.ev[SDL.step-1]:null;
   rev.innerHTML=last?sdEvHtml(last):'<div style="color:#8a7d63;text-align:center">Streckenpunkte stehen fest – gleich geht es los …</div>';
   const act=m.querySelector('#sdAct');
   let h='';
-  if(sd.done){
+  if(SDL.done||SDL.step>=(SDL.ev||[]).length){
     h+='<button class="go" id="sdFin">Zur vollständigen Abrechnung</button>';
-  } else if(sd.mode==='man'){
-    const nxt=sdNaechster();
-    if(nxt===null){h+='<button class="go" id="sdFin">Zur vollständigen Abrechnung</button>';
-      if(SEAT===0)roomRef.child('game/sd/done').set(true);}
-    else if(nxt===SEAT){
-      if(sd.step<(sd.ev||[]).length){const e=sd.ev[sd.step];
-        h+='<button class="go" id="sdGo">'+(e.t==='fail'?'Meine verfehlten Aufträge aufdecken':'Bonus aufdecken')+'</button>'}
-      else{const rest=sdRest()[SEAT];
-        h+='<div style="font-size:13px;color:#8a7d63;margin-bottom:6px">Du bist dran – wähle einen erfüllten Auftrag (Vorschlag: von klein nach groß):</div><div class="sdpick">'
-          +rest.map((t,j)=>'<button class="opt sdc" data-j="'+j+'" style="margin:0;font-size:13px">'+(tkLand(t)?t.von+' → '+((tkBestZiel(SEAT,t)||{}).nach||'Land')+' ('+tkWert(SEAT,t)+')':t.von+' – '+t.nach+' ('+t.punkte+')')+'</button>').join('')+'</div>'}
-    } else h+='<div style="text-align:center;color:#8a7d63;font-size:14px">'+ROOM.players[nxt].name+' ist mit Aufdecken dran …</div>';
+  } else if(SDL.mode==='man'){
+    const e=SDL.ev[SDL.step];
+    const wer=ROOM.players[e.pi].name+(e.pi===SEAT?' (du)':'');
+    h+='<button class="go" id="sdGo">'+(e.t==='fail'?'Verfehlte Aufträge von '+wer:e.t==='bonus'?'Bonus von '+wer:'Nächsten Auftrag von '+wer+' aufdecken')+'</button>';
   } else {
     h+='<div style="text-align:center;color:#8a7d63;font-size:14px">Aufdeckung läuft automatisch …</div>';
   }
-  if(SEAT===0&&!sd.done)h+='<button class="cancel" id="sdSkip" style="margin-top:8px">⏭ Überspringen und alles aufdecken</button>';
+  if(!SDL.done&&SDL.step<(SDL.ev||[]).length)h+='<button class="cancel" id="sdSkip" style="margin-top:8px">⏭ Überspringen und alles aufdecken</button>';
+  h+=sdStandHtml();
   act.innerHTML=h;
-  const fin=act.querySelector('#sdFin');if(fin)fin.onclick=()=>{m.remove();finalShown=true;showFinal()};
+  const fin=act.querySelector('#sdFin');if(fin)fin.onclick=()=>{m.remove();SDL=null;finalShown=true;showFinal()};
   const go=act.querySelector('#sdGo');if(go)go.onclick=sdWeiter;
-  act.querySelectorAll('.sdc').forEach(b=>b.onclick=()=>sdTkAufdecken(sdRest()[SEAT][+b.dataset.j]));
   const sk=act.querySelector('#sdSkip');if(sk)sk.onclick=sdSkip;
-  if(sd.mode==='auto'&&SEAT===0&&!sd.done&&!window._sdT){
-    window._sdT=setInterval(()=>{const s2=g()&&g().sd;
-      if(!s2||s2.done){clearInterval(window._sdT);window._sdT=null;return}
-      if(s2.step<(s2.ev||[]).length)roomRef.child('game/sd/step').set(s2.step+1);
-      else{roomRef.child('game/sd/done').set(true);clearInterval(window._sdT);window._sdT=null}},3000);
+  if(SDL.mode==='auto'&&!SDL.done&&!window._sdT){
+    window._sdT=setInterval(()=>{
+      if(!SDL||SDL.done){clearInterval(window._sdT);window._sdT=null;return}
+      if(SDL.step<(SDL.ev||[]).length){SDL.step++;if(SDL.step>=SDL.ev.length)SDL.done=true;showdownRender()}
+      else{SDL.done=true;clearInterval(window._sdT);window._sdT=null;showdownRender()}},3000);
   }
+  if(SDL.done&&window._sdT){clearInterval(window._sdT);window._sdT=null}
 }
 function showFinal(){
   let html='';
@@ -1168,8 +1144,12 @@ function showFinal(){
     (r.auftr!==undefined?'<div class="score-row"><span>Meiste Aufträge ('+r.auftr+')</span><span>'+(r.abonus?'+'+r.abonus:'–')+'</span></div>':'')+
     (r.bhRest!==undefined?'<div class="score-row"><span>Nicht gebaute Bahnhöfe ('+r.bhRest+')</span><span>'+(r.bhbonus?'+'+r.bhbonus:'–')+'</span></div>':'')+
     '<div class="score-row" style="font-weight:700"><span>Gesamt</span><span>'+p.total+'</span></div>'});
-  const mf=modal(html+'<button class="cancel" id="rgl">🏆 Rangliste ansehen</button>',true);
+  sdFertigMelden();   // erst jetzt gilt die Partie für diesen Spieler als abgeschlossen
+  html+=sdStandHtml();
+  const mf=modal(html+'<button class="cancel" id="rgl">🏆 Rangliste ansehen</button>'
+    +'<button class="cancel" id="fHome">🏠 Zum Startbildschirm</button>',true);
   mf.querySelector('#rgl').onclick=()=>zeigeRangliste();
+  mf.querySelector('#fHome').onclick=()=>zumStart();
 }
 
 // ---------- Zustandsgetriebenes Rendering ----------
@@ -1263,14 +1243,10 @@ function onState(){
     }
   }
   if(ROOM.status==='over'){
-    const G=g();
-    if(G.sd){statsSchreiben();showdownRender()}
-    else if(G.sdWahl==='normal'){document.getElementById('sdWait')?.remove();
-      if(!finalShown){finalShown=true;statsSchreiben();showFinal()}}
-    else if(SEAT===0){if(!sdAsked){sdAsked=true;statsSchreiben();sdFrage()}}
-    else if(!document.getElementById('sdWait')&&!finalShown){
-      const m=modal('<h2>Spiel beendet</h2><p style="font-size:14px;text-align:center;color:#8a7d63">'
-        +(ROOM.players[0]||{}).name+' wählt gerade die Art der Auswertung …</p>');m.id='sdWait'}
+    statsSchreiben();
+    if(SDL)showdownRender();
+    else if(finalShown){const mf=document.getElementById('sdShow');if(mf)mf.remove();}
+    else if(!sdAsked){sdAsked=true;sdFrage()}
   }
   if(g()&&g().notice&&g().notice!==lastNotice){lastNotice=g().notice;toast(g().notice)}
   BHX={};if(bhAnzahl())ROOM.players.forEach((p,i)=>bhWahlBerechnen(i));
@@ -1431,7 +1407,11 @@ function renderLobby(){
     html+='<button class="go" id="lobGo" '+(ROOM.players.length<2?'disabled':'')+'>Spiel starten ('+ROOM.players.length+' Spieler)</button>';}
   if(SEAT===0&&ROOM.players.length===1)html+='<button class="cancel" id="lobTest">🔧 Testmodus allein starten (freies Bauen)</button>';
   else html+='<p style="text-align:center;font-size:14px;margin-top:10px">Warten auf den Gastgeber …</p>';
+  html+='<button class="cancel" id="lobSw">🔀 Meine laufenden Spiele</button>'
+    +'<button class="cancel" id="lobHome">🏠 Zum Startbildschirm</button>';
   const m=modal(html,true);m.id='lobbyModal';
+  m.querySelector('#lobSw').onclick=()=>spieleWechsler();
+  m.querySelector('#lobHome').onclick=()=>zumStart();
   const b=m.querySelector('#lobGo');if(b)b.onclick=hostStart;const bt=m.querySelector('#lobTest');if(bt)bt.onclick=()=>{ROOM.test=true;hostStart()};
   const _ls=m.querySelector('#limStd'),_lm=m.querySelector('#limMin');
   if(_ls){const up=()=>{ROOM.limitMin=Math.max(0,Math.floor(+_ls.value||0))*60+Math.min(59,Math.max(0,Math.floor(+_lm.value||0)));ROOM.limitH=0;sync()};_ls.onchange=up;_lm.onchange=up}
@@ -1483,7 +1463,8 @@ function joinRoom(code,name,pin){
     const ph=pin?await hashPin(pin,code):'';
     if(i>=0){
       if(v.players[i].pin&&v.players[i].pin!==ph){toast('Falscher PIN für '+v.players[i].name+'.');return}
-      CODE=code;SEAT=i;ROOM=v;roomRef=ref;MYPIN=pin;pickShown=false;finalShown=false;
+      CODE=code;SEAT=i;ROOM=v;roomRef=ref;MYPIN=pin;pickShown=false;
+      sdReset();erfuellt=new Set();erfuelltInit=false;   // erledigte Aufträge beim Wiedereinstieg nicht erneut anzeigen
       if(!v.players[i].pin&&ph){v.players[i].pin=ph;ref.update({players:v.players})}
       toast('Willkommen zurück, '+v.players[i].name+'!');listen();return;
     }
@@ -1746,6 +1727,7 @@ function adminPanel(){
 function wechsleRaum(code,name,pin){
   try{if(roomRef)roomRef.off()}catch(e){}
   if(window._strafT){clearTimeout(window._strafT);window._strafT=null}
+  sdReset();erfuellt=new Set();erfuelltInit=false;pickShown=false;lastNotice='';
   document.querySelectorAll('.modal').forEach(x=>x.remove());
   joinRoom(code,name,pin);
 }
@@ -1757,12 +1739,13 @@ function spieleWechsler(){
     for(const code in all){if(code===CODE)continue;const v=fix(all[code]);
       if(!v||!v.players)continue;
       const i=v.players.findIndex(p=>p.name&&p.name.toLowerCase()===myName.toLowerCase());
-      if(i<0||v.status==='over')continue;
+      if(i<0)continue;
+      if(v.status==='over'&&(v.players[i]||{}).fertig)continue;   // erst nach eigener Auswertung wirklich erledigt
       const ed=(v.edition&&EDITIONEN[v.edition]&&(EDITIONEN[v.edition].meta.kurz||EDITIONEN[v.edition].meta.name))||'Langenberg';
       const pl=v.players.map(p=>p.name).join(', ');
       const runde=(v.game&&v.players.length)?Math.floor((v.game.zuege||0)/v.players.length)+1:0;
       const dran=!!(v.game&&v.game.turn===i&&v.status==='playing');
-      let st=v.status==='lobby'?'Warteraum':(dran?'DU BIST DRAN':'läuft');
+      let st=v.status==='over'?'AUSWERTUNG OFFEN':(v.status==='lobby'?'Warteraum':(dran?'DU BIST DRAN':'läuft'));
       if(v.status==='playing'&&(v.limitMin||v.limitH)&&v.game&&v.game.frist){const ms=v.game.frist-Date.now();
         st+=ms<=0?' · Zeit abgelaufen':' · noch '+(ms>=3600000?Math.floor(ms/3600000)+' Std.':Math.max(1,Math.floor(ms/60000))+' Min.')}
       treffer.push({code,ed,pl,runde,st,dran});
@@ -1795,13 +1778,13 @@ function meineSpiele(name){
       if(!v||!v.players)continue;
       const i=v.players.findIndex(p=>p.name&&p.name.toLowerCase()===name.toLowerCase());
       if(i<0)continue;
-      if(v.status==='over')continue;   // beendete Partien ausblenden
-      let st=v.status==='lobby'?'Warteraum':(v.game&&v.game.turn===i?'DU BIST DRAN':'läuft');
+      if(v.status==='over'&&(v.players[i]||{}).fertig)continue;   // erst nach eigener Auswertung wirklich erledigt
+      let st=v.status==='over'?'AUSWERTUNG OFFEN':(v.status==='lobby'?'Warteraum':(v.game&&v.game.turn===i?'DU BIST DRAN':'läuft'));
       if(v.status==='playing'&&(v.limitMin||v.limitH)&&v.game&&v.game.frist){const ms=v.game.frist-Date.now();
         st+=ms<=0?' · Zeit abgelaufen':' · noch '+(ms>=3600000?Math.floor(ms/3600000)+' Std.':Math.max(1,Math.floor(ms/60000))+' Min.')}
       const ed=(v.edition&&EDITIONEN[v.edition]&&(EDITIONEN[v.edition].meta.name||v.edition))||'Langenberg';
       const runde=(v.game&&v.players.length)?Math.floor((v.game.zuege||0)/v.players.length)+1:0;
-      treffer.push({code,st,pl:v.players.map(p=>p.name).join(', '),ed,runde,dran:st==='DU BIST DRAN'});
+      treffer.push({code,st,pl:v.players.map(p=>p.name).join(', '),ed,runde,dran:st==='DU BIST DRAN'||st==='AUSWERTUNG OFFEN'});
     }
     if(!treffer.length){toast('Keine laufenden Spiele für "'+name+'" gefunden.');return}
     treffer.sort((a,b)=>(b.dran?1:0)-(a.dran?1:0));
@@ -1823,12 +1806,18 @@ function modal(html,keep){const d=document.createElement('div');d.className='mod
   document.getElementById('modals').appendChild(d);
   try{
     const imSpiel=!document.getElementById('bottom').classList.contains('hidden');
-    if(imSpiel&&html.indexOf('id="swPin"')<0){
+    if(imSpiel&&html.indexOf('id="swPin"')<0&&html.indexOf('id="pname"')<0&&html.indexOf('id="lobSw"')<0){
+      const box=d.querySelector('.box');
       const b=document.createElement('button');b.className='cancel';
       b.style.cssText='margin-top:6px;font-size:13px;opacity:.85';
       b.textContent='🔀 Meine laufenden Spiele';
       b.onclick=()=>spieleWechsler();
-      d.querySelector('.box').appendChild(b);
+      box.appendChild(b);
+      const h=document.createElement('button');h.className='cancel';
+      h.style.cssText='margin-top:6px;font-size:13px;opacity:.85';
+      h.textContent='🏠 Zum Startbildschirm';
+      h.onclick=()=>zumStart();
+      box.appendChild(h);
     }
   }catch(e){}
   return d}
@@ -1854,7 +1843,17 @@ stage.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;
 stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(.6,scale*(e.deltaY<0?1.1:.9)));apply()},{passive:false});
 
 // ---------- Startbildschirm ----------
-(function landing(){
+function zumStart(){
+  try{if(roomRef)roomRef.off()}catch(e){}
+  if(window._strafT){clearTimeout(window._strafT);window._strafT=null}
+  sdReset();
+  roomRef=null;ROOM=null;CODE=null;SEAT=null;
+  pickShown=false;erfuellt=new Set();erfuelltInit=false;lastNotice='';
+  document.querySelectorAll('.modal').forEach(x=>x.remove());
+  ['top','stage','bottom'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  landing();
+}
+function landing(){
   try{const aj=sessionStorage.getItem('autojoin');if(aj){sessionStorage.removeItem('autojoin');const o=JSON.parse(aj);if(o&&o.code){joinRoom(o.code,o.name||'',o.pin||'');return}}}catch(e){}
   const m=modal('<h2 class="serif" style="text-align:center;letter-spacacing:.08em;letter-spacing:.08em">ZUG UM ZUG</h2>'+
     '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version '+APP_VERSION+'</p>'+
@@ -1863,6 +1862,7 @@ stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(
     (Object.keys(EDITIONEN).length>1?'<div style="font-size:13px;color:#8a7d63;margin-bottom:5px">Edition für ein neues Spiel:</div><div class="row" id="edRow" style="justify-content:center;margin:0 0 10px">'
       +Object.keys(EDITIONEN).map(k=>'<button class="opt'+(k===EDITION?' sel':'')+'" data-e="'+k+'" style="width:auto;padding:8px 14px;margin:0">'+(EDITIONEN[k].meta.name||k)+'</button>').join('')+'</div>':'')+
     '<button class="go" id="mkRoom">Neuen Raum erstellen</button>'+
+    '<button class="go" id="rndRoom" style="margin-top:8px">🎲 Zufallsspiel (zufällige Karte)</button>'+
     '<div style="display:flex;gap:8px;margin-top:14px"><input type="text" id="jcode" placeholder="Raum-Code" maxlength="5" style="text-transform:uppercase;letter-spacing:.2em;flex:1"><button class="go" id="jGo" style="width:auto;margin-top:0;padding:0 18px">Beitreten</button></div>'+
     '<button class="cancel" id="myG">↩︎ Meine laufenden Spiele</button>'+
     '<button class="cancel" id="rgG">🏆 Ranglisten</button>'+
@@ -1883,7 +1883,13 @@ stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(
   m.querySelector('#myG').onclick=()=>{const n=nameOk();if(!n)return;MYPIN=pinVal();meineSpiele(n)};
   m.querySelector('#jGo').onclick=()=>{const n=nameOk();if(!n)return;const c=m.querySelector('#jcode').value;
     if(c.trim().length!==5){toast('Der Raum-Code hat 5 Buchstaben.');return}const p=pinVal();m.remove();joinRoom(c,n,p)};
-})();
+  m.querySelector('#rndRoom').onclick=()=>{const n=nameOk();if(!n)return;const p=pinVal();
+    const keys=Object.keys(EDITIONEN),k=keys[Math.floor(Math.random()*keys.length)];
+    setEdition(k);m.remove();
+    toast('Zufallskarte: '+(EDITIONEN[k].meta.name||k));
+    createRoom(n,p)};
+}
+landing();
 </script>
 </body>
 </html>
