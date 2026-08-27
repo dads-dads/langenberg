@@ -243,7 +243,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.11 · 27.08.2026';
+const APP_VERSION='7.12 · 27.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -1225,9 +1225,17 @@ function zufallsReihenfolge(){
 function meinenSitzFinden(){
   if(!ROOM||!ROOM.players||!p0Name)return;
   const p=ROOM.players[SEAT];
-  if(p&&p.name===p0Name)return;
-  const i=ROOM.players.findIndex(q=>q.name===p0Name&&String(q.pin||'')===String(MYPIN||''));
+  if(p&&p.name&&p.name.toLowerCase()===p0Name.toLowerCase())return;
+  const i=ROOM.players.findIndex(q=>q.name&&q.name.toLowerCase()===p0Name.toLowerCase());
   if(i>=0)SEAT=i;
+}
+// Sicherheitsnetz: stimmt der Sitz nicht mit dem eigenen Namen ueberein, keine Aktion
+// auf fremden Spielerdaten ausfuehren.
+function sitzOk(){
+  if(!p0Name)return true;
+  meinenSitzFinden();
+  const p=ROOM&&ROOM.players&&ROOM.players[SEAT];
+  return !!(p&&p.name&&p.name.toLowerCase()===p0Name.toLowerCase());
 }
 let p0Name='';
 // Startauswahl-Racefix: waehrend 'picking' waehlen alle Spieler GLEICHZEITIG ihre
@@ -1238,6 +1246,7 @@ let p0Name='';
 // (players/<seat>, game/picked/<seat>, game/startOffers/<seat>) und ergaenzt die
 // gemeinsamen Ticketstapel per Firebase-Transaktion.
 function startPickCommit(zk,zl){
+  if(!sitzOk()){toast('Sitzplatz konnte nicht zugeordnet werden – bitte Seite neu laden.');return}
   const G=g();
   G.picked[SEAT]=true;delete G.startOffers[SEAT];
   zk.forEach(t=>G.ticketDeck.push(t));
@@ -1312,6 +1321,7 @@ function onState(){
     if(SEAT===0)rpsWerte();return}
   document.getElementById('rpsModal')?.remove();
   if(ROOM.status==='picking'){
+    if(!sitzOk()){renderClaims();renderHud();renderChat();return}
     if(g().picked[SEAT])pickFertigPruefen();
     if(!pickShown&&!g().picked[SEAT]){pickShown=true;
       const offer0=g().startOffers[SEAT]||[];
