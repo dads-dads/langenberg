@@ -243,7 +243,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.9 · 27.08.2026';
+const APP_VERSION='7.10 · 27.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -285,7 +285,7 @@ function fix(r){
   return r;
 }
 function sync(){const o={status:ROOM.status,players:ROOM.players};
-  if(ROOM.game)o.game=ROOM.game;if(ROOM.test!==undefined)o.test=ROOM.test;if(ROOM.limitH!==undefined)o.limitH=ROOM.limitH;if(ROOM.limitMin!==undefined)o.limitMin=ROOM.limitMin;if(ROOM.hausregeln!==undefined&&ROOM.hausregeln!==null)o.hausregeln=ROOM.hausregeln;if(ROOM.custom!==undefined)o.custom=ROOM.custom;if(ROOM.edition)o.edition=ROOM.edition;if(ROOM.dopAb!==undefined)o.dopAb=ROOM.dopAb;if(ROOM.statsDone!==undefined)o.statsDone=ROOM.statsDone;
+  if(ROOM.game)o.game=ROOM.game;if(ROOM.test!==undefined)o.test=ROOM.test;if(ROOM.limitH!==undefined)o.limitH=ROOM.limitH;if(ROOM.limitMin!==undefined)o.limitMin=ROOM.limitMin;if(ROOM.hausregeln!==undefined&&ROOM.hausregeln!==null)o.hausregeln=ROOM.hausregeln;if(ROOM.custom!==undefined)o.custom=ROOM.custom;if(ROOM.edition)o.edition=ROOM.edition;if(ROOM.dopAb!==undefined)o.dopAb=ROOM.dopAb;if(ROOM.startMode)o.startMode=ROOM.startMode;if(ROOM.statsDone!==undefined)o.statsDone=ROOM.statsDone;
   return roomRef.update(o)}
 function listen(){
   roomRef.on('value',snap=>{
@@ -339,7 +339,9 @@ function hostStart(){
   g.frist=limitMs()?Date.now()+limitMs():0;
   ROOM.dopAb=((MAP.meta&&MAP.meta.regeln&&MAP.meta.regeln.doppelstrecken_frei_ab)||3);   // Regel fuer diese Partie festschreiben
   sdReset();
-  if(!ROOM.test&&ROOM.players.length>1){g.rps={runde:1,aktiv:ROOM.players.map((p,i)=>i),wahl:{}};ROOM.game=g;ROOM.status='rps'}
+  if(!ROOM.test&&ROOM.players.length>1){
+    if(ROOM.startMode==='zufall'){ROOM.game=g;zufallsReihenfolge();return}
+    g.rps={runde:1,aktiv:ROOM.players.map((p,i)=>i),wahl:{}};ROOM.game=g;ROOM.status='rps'}
   else{ROOM.game=g;ROOM.status='picking'}
   sync();
 }
@@ -1204,6 +1206,30 @@ function showFinal(){
 // ---------- Zustandsgetriebenes Rendering ----------
 lastNotice='';
 const RPS={stein:{e:'✊',n:'Stein'},papier:{e:'✋',n:'Papier'},schere:{e:'✌️',n:'Schere'}};
+// Reihenfolge auslosen: Spieler-Array mischen, sitzgebundene Spieldaten (Startangebote,
+// Auswahl-Status) mitziehen. Jeder Client findet seinen Sitz danach über Name+PIN neu.
+function zufallsReihenfolge(){
+  const n=ROOM.players.length,G=g();
+  const perm=shuffle(ROOM.players.map((p,i)=>i));   // perm[neu]=alt
+  ROOM.players=perm.map(i=>ROOM.players[i]);
+  const so={},pk={};
+  perm.forEach((alt,neu)=>{if(G.startOffers&&G.startOffers[alt]!==undefined)so[neu]=G.startOffers[alt];
+    if(G.picked&&G.picked[alt]!==undefined)pk[neu]=G.picked[alt]});
+  G.startOffers=so;G.picked=pk;
+  G.rps=null;G.turn=0;ROOM.status='picking';
+  G.notice='🎲 Reihenfolge ausgelost: '+ROOM.players.map(p=>p.name).join(' → ')+'. '+ROOM.players[0].name+' beginnt!';
+  meinenSitzFinden();
+  sync();
+}
+// Sitz nach Umsortierung (oder Datenkorrektur) neu bestimmen
+function meinenSitzFinden(){
+  if(!ROOM||!ROOM.players||!p0Name)return;
+  const p=ROOM.players[SEAT];
+  if(p&&p.name===p0Name)return;
+  const i=ROOM.players.findIndex(q=>q.name===p0Name&&String(q.pin||'')===String(MYPIN||''));
+  if(i>=0)SEAT=i;
+}
+let p0Name='';
 let rpsShown=false;
 function rpsWahl(sym){
   roomRef.child('game/rps/wahl/'+SEAT).set(sym).then(()=>{if(SEAT===0)setTimeout(rpsWerte,400)});
@@ -1241,10 +1267,13 @@ function zeigeRps(){
   else{h+='<p style="text-align:center;font-size:14px">Du bist in dieser Runde nicht mehr dabei.</p>'}
   h+='<div style="margin-top:14px;font-size:13px">'+aktiv.map(i=>
     '<div class="score-row"><span>'+ROOM.players[i].name+'</span><span>'+(wahl[i]?(i===SEAT?RPS[wahl[i]].e:'✔ gewählt'):'wartet …')+'</span></div>').join('')+'</div>';
+  if(SEAT===0)h+='<button class="cancel" id="rpsZuf" style="margin-top:14px">🎲 Stattdessen Reihenfolge auslosen</button>';
   const m=modal(h,true);m.id='rpsModal';
   m.querySelectorAll('.rps').forEach(b=>b.onclick=()=>{rpsWahl(b.dataset.k)});
+  const z=m.querySelector('#rpsZuf');if(z)z.onclick=()=>{m.remove();zufallsReihenfolge()};
 }
 function onState(){
+  if(p0Name&&ROOM.players&&(!ROOM.players[SEAT]||ROOM.players[SEAT].name!==p0Name))meinenSitzFinden();
   if(ROOM.status==='lobby'){renderLobby();return}
   document.getElementById('lobbyModal')?.remove();
   document.getElementById('top').classList.remove('hidden');
@@ -1459,6 +1488,10 @@ function renderLobby(){
         :'<span>Startaufträge ziehen / behalten</span><span>'+numIn('hrS1',sa.ziehen||5)+' / '+numIn('hrS2',sa.mindestens_behalten||3)+'</span>'))
       +'<span>Nachziehen ziehen / behalten</span><span>'+numIn('hrN1',na.ziehen||4)+' / '+numIn('hrN2',na.mindestens_behalten||1)+'</span>'
       +'</div>';
+    html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Start und Spielerreihenfolge:</div>'
+      +'<div class="row" style="justify-content:center;gap:8px">'
+      +'<label style="font-size:13px"><input type="radio" name="stMode" value="rps"'+(ROOM.startMode!=='zufall'?' checked':'')+'> Schere, Stein, Papier</label>'
+      +'<label style="font-size:13px"><input type="radio" name="stMode" value="zufall"'+(ROOM.startMode==='zufall'?' checked':'')+'> 🎲 Zufällige Reihenfolge</label></div>';
     html+='<button class="go" id="lobGo" '+(ROOM.players.length<2?'disabled':'')+'>Spiel starten ('+ROOM.players.length+' Spieler)</button>';}
   if(SEAT===0&&ROOM.players.length===1)html+='<button class="cancel" id="lobTest">🔧 Testmodus allein starten (freies Bauen)</button>';
   else html+='<p style="text-align:center;font-size:14px;margin-top:10px">Warten auf den Gastgeber …</p>';
@@ -1467,6 +1500,7 @@ function renderLobby(){
   const m=modal(html,true);m.id='lobbyModal';
   m.querySelector('#lobSw').onclick=()=>spieleWechsler();
   m.querySelector('#lobHome').onclick=()=>zumStart();
+  m.querySelectorAll('input[name="stMode"]').forEach(r=>r.onchange=()=>{ROOM.startMode=r.value;sync()});
   const b=m.querySelector('#lobGo');if(b)b.onclick=hostStart;const bt=m.querySelector('#lobTest');if(bt)bt.onclick=()=>{ROOM.test=true;hostStart()};
   const _ls=m.querySelector('#limStd'),_lm=m.querySelector('#limMin');
   if(_ls){const up=()=>{ROOM.limitMin=Math.max(0,Math.floor(+_ls.value||0))*60+Math.min(59,Math.max(0,Math.floor(+_lm.value||0)));ROOM.limitH=0;sync()};_ls.onchange=up;_lm.onchange=up}
@@ -1502,7 +1536,7 @@ function renderLobby(){
 function makeCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ';let c='';for(let i=0;i<5;i++)c+=A[Math.floor(Math.random()*A.length)];return c}
 async function createRoom(name,pin){
   if(!await nameErlaubt(name)){toast('Der Name "'+name+'" ist für dieses Spiel nicht freigegeben.');return}
-  CODE=makeCode();SEAT=0;MYPIN=pin;
+  CODE=makeCode();SEAT=0;MYPIN=pin;p0Name=name;
   const ph=pin?await hashPin(pin,CODE):'';
   ROOM={status:'lobby',edition:EDITION,players:[{name,col:PCOL[0].id,wagons:WAGONS(),hand:{},tickets:[],score:0,pin:ph}]};
   roomRef=db.ref('rooms/'+CODE);
@@ -1518,7 +1552,7 @@ function joinRoom(code,name,pin){
     const ph=pin?await hashPin(pin,code):'';
     if(i>=0){
       if(v.players[i].pin&&v.players[i].pin!==ph){toast('Falscher PIN für '+v.players[i].name+'.');return}
-      CODE=code;SEAT=i;ROOM=v;roomRef=ref;MYPIN=pin;pickShown=false;
+      CODE=code;SEAT=i;ROOM=v;roomRef=ref;MYPIN=pin;p0Name=name;pickShown=false;
       sdReset();erfuellt=new Set();erfuelltInit=false;   // erledigte Aufträge beim Wiedereinstieg nicht erneut anzeigen
       if(!v.players[i].pin&&ph){v.players[i].pin=ph;ref.update({players:v.players})}
       toast('Willkommen zurück, '+v.players[i].name+'!');listen();return;
@@ -1526,7 +1560,7 @@ function joinRoom(code,name,pin){
     if(v.status!=='lobby'){toast('Das Spiel läuft schon. Zum Wiedereinstieg denselben Namen und PIN eingeben.');return}
     if(v.players.length>=5){toast('Der Raum ist voll (5 Spieler).');return}
     if(!await nameErlaubt(name)){toast('Der Name "'+name+'" ist für dieses Spiel nicht freigegeben.');return}
-    CODE=code;SEAT=v.players.length;ROOM=v;roomRef=ref;MYPIN=pin;
+    CODE=code;SEAT=v.players.length;ROOM=v;roomRef=ref;MYPIN=pin;p0Name=name;
     const frei=PCOL.find(c=>!ROOM.players.some(p=>p.col===c.id));ROOM.players.push({name,col:frei.id,wagons:WAGONS(),hand:{},tickets:[],score:0,pin:ph});
     roomRef.set(ROOM).then(()=>listen());
   }).catch(e=>toast('Verbindung fehlgeschlagen: '+e.message));
