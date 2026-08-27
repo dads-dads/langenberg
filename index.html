@@ -243,7 +243,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.10 · 27.08.2026';
+const APP_VERSION='7.11 · 27.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -1230,6 +1230,33 @@ function meinenSitzFinden(){
   if(i>=0)SEAT=i;
 }
 let p0Name='';
+// Startauswahl-Racefix: waehrend 'picking' waehlen alle Spieler GLEICHZEITIG ihre
+// Auftraege. Ein komplettes sync() ueberschreibt dabei die players- und game-Knoten
+// mit dem lokalen Stand des Schreibers – wer als Letzter bestaetigt, loescht damit die
+// Auswahl der Schnelleren (deren picked-Flag und Tickets), die dann beim Wiedereinstieg
+// erneut waehlen muessen. Deshalb schreibt die Startauswahl nur noch die EIGENEN Knoten
+// (players/<seat>, game/picked/<seat>, game/startOffers/<seat>) und ergaenzt die
+// gemeinsamen Ticketstapel per Firebase-Transaktion.
+function startPickCommit(zk,zl){
+  const G=g();
+  G.picked[SEAT]=true;delete G.startOffers[SEAT];
+  zk.forEach(t=>G.ticketDeck.push(t));
+  if(zl.length){G.ticketDeckLang=G.ticketDeckLang||[];zl.forEach(t=>G.ticketDeckLang.push(t))}
+  const ops=[
+    roomRef.child('players/'+SEAT).set(JSON.parse(JSON.stringify(me()))),
+    roomRef.child('game/picked/'+SEAT).set(true),
+    roomRef.child('game/startOffers/'+SEAT).set(null)
+  ];
+  if(zk.length)ops.push(roomRef.child('game/ticketDeck').transaction(d=>(d||[]).concat(zk)));
+  if(zl.length)ops.push(roomRef.child('game/ticketDeckLang').transaction(d=>(d||[]).concat(zl)));
+  Promise.all(ops).then(pickFertigPruefen).catch(()=>{});
+  pickFertigPruefen();
+}
+// Sobald alle gewaehlt haben, darf jeder den Status umschalten (idempotent).
+function pickFertigPruefen(){
+  if(!ROOM||ROOM.status!=='picking'||!g())return;
+  if(ROOM.players.every((p,i)=>g().picked[i]))roomRef.child('status').set('playing');
+}
 let rpsShown=false;
 function rpsWahl(sym){
   roomRef.child('game/rps/wahl/'+SEAT).set(sym).then(()=>{if(SEAT===0)setTimeout(rpsWerte,400)});
@@ -1285,6 +1312,7 @@ function onState(){
     if(SEAT===0)rpsWerte();return}
   document.getElementById('rpsModal')?.remove();
   if(ROOM.status==='picking'){
+    if(g().picked[SEAT])pickFertigPruefen();
     if(!pickShown&&!g().picked[SEAT]){pickShown=true;
       const offer0=g().startOffers[SEAT]||[];
       const rs0=R().startauftraege||{};
@@ -1296,10 +1324,7 @@ function onState(){
           ticketModal(offer,rs0.mindestens_behalten||2,keep=>{
             const zk=[],zl=[];
             offer.forEach((t,i)=>{if(keep.has(i))me().tickets.push(t);else (t.lang?zl:zk).push(t)});
-            g().ticketDeck.push(...restK,...zk);(g().ticketDeckLang=g().ticketDeckLang||[]).push(...restL,...zl);
-            g().picked[SEAT]=true;delete g().startOffers[SEAT];
-            if(Object.keys(g().picked).length===ROOM.players.length)ROOM.status='playing';
-            sync()});
+            startPickCommit(restK.concat(zk),restL.concat(zl))});
         });
         return;
       }
@@ -1314,10 +1339,9 @@ function onState(){
             txt:'Behalten ('+sel2.size+')'+(normN<need?' – noch '+(need-normN)+' normale wählen':'')}};
       }
       ticketModal(offer,rs0.mindestens_behalten||3,keep=>{
-        offer.forEach((t,i)=>{if(keep.has(i))me().tickets.push(t);else if(!t.lang&&!R().auftraege_raus)g().ticketDeck.push(t)});
-        g().picked[SEAT]=true;delete g().startOffers[SEAT];
-        if(Object.keys(g().picked).length===ROOM.players.length)ROOM.status='playing';
-        sync()},chk,hint);
+        const zk=[];
+        offer.forEach((t,i)=>{if(keep.has(i))me().tickets.push(t);else if(!t.lang&&!R().auftraege_raus)zk.push(t)});
+        startPickCommit(zk,[])},chk,hint);
     }
   }
   if(ROOM.status==='over'){
