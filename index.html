@@ -243,7 +243,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.8 · 25.08.2026';
+const APP_VERSION='7.9 · 27.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -279,7 +279,7 @@ function fix(r){
   r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fertig!==undefined)q.fertig=p.fertig;return q});
   if(r.game){const g=r.game;
     g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
-    g.claims=g.claims||{};g.startOffers=g.startOffers||{};g.ticketDeckLang=g.ticketDeckLang||[];g.picked=g.picked||{};g.pend=g.pend||[];g.frist=g.frist||0;g.zuege=g.zuege||0;if(g.rps){g.rps.aktiv=g.rps.aktiv||[];g.rps.wahl=g.rps.wahl||{}}
+    g.claims=g.claims||{};g.startOffers=g.startOffers||{};if(g.tkPend)g.tkPend.tk=g.tkPend.tk||[];g.ticketDeckLang=g.ticketDeckLang||[];g.picked=g.picked||{};g.pend=g.pend||[];g.frist=g.frist||0;g.zuege=g.zuege||0;if(g.rps){g.rps.aktiv=g.rps.aktiv||[];g.rps.wahl=g.rps.wahl||{}}
     g.turn=g.turn||0;g.drawn=g.drawn||0;if(g.lastRounds===undefined)g.lastRounds=-1;
     g.gel=g.gel||[];g.gelOpen=g.gelOpen||[];g.gelDiscard=g.gelDiscard||[];g.start=g.start||0;}
   return r;
@@ -501,14 +501,14 @@ function flyCard(src,cls){
   requestAnimationFrame(()=>{d.style.transform='translate('+(h.left+10-r.left)+'px,'+(h.top+2-r.top)+'px) scale(.85)';d.style.opacity='.25'});
   setTimeout(()=>d.remove(),480);
 }
-function takeOpen(i){if(!myTurn()||g().drawn>=2)return;
+function takeOpen(i){if(tkGuard())return;if(!myTurn()||g().drawn>=2)return;
   const c=g().open[i];const lokFrei=!!R().lok_frei_ziehen;
   if(c==='lok'&&!lokFrei&&g().drawn>0){toast('Ein offener Joker zählt als ganzer Zug.');return}
   const src=document.querySelectorAll('#open .pcard')[i+1];if(src)flyCard(src,'pc-'+c);
   const nc=drawCard(g());if(nc===null){g().open.splice(i,1)}else{g().open[i]=nc}
   me().hand[c]=(me().hand[c]||0)+1;lokReset(g());
   (g().pend=g().pend||[]).push(c);g().drawn+=(c==='lok'&&!lokFrei)?2:1;g().drawn>=2?endTurn():sync()}
-function takeBlind(){if(!myTurn()||g().drawn>=2)return;const c=drawCard(g());if(c===null){toast('Keine Karten mehr im Stapel.');return}
+function takeBlind(){if(tkGuard())return;if(!myTurn()||g().drawn>=2)return;const c=drawCard(g());if(c===null){toast('Keine Karten mehr im Stapel.');return}
   const dk=document.querySelector('#open .pc-rueck');if(dk)flyCard(dk,'pc-rueck');
   if(g().drawn===0){window._blind1=c;toast('Verdeckt gezogen: '+(CNAME[c]||c))}
   else{const v1=window._blind1?((CNAME[window._blind1]||window._blind1)+' + '):'';
@@ -516,6 +516,7 @@ function takeBlind(){if(!myTurn()||g().drawn>=2)return;const c=drawCard(g());if(
   me().hand[c]=(me().hand[c]||0)+1;(g().pend=g().pend||[]).push('?');g().drawn+=1;g().drawn>=2?endTurn():sync()}
 
 function takeGel(i){
+  if(tkGuard())return;
   if(!myTurn()||g().drawn>=2)return;
   const G=g();let c;
   if(i===-1){c=gelZiehen(G);if(c===null){toast('Keine Landschaftskarten mehr.');return}}
@@ -527,6 +528,7 @@ function takeGel(i){
 }
 
 function tryClaim(s){
+  if(tkGuard())return;
   if(!myTurn()){toast(ROOM.status==='playing'?'Du bist nicht dran – '+cur().name+' ist am Zug.':'');return}
   if(g().drawn>0){toast('Du hast schon Karten gezogen – erst den Zug beenden.');return}
   if(g().claims[s.nr]!==undefined){toast('Diese Strecke ist schon gebaut.');return}
@@ -674,6 +676,7 @@ function bhWahlBerechnen(pi){
   BHX[pi]=best;
 }
 function baueBahnhof(){
+  if(tkGuard())return;
   if(!myTurn()){toast(ROOM.status==='playing'?'Du bist nicht dran – '+cur().name+' ist am Zug.':'');return}
   if(g().drawn>0){toast('Du hast schon Karten gezogen – erst den Zug beenden.');return}
   const p=me(),anz=bhAnzahl();
@@ -734,6 +737,7 @@ function renderBahnhoefe(){
 // ---------- Aufträge ----------
 function drawTickets(){
   if(!myTurn())return;
+  if(g().tkPend){if(tkPendMine())tkPendReopen();return}
   if(g().drawn>0){toast('Du hast schon Karten gezogen.');return}
   const gesamt=g().ticketDeck.length+((R().auftraege_nachziehen||{}).stapelwahl?((g().ticketDeckLang||[]).length):0);
   if(!gesamt){toast('Keine Aufträge mehr im Stapel.');return}
@@ -754,25 +758,54 @@ function stapelWahl(n,maxK,maxL,done){
   if(!any){m.remove();toast('Nicht genug Auftragskarten im Stapel.');return}
   return m;
 }
+// Das gezogene Angebot wird sofort als g().tkPend gespeichert und synchronisiert.
+// Dadurch ueberlebt es einen Refresh: der Spieler landet wieder in der Auswahl
+// und kann den Zug nicht in etwas anderes (Karten ziehen, bauen) umwandeln.
+function tkPendMine(){const G=g();return G&&G.tkPend&&G.tkPend.seat===SEAT&&ROOM.status==='playing'}
+function tkGuard(){
+  if(!tkPendMine())return false;
+  toast('Du hast Aufträge gezogen – bitte erst die Auswahl abschließen.');
+  tkPendReopen();
+  return true;
+}
+function tkPendReopen(){
+  if(!tkPendMine()||document.getElementById('tkModal'))return;
+  const P=g().tkPend;
+  ticketModal(P.tk||[],P.min||1,keep=>tkPendFertig(keep));
+}
+function tkPendFertig(keep){
+  const G=g(),P=G.tkPend;if(!P)return;
+  const offer=P.tk||[];
+  offer.forEach((t,i)=>{
+    if(keep.has(i)){me().tickets.push(t);return}
+    if(P.raus)return;                                  // Hausregel: abgelehnte Aufträge aus dem Spiel
+    if(P.stapel&&t.lang)(G.ticketDeckLang=G.ticketDeckLang||[]).push(t);
+    else G.ticketDeck.push(t);
+  });
+  delete G.tkPend;
+  me().last='zieht '+keep.size+' neue(n) Auftrag/Aufträge';endTurn();
+}
 function zieheAuftraege(){
   const rs=R().auftraege_nachziehen||{};
+  const G=g();
+  if(G.tkPend){tkPendReopen();return}
   if(rs.stapelwahl){
-    const G=g();G.ticketDeckLang=G.ticketDeckLang||[];
+    G.ticketDeckLang=G.ticketDeckLang||[];
     const n=Math.min(rs.ziehen||4,G.ticketDeck.length+G.ticketDeckLang.length);
     if(!n){toast('Keine Aufträge mehr im Stapel.');return}
     stapelWahl(n,G.ticketDeck.length,G.ticketDeckLang.length,nl=>{
       const offer=G.ticketDeckLang.splice(0,nl).concat(G.ticketDeck.splice(0,n-nl));
-      ticketModal(offer,rs.mindestens_behalten||1,keep=>{
-        offer.forEach((t,i)=>{if(keep.has(i))me().tickets.push(t);else (t.lang?G.ticketDeckLang:G.ticketDeck).push(t)});
-        me().last='zieht '+keep.size+' neue(n) Auftrag/Aufträge';endTurn()});
+      G.tkPend={seat:SEAT,tk:offer,min:rs.mindestens_behalten||1,stapel:true};
+      sync();
+      tkPendReopen();
     });
     return;
   }
-  const offer=g().ticketDeck.splice(0,Math.min((R().auftraege_nachziehen||{}).ziehen||4,g().ticketDeck.length));
-  ticketModal(offer,(R().auftraege_nachziehen||{}).mindestens_behalten||1,keep=>{
-    const raus=!!R().auftraege_raus;
-    offer.forEach((t,i)=>{if(keep.has(i))me().tickets.push(t);else if(!raus)g().ticketDeck.push(t)});
-    me().last='zieht '+keep.size+' neue(n) Auftrag/Aufträge';endTurn()});
+  const offer=G.ticketDeck.splice(0,Math.min(rs.ziehen||4,G.ticketDeck.length));
+  G.tkPend={seat:SEAT,tk:offer,min:rs.mindestens_behalten||1};
+  if(R().auftraege_raus)G.tkPend.raus=true;
+  sync();
+  tkPendReopen();
 }
 const ROTE_ORTE=new Set(['Gymnasium','Bahnhof','Sender','Pollen','Vogelsiedlung','Rathaus','Busbahnhof']);
 let AUSSEN_ORTE=new Set();
@@ -897,6 +930,7 @@ function ticketModal(offer,minKeep,done,check,hint){
     +(anzOk?' <b style="color:#3e7d32">'+anzOk+' davon '+(anzOk===1?'ist':'sind')+' bereits erfüllt!</b>':'')+'</p>'
     +'<button class="cancel" id="tPeek" style="margin:0 0 10px">👁 Spielbrett ansehen</button>'
     +'<div id="toff"></div><button class="go" id="tGo" disabled>Behalten</button>');
+  m.id='tkModal';
   const wrap=m.querySelector('#toff'),go=m.querySelector('#tGo');
   m.querySelector('#tPeek').onclick=()=>brettGucken(m);
   const upd=()=>{if(check){const r=check(sel);go.disabled=!r.ok;go.textContent=r.txt}
@@ -1263,6 +1297,7 @@ function onState(){
     else if(finalShown){const mf=document.getElementById('sdShow');if(mf)mf.remove();}
     else if(!sdAsked){sdAsked=true;sdFrage()}
   }
+  if(ROOM.status==='playing'&&typeof tkPendMine==='function'&&tkPendMine()&&myTurn())tkPendReopen();
   if(g()&&g().notice&&g().notice!==lastNotice){lastNotice=g().notice;toast(g().notice)}
   BHX={};if(bhAnzahl())ROOM.players.forEach((p,i)=>bhWahlBerechnen(i));
   renderClaims();renderBahnhoefe();renderHud();renderGlow();renderChat();pruefeErfuellt();
@@ -1277,6 +1312,11 @@ function restText(){
 }
 function strafZug(){
   const G=g();if(!G||ROOM.status!=='playing'||!limitMs()||!G.frist||G.frist>Date.now())return;
+  if(G.tkPend){   // offenes Auftragsangebot verfaellt: Karten zurueck in die Stapel
+    (G.tkPend.tk||[]).forEach(t=>{if(G.tkPend.stapel&&t.lang)(G.ticketDeckLang=G.ticketDeckLang||[]).push(t);else G.ticketDeck.push(t)});
+    delete G.tkPend;
+    document.getElementById('tkModal')?.remove();
+  }
   const p=cur(),gez=[];
   for(let k=0;k<2;k++){const c=drawCard(G);if(c===null)break;p.hand[c]=(p.hand[c]||0)+1;gez.push(c)}
   delete G.pend;G.drawn=0;G.zuege=(G.zuege||0)+1;
