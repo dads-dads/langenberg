@@ -3,7 +3,7 @@
   "name": "Deutschland 1902",
   "statId": "Zug um Zug Deutschland",
   "kurz": "Deutschland 1902",
-  "version": "6.6",
+  "version": "6.7",
   "spieler": "2-5",
   "wagons_pro_spieler": 48,
   "bild": "deutschland_karte.jpg",
@@ -15,7 +15,7 @@
    "mw": 564,
    "mh": 845
   },
-  "hinweis": "Streckenliste aus dem Spielplan gelesen (Auslands-Einmuendungen als eigene Randknoten). Feldpositionen im Editor korrigiert und abgenommen.",
+  "hinweis": "Streckenliste aus dem Spielplan gelesen (Auslands-Einmuendungen als eigene Randknoten). Feldpositionen im Editor korrigiert und abgenommen. v6.7: Positionen der 12 Auslands-Randknoten (Daenemark 1-2, Niederlande 1, Frankreich 1-3, Schweiz 1-3, Oesterreich 1-3) im Editor korrigiert; niederlande_2/_3 unveraendert. Streckenfelder und Auftraege unveraendert.",
   "farben": [
    "rot",
    "orange",
@@ -312,24 +312,24 @@
   {
    "id": "daenemark_1",
    "name": "Dänemark",
-   "x": 45.5,
-   "y": 4.5,
+   "x": 41.02,
+   "y": 3.47,
    "rand": true,
    "stadt": "daenemark"
   },
   {
    "id": "daenemark_2",
    "name": "Dänemark",
-   "x": 53.0,
-   "y": 5.5,
+   "x": 46.61,
+   "y": 4.3,
    "rand": true,
    "stadt": "daenemark"
   },
   {
    "id": "niederlande_1",
    "name": "Niederlande",
-   "x": 8.0,
-   "y": 33.0,
+   "x": 7.44,
+   "y": 29.61,
    "rand": true,
    "stadt": "niederlande"
   },
@@ -352,72 +352,72 @@
   {
    "id": "frankreich_1",
    "name": "Frankreich",
-   "x": 7.2,
-   "y": 76.5,
+   "x": 7.76,
+   "y": 77.54,
    "rand": true,
    "stadt": "frankreich"
   },
   {
    "id": "frankreich_2",
    "name": "Frankreich",
-   "x": 15.0,
-   "y": 79.5,
+   "x": 16.2,
+   "y": 81.06,
    "rand": true,
    "stadt": "frankreich"
   },
   {
    "id": "frankreich_3",
    "name": "Frankreich",
-   "x": 9.0,
-   "y": 85.0,
+   "x": 10.13,
+   "y": 86.6,
    "rand": true,
    "stadt": "frankreich"
   },
   {
    "id": "schweiz_1",
    "name": "Schweiz",
-   "x": 23.5,
-   "y": 95.5,
+   "x": 23.22,
+   "y": 96.11,
    "rand": true,
    "stadt": "schweiz"
   },
   {
    "id": "schweiz_2",
    "name": "Schweiz",
-   "x": 33.0,
-   "y": 93.5,
+   "x": 30.53,
+   "y": 94.25,
    "rand": true,
    "stadt": "schweiz"
   },
   {
    "id": "schweiz_3",
    "name": "Schweiz",
-   "x": 34.5,
-   "y": 95.0,
+   "x": 34.15,
+   "y": 95.94,
    "rand": true,
    "stadt": "schweiz"
   },
   {
    "id": "oesterreich_1",
    "name": "Österreich",
-   "x": 56.5,
-   "y": 92.5,
+   "x": 57.49,
+   "y": 95.05,
    "rand": true,
    "stadt": "oesterreich"
   },
   {
    "id": "oesterreich_2",
    "name": "Österreich",
-   "x": 82.0,
-   "y": 93.0,
+   "x": 84.68,
+   "y": 94.08,
    "rand": true,
    "stadt": "oesterreich"
   },
   {
    "id": "oesterreich_3",
    "name": "Österreich",
-   "x": 89.5,
-   "y": 89.0,
+   "x": 92.11,
+   "y": 87.3,
    "rand": true,
    "stadt": "oesterreich"
   }
