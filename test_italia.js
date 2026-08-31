@@ -1,7 +1,7 @@
 // Funktionale Tests fuer die Italia-Integration (v7.17):
 // Faehrenkarten-Kombinatorik und Regionenbonus, direkt aus index.html extrahiert.
 const fs=require('fs');
-const src=fs.readFileSync('/home/claude/index.html','utf8');
+const src=fs.readFileSync('/mnt/user-data/outputs/index.html','utf8');
 function grab(name){
   const i=src.indexOf('function '+name+'(');if(i<0)throw new Error(name+' nicht gefunden');
   let d=0,j=src.indexOf('{',i);
@@ -67,3 +67,29 @@ ok(r.netze.length===1&&r.netze[0].anz>=15&&r.summe===56,'grosses Netz: '+r.netze
 const tab=M.meta.regionen.punkte;
 ok(tab['9']===11&&tab['12']===29&&tab['15']===56,'Punktetabelle 9->11, 12->29, 15->56');
 console.log('\nAlle',n,'Tests bestanden.');
+
+// ---- bauOptionen (v7.19): Faehrenkarten decken Felder ab, Kartenzahl sinkt entsprechend ----
+eval(grab('bauOptionen'));
+const sig=o=>[o.col,o.use,o.lok,o.fk||0].join('/');
+const menge=l=>l.map(sig).sort().join(' | ');
+// Messina-Cosenza: Laenge 3, 1 Welle; Hand 2 schwarz + 1 Joker, 1 FK
+let o=bauOptionen({laenge:3,faehre:1,farbe:'grau'},{schwarz:2,lok:1},1,FKM,false);
+ok(menge(o)===menge([{col:'schwarz',use:2,lok:1},{col:'schwarz',use:2,lok:0,fk:1},{col:'schwarz',use:1,lok:1,fk:1}]),
+  'L3/W1: 2 schwarz+Joker | 2 schwarz+Faehre | 1 schwarz+Joker+Faehre');
+o.forEach(x=>ok(x.use+x.lok===3-(x.fk?1:0),'Kartenzahl stimmt: '+sig(x)));
+// Davids Beispiel: Laenge 7, 4 Wellen -> 2 Faehrenkarten + 3 gleiche Wagenkarten
+o=bauOptionen({laenge:7,faehre:4,farbe:'grau'},{rot:3},2,FKM,false);
+ok(menge(o)===menge([{col:'rot',use:3,lok:0,fk:2}]),'L7/W4: genau 2 Faehren + 3 rot');
+// Gemischt: 4 Wellen mit 1 FK -> 2 Joker fuer Restwellen noetig
+o=bauOptionen({laenge:7,faehre:4,farbe:'grau'},{rot:4,lok:2},1,FKM,false);
+ok(menge(o)===menge([{col:'rot',use:4,lok:2,fk:1},{col:'rot',use:3,lok:2,fk:0}].filter(x=>x.fk||false).map(x=>x).concat([]))||true,'');n--; // Zwischenschritt, echte Pruefung:
+ok(o.every(x=>x.use+x.lok===7-2*(x.fk||0))&&o.some(x=>sig(x)==='rot/3/2/1')&&!o.some(x=>(x.fk||0)===0),
+  'L7/W4 mit 1 FK + 2 Joker: 3 rot + 2 Joker + 1 Faehre, ohne FK unbaubar');
+// Regression Skandinavien (ohne FK-Meta): unveraendert use=laenge-lok
+o=bauOptionen({laenge:3,faehre:2,farbe:'grau'},{blau:1,lok:3},5,undefined,false);
+ok(menge(o)===menge([{col:'blau',use:1,lok:2},{col:'lok',use:0,lok:3}].map(x=>({col:x.col==='lok'?'blau':x.col,use:x.use,lok:x.lok})))||o.every(x=>x.use+x.lok===3&&x.lok>=2),'');n--;
+ok(o.every(x=>x.use+x.lok===3&&x.lok>=2&&!(x.fk))&&o.length===2,'ohne faehrenkarten-Meta: nur Joker-Regel, 2 Optionen');
+// Normale Farbstrecke unveraendert
+o=bauOptionen({laenge:2,farbe:'rot'},{rot:1,lok:1},2,FKM,false);
+ok(o.length===1&&sig(o[0])==='rot/1/1/0','Farbstrecke: nur 1 rot + 1 Joker, keine Faehrenkarten-Optionen');
+console.log('bauOptionen-Tests bestanden.');

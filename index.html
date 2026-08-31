@@ -252,7 +252,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.18 · 31.08.2026';
+const APP_VERSION='7.19 · 31.08.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -334,6 +334,29 @@ function fkWellenKombis(w,loks,fk,M){
   const d=M.deckt_wellen||2,res=[];
   for(let f=0;f<=Math.min(fk||0,Math.ceil(w/d));f++){const lw=Math.max(0,w-f*d);if(loks>=lw)res.push({fk:f,lokW:lw})}
   return res;
+}
+// Alle Bezahloptionen einer Strecke: Faehrenkarten decken je bis zu 2 Wellenfelder ab,
+// verbleibende Wellenfelder brauchen Joker, alle uebrigen Felder Wagenkarten einer Farbe oder Joker.
+function bauOptionen(s,hand,fk,M,nurFT){
+  const fz=s.faehre||0,loks=hand.lok||0;
+  const kombis=fkWellenKombis(fz,loks,fk,M);
+  const maxLok=nurFT?0:Math.min(loks,s.laenge);
+  const opts=[],gesehen=new Set();
+  const colors=s.farbe==='grau'?['rot','orange','gelb','gruen','blau','pink','weiss','schwarz']:[s.farbe];
+  for(const wk of kombis){
+    const rest=s.laenge-(fz-wk.lokW);   // Felder, die mit Wagenkarten/Jokern zu bezahlen sind
+    for(const col of colors){
+      const have=hand[col]||0;
+      for(let l=wk.lokW;l<=Math.min(maxLok,rest);l++){
+        const use=rest-l;
+        if(have<use)continue;
+        const key=(wk.fk?'f'+wk.fk+':':'')+(use?col+':'+use+':'+l:'lok:'+l);
+        if(gesehen.has(key))continue;gesehen.add(key);
+        const o={col,use,lok:l};if(wk.fk)o.fk=wk.fk;opts.push(o);
+      }
+    }
+  }
+  return opts;
 }
 function takeFK(){if(tkGuard())return;if(!myTurn())return;const G=g(),p=me(),M=FK();if(!M)return;
   if(G.drawn>0){toast('Eine Fährenkarte zu nehmen ist ein ganzer Zug – du hast schon Karten gezogen.');return}
@@ -594,22 +617,9 @@ function tryClaim(s){
   }
   const fz=s.faehre||0;
   const loks=p.hand.lok||0;
-  const kombis=fkWellenKombis(fz,loks,p.fk||0,FK());
-  if(fz&&!kombis.length){toast(FK()?'Fähre: Für die '+fz+' Wellenfelder brauchst du Joker (1 je Feld) oder Fährenkarten (1 je 2 Felder).':'Fähre: Du brauchst mindestens '+fz+' Joker.');return}
+  if(fz&&!fkWellenKombis(fz,loks,p.fk||0,FK()).length){toast(FK()?'Fähre: Für die '+fz+' Wellenfelder brauchst du Joker (1 je Feld) oder Fährenkarten (1 je 2 Felder).':'Fähre: Du brauchst mindestens '+fz+' Joker.');return}
   const nurFT=!!R().lok_nur_faehre_tunnel&&!s.faehre&&!s.tunnel;
-  const maxLok=nurFT?0:Math.min(loks,s.laenge);
-  const opts=[];const gesehen=new Set();
-  const colors=s.farbe==='grau'?['rot','orange','gelb','gruen','blau','pink','weiss','schwarz']:[s.farbe];
-  for(const wk of kombis)for(const col of colors){
-    const have=p.hand[col]||0;
-    for(let l=wk.lokW;l<=Math.min(maxLok,wk.lokW+(s.laenge-fz));l++){
-      const use=s.laenge-l;
-      if(have<use)continue;
-      const key=(wk.fk?'f'+wk.fk+':':'')+(use?col+':'+use+':'+l:'lok:'+l);
-      if(gesehen.has(key))continue;gesehen.add(key);
-      const o={col,use,lok:l};if(wk.fk)o.fk=wk.fk;opts.push(o);
-    }
-  }
+  const opts=bauOptionen(s,p.hand,p.fk||0,FK(),nurFT);
   if(!opts.length){toast(fz?'Nicht genug Karten für die Fähre.':'Nicht genug passende Karten ('+s.laenge+' '+CNAME[s.farbe]+')'+(nurFT?' – Joker gibt es hier nur für Fähren und Tunnel.':'.'));return}
   payModal(s,opts);
 }
