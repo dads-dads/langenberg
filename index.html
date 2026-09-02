@@ -39,7 +39,7 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 .wm{font-family:Georgia,serif;fill:#c9a35e;opacity:.3;letter-spacing:.35em;pointer-events:none}
 #zoom{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px;z-index:5}
 #zoom button{width:38px;height:38px;border-radius:8px;border:1px solid var(--frame);background:var(--card);font-size:20px}
-#zoom .zrow{display:flex;gap:6px}
+.rulesChip{width:30px;height:30px;border-radius:9px;border:1px solid var(--frame);background:var(--card);font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;line-height:1}
 #gelDock{position:absolute;left:10px;top:104px;display:none;flex-direction:column;gap:6px;z-index:5}
 #gelDock.an{display:flex}
 #gelDock .pcard{width:58px;height:38px}
@@ -183,7 +183,7 @@ input[type=text]{padding:11px;border-radius:8px;border:1.5px solid var(--frame);
 <feComposite in="sp" in2="SourceAlpha" operator="in" result="sp2"/>
 <feComposite in="SourceGraphic" in2="sp2" operator="arithmetic" k1="0" k2="1" k3="0.85" k4="0"/>
 </filter></defs><g id="world"></g></svg>
-  <div id="zoom"><div class="zrow"><button id="zin">+</button><button id="zrules" title="Regeln dieser Edition">§</button></div><button id="zout">−</button></div>
+  <div id="zoom"><button id="zin">+</button><button id="zout">−</button></div>
   <div id="gelDock"></div>
   <div id="open"></div>
 </div>
@@ -255,7 +255,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.23 · 01.09.2026';
+const APP_VERSION='7.24 · 01.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -1534,7 +1534,6 @@ document.getElementById('chatTitle').onclick=chatToggle;
 document.getElementById('chatTog').onclick=chatToggle;
 document.getElementById('endBtn').onclick=()=>{if(g()&&!g().over)spielBeenden()};
 document.getElementById('btnSpiele').onclick=()=>spieleWechsler();
-document.getElementById('zrules').onclick=()=>regelnModal();
 
 // Regeln der laufenden Edition, automatisch aus den Editionsdaten erzeugt.
 // Zeigt die effektiven Werte (inkl. Hausregeln des Raums, da R() diese mischt).
@@ -1581,6 +1580,8 @@ function renderHud(){
       +(bhAnzahl()?'<b>'+(bhAnzahl()-((pl.bahnhoefe||[]).length))+'</b><small>🏛</small>':'')
       +(MAP.meta&&MAP.meta.regionen?'<b>'+(((regionenWertung(i).netze||[])[0]||{}).anz||0)+'</b><small>🗺</small>':'')+'</span>';
     ch.appendChild(d)});
+  const rb=document.createElement('button');rb.className='rulesChip';rb.textContent='§';
+  rb.title='Regeln dieser Edition';rb.onclick=()=>regelnModal();ch.appendChild(rb);
   // Kopfzeile bleibt den Spieler-Chips vorbehalten; nur echte Warnungen erscheinen hier.
   document.getElementById('roomtag').textContent=(ROOM.custom?'Eigene Regeln':'')+(ROOM.test?(ROOM.custom?' · ':'')+'TESTMODUS':'')+(g().lastRounds>0?((ROOM.custom||ROOM.test)?' · ':'')+'Letzte Runde!':'');
   // Raumcode und Zugzeit stehen jetzt in der Kopfzeile von "Verlauf & Chat".
