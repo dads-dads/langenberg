@@ -39,6 +39,7 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 .wm{font-family:Georgia,serif;fill:#c9a35e;opacity:.3;letter-spacing:.35em;pointer-events:none}
 #zoom{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px;z-index:5}
 #zoom button{width:38px;height:38px;border-radius:8px;border:1px solid var(--frame);background:var(--card);font-size:20px}
+#zoom .zrow{display:flex;gap:6px}
 #gelDock{position:absolute;left:10px;top:104px;display:none;flex-direction:column;gap:6px;z-index:5}
 #gelDock.an{display:flex}
 #gelDock .pcard{width:58px;height:38px}
@@ -57,7 +58,8 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 .pc-faehre .fkl{font-size:11px;font-weight:800;color:#123a5a;letter-spacing:.05em}
 .fkWrap{position:relative;margin-top:6px}
 .pc-faehre.fkbild{background-size:cover;background-position:center 12%;background-repeat:no-repeat}
-#gelDock .pcard.senkrecht{width:48px;height:78px;background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#f6f1e6}
+#gelDock .pcard.quer{width:78px;height:49px;position:relative;overflow:hidden;background-color:#f6f1e6}
+#gelDock .pcard.quer .drehbild{position:absolute;left:50%;top:50%;width:47px;height:76px;transform:translate(-50%,-50%) rotate(-90deg);background-size:contain;background-position:center;background-repeat:no-repeat}
 .pcard.sm{width:60px;height:39px}
 .pcard.hoch{width:52px;height:79px;background-image:none;overflow:hidden}
 .pcard.hoch i{position:absolute;left:50%;top:50%;width:79px;height:52px;display:block;
@@ -181,7 +183,7 @@ input[type=text]{padding:11px;border-radius:8px;border:1.5px solid var(--frame);
 <feComposite in="sp" in2="SourceAlpha" operator="in" result="sp2"/>
 <feComposite in="SourceGraphic" in2="sp2" operator="arithmetic" k1="0" k2="1" k3="0.85" k4="0"/>
 </filter></defs><g id="world"></g></svg>
-  <div id="zoom"><button id="zin">+</button><button id="zout">−</button><button id="zrules" title="Regeln dieser Edition">§</button></div>
+  <div id="zoom"><div class="zrow"><button id="zin">+</button><button id="zrules" title="Regeln dieser Edition">§</button></div><button id="zout">−</button></div>
   <div id="gelDock"></div>
   <div id="open"></div>
 </div>
@@ -253,7 +255,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.22 · 01.09.2026';
+const APP_VERSION='7.23 · 01.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -504,7 +506,7 @@ function popAnzeige(tk){
 }
 function renderGlow(){
   const L=document.getElementById('glowL');if(!L)return;L.innerHTML='';
-  if(!g()||ROOM.status!=='playing'||ROOM.test)return;
+  if(!g()||ROOM.test||(ROOM.status!=='playing'&&ROOM.status!=='picking'))return;
   const seen=new Set();
   // Deckende Punkte, immer gelb; Staedte aus einem noch offenen, frisch gezogenen
   // Auftragsangebot (g().tkPend) blinken rot – aber nur, wenn die Stadt nicht schon
@@ -517,6 +519,13 @@ function renderGlow(){
                  +'<animate attributeName="opacity" values="0.95;0.25;0.95" dur="1.9s" repeatCount="indefinite"/>';
       L.appendChild(c)})};
   const staedte=tk=>tkLand(tk)?[tk.von].concat(tkZiele(tk).map(z=>z.nach)):[tk.von,tk.nach];
+  if(ROOM.status==='picking'){
+    // Startphase: solange die eigene Auswahl offen ist, blinken alle angebotenen
+    // Auftragsstaedte rot; nach dem Behalten normal gelb.
+    if(!(g().picked||{})[SEAT])(((g().startOffers||{})[SEAT])||[]).forEach(tk=>staedte(tk).forEach(n=>dot(n,'#e33d2e','#71100a')));
+    else (me().tickets||[]).forEach(tk=>staedte(tk).forEach(n=>dot(n,'#ffd21f','#7a5c00')));
+    return;
+  }
   (me().tickets||[]).forEach(tk=>{if(tkErfuellt(SEAT,tk))return;staedte(tk).forEach(n=>dot(n,'#ffd21f','#7a5c00'))});
   const P=g().tkPend;
   if(P&&P.seat===SEAT)(P.tk||[]).forEach(tk=>{if(tkErfuellt(SEAT,tk))return;staedte(tk).forEach(n=>dot(n,'#e33d2e','#71100a'))});
@@ -1606,12 +1615,12 @@ function renderHud(){
   if(GEL()&&dock){
     // Landschaftskarten liegen links unter dem Zoom untereinander, damit die
     // Kartenleiste im Hochkantformat nicht ueber den Bildschirmrand waechst.
-    (g().gelOpen||[]).forEach((t,i)=>{const d=document.createElement('div');d.className='pcard gcard senkrecht';
-      d.style.backgroundImage='url('+gelBild(t)+')';d.title='Landschaftskarte nehmen: '+GELNAME[t];
+    (g().gelOpen||[]).forEach((t,i)=>{const d=document.createElement('div');d.className='pcard gcard quer';
+      d.innerHTML='<i class="drehbild" style="background-image:url('+gelBild(t)+')"></i>';d.title='Landschaftskarte nehmen: '+GELNAME[t];
       d.onclick=()=>takeGel(i);dock.appendChild(d)});
     const gw=document.createElement('div');gw.className='gelWrap';
-    const gk=document.createElement('div');gk.className='pcard gcard senkrecht';
-    gk.style.backgroundImage='url('+gelBild('hinten')+')';gk.title='Landschaftskarte verdeckt ziehen';
+    const gk=document.createElement('div');gk.className='pcard gcard quer';
+    gk.innerHTML='<i class="drehbild" style="background-image:url('+gelBild('hinten')+')"></i>';gk.title='Landschaftskarte verdeckt ziehen';
     gk.onclick=()=>takeGel(-1);gw.appendChild(gk);
     const gc=document.createElement('div');gc.className='cnt';gc.textContent=(g().gel||[]).length;
     gw.appendChild(gc);dock.appendChild(gw);
@@ -1619,8 +1628,8 @@ function renderHud(){
   if(FK()&&dock){
     // Faehrenkarten liegen wie die Landschaftskarten links unter dem Zoom.
     const fw=document.createElement('div');fw.className='gelWrap';
-    const fkc=document.createElement('div');fkc.className='pcard gcard pc-faehre senkrecht';fkc.title='Fährenkarte nehmen (ganzer Zug, höchstens '+(FK().max_hand||2)+' auf der Hand)';
-    if(FK().bild){fkc.style.backgroundImage='url('+FK().bild+')';fkc.classList.add('fkbild')}else fkc.innerHTML='<span class="fkl">FÄHRE</span>';
+    const fkc=document.createElement('div');fkc.className='pcard gcard pc-faehre quer';fkc.title='Fährenkarte nehmen (ganzer Zug, höchstens '+(FK().max_hand||2)+' auf der Hand)';
+    if(FK().bild)fkc.innerHTML='<i class="drehbild" style="background-image:url('+FK().bild+')"></i>';else fkc.innerHTML='<span class="fkl">FÄHRE</span>';
     fkc.onclick=takeFK;fw.appendChild(fkc);
     const fc=document.createElement('div');fc.className='cnt';fc.textContent=(g().fk||0);fw.appendChild(fc);dock.appendChild(fw);
   }
@@ -2024,7 +2033,8 @@ function spieleWechsler(){
       const pl=v.players.map(p=>p.name).join(', ');
       const runde=(v.game&&v.players.length)?Math.floor((v.game.zuege||0)/v.players.length)+1:0;
       const dran=!!(v.game&&v.game.turn===i&&v.status==='playing');
-      let st=v.status==='over'?'AUSWERTUNG OFFEN':(v.status==='lobby'?'Warteraum':(dran?'DU BIST DRAN':'läuft'));
+      const amZug=(v.status==='playing'&&v.game&&v.players[v.game.turn])?v.players[v.game.turn].name:'';
+      let st=v.status==='over'?'AUSWERTUNG OFFEN':(v.status==='lobby'?'Warteraum':(dran?'DU BIST DRAN':(amZug?amZug+' ist dran':'läuft')));
       if(v.status==='playing'&&(v.limitMin||v.limitH)&&v.game&&v.game.frist){const ms=v.game.frist-Date.now();
         st+=ms<=0?' · Zeit abgelaufen':' · noch '+(ms>=3600000?Math.floor(ms/3600000)+' Std.':Math.max(1,Math.floor(ms/60000))+' Min.')}
       treffer.push({code,ed,pl,runde,st,dran});
