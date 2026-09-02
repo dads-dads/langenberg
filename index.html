@@ -252,7 +252,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.20 · 01.09.2026';
+const APP_VERSION='7.21 · 01.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -1563,13 +1563,8 @@ function renderHud(){
   dw.appendChild(cn);o.appendChild(dw);
   const ab=document.createElement('div');ab.id='ablage';
   ab.innerHTML='<b>'+(g().discard||[]).length+'</b> verbraucht';o.appendChild(ab);
-  if(FK()){const fw=document.createElement('div');fw.className='fkWrap';
-    const fkc=document.createElement('div');fkc.className='pcard pc-faehre';fkc.title='Fährenkarte nehmen (ganzer Zug, höchstens '+(FK().max_hand||2)+' auf der Hand)';
-    if(FK().bild){fkc.style.backgroundImage='url('+FK().bild+')';fkc.classList.add('fkbild')}else fkc.innerHTML='<span class="fkl">FÄHRE</span>';
-    fkc.onclick=takeFK;fw.appendChild(fkc);
-    const fc=document.createElement('div');fc.className='cnt';fc.textContent=(g().fk||0);fw.appendChild(fc);o.appendChild(fw)}
   const dock=document.getElementById('gelDock');
-  if(dock){dock.innerHTML='';dock.classList.toggle('an',!!GEL())}
+  if(dock){dock.innerHTML='';dock.classList.toggle('an',!!GEL()||!!FK())}
   if(GEL()&&dock){
     // Landschaftskarten liegen links unter dem Zoom untereinander, damit die
     // Kartenleiste im Hochkantformat nicht ueber den Bildschirmrand waechst.
@@ -1582,6 +1577,14 @@ function renderHud(){
     gk.onclick=()=>takeGel(-1);gw.appendChild(gk);
     const gc=document.createElement('div');gc.className='cnt';gc.textContent=(g().gel||[]).length;
     gw.appendChild(gc);dock.appendChild(gw);
+  }
+  if(FK()&&dock){
+    // Faehrenkarten liegen wie die Landschaftskarten links unter dem Zoom.
+    const fw=document.createElement('div');fw.className='gelWrap';
+    const fkc=document.createElement('div');fkc.className='pcard gcard pc-faehre';fkc.title='Fährenkarte nehmen (ganzer Zug, höchstens '+(FK().max_hand||2)+' auf der Hand)';
+    if(FK().bild){fkc.style.backgroundImage='url('+FK().bild+')';fkc.classList.add('fkbild')}else fkc.innerHTML='<span class="fkl">FÄHRE</span>';
+    fkc.onclick=takeFK;fw.appendChild(fkc);
+    const fc=document.createElement('div');fc.className='cnt';fc.textContent=(g().fk||0);fw.appendChild(fc);dock.appendChild(fw);
   }
   const h=document.getElementById('hand');h.innerHTML='';
   Object.keys(CARDCOL).forEach(c=>{const n=(me().hand||{})[c]||0;if(!n)return;
