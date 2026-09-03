@@ -255,7 +255,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.24 · 01.09.2026';
+const APP_VERSION='7.25 · 01.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -514,21 +514,21 @@ function renderGlow(){
   const dot=(n,fill,rand)=>{(TPOSL[n]||[]).forEach(q=>{
       const k=q.join(',');if(seen.has(k))return;seen.add(k);
       const cx=q[0]*10,cy=q[1]*(BH/100);
-      const c=el('circle',{cx,cy,r:9,fill,stroke:rand,'stroke-width':2,class:'glowdot'});
+      const c=el('circle',{cx,cy,r:9,fill,stroke:rand,'stroke-width':4.5,class:'glowdot'});
       c.innerHTML='<animate attributeName="r" values="8;15;8" dur="1.9s" repeatCount="indefinite"/>'
-                 +'<animate attributeName="opacity" values="0.95;0.25;0.95" dur="1.9s" repeatCount="indefinite"/>';
+                 +'<animate attributeName="opacity" values="1;0.55;1" dur="1.9s" repeatCount="indefinite"/>';
       L.appendChild(c)})};
   const staedte=tk=>tkLand(tk)?[tk.von].concat(tkZiele(tk).map(z=>z.nach)):[tk.von,tk.nach];
   if(ROOM.status==='picking'){
     // Startphase: solange die eigene Auswahl offen ist, blinken alle angebotenen
     // Auftragsstaedte rot; nach dem Behalten normal gelb.
-    if(!(g().picked||{})[SEAT])(((g().startOffers||{})[SEAT])||[]).forEach(tk=>staedte(tk).forEach(n=>dot(n,'#e33d2e','#71100a')));
-    else (me().tickets||[]).forEach(tk=>staedte(tk).forEach(n=>dot(n,'#ffd21f','#7a5c00')));
+    if(!(g().picked||{})[SEAT])(((g().startOffers||{})[SEAT])||[]).forEach(tk=>staedte(tk).forEach(n=>dot(n,'#111111','#39ff14')));
+    else (me().tickets||[]).forEach(tk=>staedte(tk).forEach(n=>dot(n,'#ffd21f','#d61a1a')));
     return;
   }
-  (me().tickets||[]).forEach(tk=>{if(tkErfuellt(SEAT,tk))return;staedte(tk).forEach(n=>dot(n,'#ffd21f','#7a5c00'))});
+  (me().tickets||[]).forEach(tk=>{if(tkErfuellt(SEAT,tk))return;staedte(tk).forEach(n=>dot(n,'#ffd21f','#d61a1a'))});
   const P=g().tkPend;
-  if(P&&P.seat===SEAT)(P.tk||[]).forEach(tk=>{if(tkErfuellt(SEAT,tk))return;staedte(tk).forEach(n=>dot(n,'#e33d2e','#71100a'))});
+  if(P&&P.seat===SEAT)(P.tk||[]).forEach(tk=>{if(tkErfuellt(SEAT,tk))return;staedte(tk).forEach(n=>dot(n,'#111111','#39ff14'))});
 }
 function renderClaims(){
   for(const nr in routeEls){routeEls[nr].querySelectorAll('.wagon').forEach(w=>w.remove())}
