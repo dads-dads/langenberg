@@ -57,7 +57,7 @@ Slovenia ist nur Beschriftung ohne Einmündung und kommt in keinem Auftrag vor �
    - Übrige Felder `n - w`: Wagenkarten einer Farbe (grau = beliebige Farbe) plus beliebig viele Loks.
    - Fährenkarten dürfen nie für normale Strecken oder für wellenlose Felder eingesetzt werden.
    - Vorschlag UI: Bau-Dialog zeigt „Wellen: w · Loks/Fähren wählen" mit automatischer Minimal-Kombination (erst Fährenkarten, dann Loks) und Möglichkeit, mehr Loks statt Fähren einzusetzen.
-4. Abgelegte Fährenkarten kommen aus dem Spiel (oder auf einen Ablagestapel – in der Regel nicht erwähnt; Vorschlag: raus, wie Stapelgröße 10 nahelegt).
+4. Eingesetzte Fährenkarten kommen zurück in den Vorratsstapel (`g.fk`), stehen also wieder zum Nehmen bereit.
 
 Bis die App das kann, funktioniert die Karte auch mit der Skandinavien/Afrika-Logik
 (`faehre` = Anzahl Pflicht-Loks), da die Wellenzahl identisch codiert ist.
