@@ -1,6 +1,6 @@
 # Spezifikation Edition „Weltreise“ (Zug um Zug – Weltreise / Rails & Sails: The World)
 
-Stand: Karte v0.92, 06.09.2026 (Korrekturbatches 1+2 eingespielt). Dateien: `weltreise_karte.json`, `weltreise_karte.jpg` (3000×1688, beschnitten auf den Rahmen inkl. Zählleiste), `editor_weltreise.html`, `auftrag_weltreise.jpg` (1120×700), `kontrolle_weltreise.jpg`.
+Stand: Karte v0.93, 07.09.2026 (Korrekturbatches 1+2, Nr 99 Mumbai–Dar Es Salaam). Dateien: `weltreise_karte.json`, `weltreise_karte.jpg` (3000×1688, beschnitten auf den Rahmen inkl. Zählleiste), `editor_weltreise.html`, `auftrag_weltreise.jpg` (1120×700), `kontrolle_weltreise.jpg`.
 
 Alle in Rückfrage-Runde 1 bestätigten Entscheidungen sind hier eingearbeitet (A1–F20). Die Integration in `index.html` erfolgt erst nach Freigabe.
 
@@ -184,7 +184,7 @@ Kartenbilder (06.09.2026 aus dem Scan erstellt, entzerrt, 640×392): Einzeldatei
 | 96 | Hong Kong – Manila | Schiff | pink | 1 |  |
 | 97 | Mumbai – Bangkok | Zug | rot | 3 | Doppel mit 98 |
 | 98 | Mumbai – Bangkok | Zug | gelb | 3 | Doppel mit 97 |
-| 99 | Mumbai – Djibouti | Schiff | weiss | 4 |  |
+| 99 | Mumbai – Dar Es Salaam | Schiff | weiss | 4 |  |
 | 100 | Bangkok – Jakarta | Schiff | weiss | 2 |  |
 | 101 | Bangkok – Manila | Schiff | rot | 2 |  |
 | 102 | Manila – Jakarta | Schiff | grau | 2 |  |
