@@ -56,6 +56,7 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 .pc-schwarz{background-position:0% 100%}.pc-weiss{background-position:25% 100%}.pc-pink{background-position:50% 100%}.pc-blau{background-position:75% 100%}.pc-rueck{background-position:100% 100%}
 .pcard.wrc{background-image:none;background-size:cover;background-position:center;background-color:#f6f1e6}
 #open .pcard.wrc{height:auto!important;aspect-ratio:640/392}
+#gelDock .pcard.wrdeck{width:64px;height:auto;aspect-ratio:640/392;cursor:pointer}
 #open .pcard.wrc.wrdeck{opacity:.97}
 .pc-faehre{background-image:none;background:linear-gradient(160deg,#e6eff5,#7f9db3);display:flex;align-items:center;justify-content:center;border:1px solid #4c6b85}
 .pc-faehre .fkl{font-size:11px;font-weight:800;color:#123a5a;letter-spacing:.05em}
@@ -262,7 +263,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.35 · 06.09.2026';
+const APP_VERSION='7.36 · 06.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -827,7 +828,7 @@ function wrTakeOpen(i){const G=g(),c=G.open[i];if(c===undefined)return;
   m.querySelector('#nlW').onclick=()=>{m.remove();fertig('w')};m.querySelector('#nlS').onclick=()=>{m.remove();fertig('s')};
 }
 function wrTakeBlind(st){if(tkGuard())return;if(!myTurn()||g().drawn>=2)return;const G=g();const c=wrDraw(G,st);if(c===null){toast('Dieser Stapel ist leer.');return}
-  const dk=document.querySelector('#open .wrdeck.'+(st==='s'?'ds':'dw'));if(dk)flyCard(dk,'wrc',wrBild(st==='s'?'deck_schiff':'deck_wagen'));
+  const dk=document.querySelector('#gelDock .wrdeck.'+(st==='s'?'ds':'dw'));if(dk)flyCard(dk,'wrc',wrBild(st==='s'?'deck_schiff':'deck_wagen'));
   if(G.drawn===0){window._blind1=c;toast('Verdeckt gezogen: '+wrName(c))}else{const v1=window._blind1?(wrName(window._blind1)+' + '):'';toast('Verdeckt gezogen: '+v1+wrName(c));window._blind1=null}
   me().hand[c]=(me().hand[c]||0)+1;(G.pend=G.pend||[]).push('?');G.drawn+=1;G.drawn>=2?endTurn():sync()}
 function takeBlind(){if(tkGuard())return;if(!myTurn()||g().drawn>=2)return;const c=drawCard(g());if(c===null){toast('Keine Karten mehr im Stapel.');return}
@@ -1873,10 +1874,6 @@ function renderHud(){
   if(WR()){
     (g().open||[]).forEach((c,i)=>{const d=document.createElement('div');d.className='pcard wrc';d.style.backgroundImage='url('+wrBild(c)+')';
       d.title=wrName(c);d.onclick=()=>takeOpen(i);o.appendChild(d)});
-    [['w','deck_wagen','Wagenstapel: verdeckt ziehen','deck'],['s','deck_schiff','Schiffsstapel: verdeckt ziehen','deck2']].forEach(z=>{
-      const dw=document.createElement('div');dw.className='gelWrap';
-      const dk=document.createElement('div');dk.className='pcard wrc wrdeck '+(z[0]==='s'?'ds':'dw');dk.style.backgroundImage='url('+wrBild(z[1])+')';dk.title=z[2];dk.onclick=()=>wrTakeBlind(z[0]);
-      dw.appendChild(dk);const cn=document.createElement('div');cn.className='cnt';cn.textContent=(g()[z[3]]||[]).length;dw.appendChild(cn);o.appendChild(dw)});
     const ab=document.createElement('div');ab.id='ablage';ab.innerHTML='<b>'+((g().discard||[]).length+(g().discard2||[]).length)+'</b> verbraucht';o.appendChild(ab);
   } else {
   (g().open||[]).forEach((c,i)=>{const d=document.createElement('div');d.className='pcard pc-'+c;
@@ -1890,7 +1887,14 @@ function renderHud(){
   ab.innerHTML='<b>'+(g().discard||[]).length+'</b> verbraucht';o.appendChild(ab);
   }
   const dock=document.getElementById('gelDock');
-  if(dock){dock.innerHTML='';dock.classList.toggle('an',!!GEL()||!!FK()||!!EXPM())}
+  if(dock){dock.innerHTML='';dock.classList.toggle('an',!!GEL()||!!FK()||!!EXPM()||WR())}
+  if(WR()&&dock){
+    // Weltreise: die beiden Nachziehstapel (Wagen, Schiff) liegen links unter dem Zoom
+    [['w','deck_wagen','Wagenstapel: verdeckt ziehen','deck'],['s','deck_schiff','Schiffsstapel: verdeckt ziehen','deck2']].forEach(z=>{
+      const dw=document.createElement('div');dw.className='gelWrap';
+      const dk=document.createElement('div');dk.className='pcard wrc wrdeck '+(z[0]==='s'?'ds':'dw');dk.style.backgroundImage='url('+wrBild(z[1])+')';dk.title=z[2];dk.onclick=()=>wrTakeBlind(z[0]);
+      dw.appendChild(dk);const cn=document.createElement('div');cn.className='cnt';cn.textContent=(g()[z[3]]||[]).length;dw.appendChild(cn);dock.appendChild(dw)});
+  }
   if(GEL()&&dock){
     // Landschaftskarten liegen links unter dem Zoom untereinander, damit die
     // Kartenleiste im Hochkantformat nicht ueber den Bildschirmrand waechst.
