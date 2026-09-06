@@ -124,7 +124,8 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 
 /* ---- Querformat auf dem Handy: unteren Bereich flach halten ---- */
 @media (orientation:portrait){
-  #hand{display:grid;grid-template-columns:repeat(3,max-content);gap:5px;justify-content:start;align-content:start;overflow-x:hidden;overflow-y:auto;max-height:none}
+  /* Hochkant: 3 Spalten x 3 Reihen (9 Karten) sichtbar, weitere Karten per Scrollen (Weltreise hat bis zu 25 Kartenarten) */
+  #hand{display:grid;grid-template-columns:repeat(3,max-content);gap:5px;justify-content:start;align-content:start;overflow-x:hidden;overflow-y:auto;max-height:247px;min-height:0;flex:0 0 auto}
 }
 @media (orientation:landscape) and (max-height:560px){
   body{display:grid;grid-template-columns:minmax(0,1fr) 262px;grid-template-rows:auto minmax(0,1fr)}
@@ -261,7 +262,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.33 · 06.09.2026';
+const APP_VERSION='7.35 · 06.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -1921,7 +1922,8 @@ function renderHud(){
   }
   const h=document.getElementById('hand');h.innerHTML='';
   if(WR()){const hd=me().hand||{},ord=[];
-    WR_FARBEN.forEach(f=>ord.push('wagen_'+f,'wagen_'+f+'_hafen'));WR_FARBEN.forEach(f=>ord.push('schiff_'+f+'_1','schiff_'+f+'_2'));ord.push('joker');
+    // Handkarten nach Farbe gruppiert: je Farbe Wagen, Wagen mit Hafen, Einzelschiff, Doppelschiff; Joker zuletzt
+    WR_FARBEN.forEach(f=>ord.push('wagen_'+f,'wagen_'+f+'_hafen','schiff_'+f+'_1','schiff_'+f+'_2'));ord.push('joker');
     ord.forEach(k=>{const n=hd[k]||0;if(!n)return;const d=document.createElement('div');d.className='pcard hoch wrh';d.title=wrName(k);
       d.innerHTML='<i style="background-image:url('+wrBild(k)+');background-size:cover;background-position:center"></i><span class="n">'+n+'</span>';h.appendChild(d)})}
   else Object.keys(CARDCOL).forEach(c=>{const n=(me().hand||{})[c]||0;if(!n)return;
