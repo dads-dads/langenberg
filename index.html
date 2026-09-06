@@ -265,7 +265,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.37 · 07.09.2026';
+const APP_VERSION='7.38 · 07.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -531,10 +531,10 @@ function bauOptionenWR(s,hand){
   const add=(pay,ueber)=>{const key=JSON.stringify(pay);if(seen.has(key))return;seen.add(key);
     const karten=Object.values(pay).reduce((a,b)=>a+b,0);opts.push({pay,karten,joker:pay.joker||0,ueber:ueber||0})};
   if(s.typ==='schiff'){
-    for(const f of cols){const s1=hand['schiff_'+f+'_1']||0,s2=hand['schiff_'+f+'_2']||0;const L=s.laenge;let exakt=false;
+    for(const f of cols){const s1=hand['schiff_'+f+'_1']||0,s2=hand['schiff_'+f+'_2']||0;const L=s.laenge;
       for(let a=0;a<=s2;a++)for(let b=0;b<=s1;b++){const c=L-2*a-b;if(c<0)continue;if(c>J)continue;if(!(a+b+c))continue;
-        const pay={};if(a)pay['schiff_'+f+'_2']=a;if(b)pay['schiff_'+f+'_1']=b;if(c)pay.joker=c;add(pay,0);exakt=true}
-      if(!exakt&&s2){ // Ueberzahlung: eine Doppelschiffskarte zu viel (Rest verfaellt)
+        const pay={};if(a)pay['schiff_'+f+'_2']=a;if(b)pay['schiff_'+f+'_1']=b;if(c)pay.joker=c;add(pay,0)}
+      if(s2){ // Ueberzahlung immer erlaubt: eine Doppelschiffskarte deckt auch nur ein Feld (Rest verfaellt), z.B. 4 Doppel fuer eine 7er-Strecke
         for(let a=1;a<=s2;a++)for(let b=0;b<=s1;b++){const c=L+1-2*a-b;if(c<0||c>J)continue;const pay={};pay['schiff_'+f+'_2']=a;if(b)pay['schiff_'+f+'_1']=b;if(c)pay.joker=c;add(pay,1)}}
     }
   } else if(s.gelaende){
