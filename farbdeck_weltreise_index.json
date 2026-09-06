@@ -1,0 +1,118 @@
+{
+ "karte_px": [
+  640,
+  392
+ ],
+ "spalten": 9,
+ "zeilen": 3,
+ "karten": {
+  "deck_schiff": {
+   "spalte": 0,
+   "zeile": 0
+  },
+  "deck_wagen": {
+   "spalte": 1,
+   "zeile": 0
+  },
+  "joker": {
+   "spalte": 2,
+   "zeile": 0
+  },
+  "schiff_gelb_1": {
+   "spalte": 3,
+   "zeile": 0
+  },
+  "schiff_gelb_2": {
+   "spalte": 4,
+   "zeile": 0
+  },
+  "schiff_gruen_1": {
+   "spalte": 5,
+   "zeile": 0
+  },
+  "schiff_gruen_2": {
+   "spalte": 6,
+   "zeile": 0
+  },
+  "schiff_pink_1": {
+   "spalte": 7,
+   "zeile": 0
+  },
+  "schiff_pink_2": {
+   "spalte": 8,
+   "zeile": 0
+  },
+  "schiff_rot_1": {
+   "spalte": 0,
+   "zeile": 1
+  },
+  "schiff_rot_2": {
+   "spalte": 1,
+   "zeile": 1
+  },
+  "schiff_schwarz_1": {
+   "spalte": 2,
+   "zeile": 1
+  },
+  "schiff_schwarz_2": {
+   "spalte": 3,
+   "zeile": 1
+  },
+  "schiff_weiss_1": {
+   "spalte": 4,
+   "zeile": 1
+  },
+  "schiff_weiss_2": {
+   "spalte": 5,
+   "zeile": 1
+  },
+  "wagen_gelb": {
+   "spalte": 6,
+   "zeile": 1
+  },
+  "wagen_gelb_hafen": {
+   "spalte": 7,
+   "zeile": 1
+  },
+  "wagen_gruen": {
+   "spalte": 8,
+   "zeile": 1
+  },
+  "wagen_gruen_hafen": {
+   "spalte": 0,
+   "zeile": 2
+  },
+  "wagen_pink": {
+   "spalte": 1,
+   "zeile": 2
+  },
+  "wagen_pink_hafen": {
+   "spalte": 2,
+   "zeile": 2
+  },
+  "wagen_rot": {
+   "spalte": 3,
+   "zeile": 2
+  },
+  "wagen_rot_hafen": {
+   "spalte": 4,
+   "zeile": 2
+  },
+  "wagen_schwarz": {
+   "spalte": 5,
+   "zeile": 2
+  },
+  "wagen_schwarz_hafen": {
+   "spalte": 6,
+   "zeile": 2
+  },
+  "wagen_weiss": {
+   "spalte": 7,
+   "zeile": 2
+  },
+  "wagen_weiss_hafen": {
+   "spalte": 8,
+   "zeile": 2
+  }
+ }
+}
