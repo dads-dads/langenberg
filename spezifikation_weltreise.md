@@ -1,6 +1,6 @@
 # Spezifikation Edition „Weltreise“ (Zug um Zug – Weltreise / Rails & Sails: The World)
 
-Stand: Karte v0.93, 07.09.2026 (Korrekturbatches 1+2, Nr 99 Mumbai–Dar Es Salaam). Dateien: `weltreise_karte.json`, `weltreise_karte.jpg` (3000×1688, beschnitten auf den Rahmen inkl. Zählleiste), `editor_weltreise.html`, `auftrag_weltreise.jpg` (1120×700), `kontrolle_weltreise.jpg`.
+Stand: Karte v0.94, 07.09.2026 (Korrekturbatches 1+2, Nr 99 Mumbai–Dar Es Salaam, unterer Rand entfernt). Dateien: `weltreise_karte.json`, `weltreise_karte.jpg` (3000×1688, beschnitten auf den Rahmen inkl. Zählleiste), `editor_weltreise.html`, `auftrag_weltreise.jpg` (1120×700), `kontrolle_weltreise.jpg`.
 
 Alle in Rückfrage-Runde 1 bestätigten Entscheidungen sind hier eingearbeitet (A1–F20). Die Integration in `index.html` erfolgt erst nach Freigabe.
 
@@ -11,7 +11,7 @@ Alle in Rückfrage-Runde 1 bestätigten Entscheidungen sind hier eingearbeitet (
 - **9 Binnenstädte** (Lok-Symbol, kein Hafen möglich): Winnipeg, Mexico, Moskva, Novosibirsk, Tehran, Lahore, Yakutsk, Beijing, Djibouti.
 - **130 Strecken**: 71 Zug-, 59 Schiffsstrecken; 34 Doppelstrecken, 5 Geländestrecken (`gelaende`), 7 Rand-Überläufe (`rand: true`). 411 Felder (alle l = 2.1, w = 0.82), keine interpolierten Felder mehr.
 - Neue Streckenfelder gegenüber bisherigen Editionen: `typ` (`zug`|`schiff`), `gelaende` (Anzahl Felder mit Doppel-Wagen-Symbol), `rand`.
-- `board_h: 563` (Seitenverhältnis 3882:2184). Koordinaten wie üblich in Prozent (x der Breite, y der Höhe; `l`/`w` in Prozent der Breite).
+- `board_h: 554` (Plan 3882 × 2152 nach Entfernen des unteren Rands unter der Zählleiste; Auslieferung 3000 × 1663). Felder l = 2.1 (Prozent der Breite), w = 0.83 (Prozent der Höhe – entspricht optisch dem früheren 0.82 bei board_h 563). Koordinaten wie üblich in Prozent (x der Breite, y der Höhe; `l`/`w` in Prozent der Breite).
 - Punktetabelle vom Plan: 1→1, 2→2, 3→4, 4→7, 5→10, 6→15, 7→18, 8→21.
 - Farben: nur 6 Kartenfarben (rot, gelb, gruen, pink, weiss, schwarz) + grau als Streckenfarbe. `meta.farben` enthält daher keine orange/blau – **Deckaufbau und `bauOptionen()` müssen `meta.farben` auswerten statt der fest verdrahteten 8-Farben-Liste.**
 
