@@ -265,7 +265,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.41 · 07.09.2026';
+const APP_VERSION='7.42 · 07.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -363,7 +363,7 @@ function ibDeckVorbereiten(G,einfach){const st=festM().staedte||{};for(const k i
 function draftStart(G,nr,dir){const n=ROOM.players.length;shuffle(G.ticketDeck);const D={nr,dir,runde:1,phase:'pick',hands:{},gew:{},done:{}};
   for(let i=0;i<n;i++)D.hands[i]=G.ticketDeck.splice(0,6);
   G.draft=D;G.picked={};G.startOffers={};ROOM.status='picking'}
-let draftKey='';
+let draftKey='',draftKeepFertig=0;
 function draftRender(){const G=g(),D=G&&G.draft;if(!D)return;const n=ROOM.players.length;
   const key=[D.nr,D.phase,D.runde,SEAT,!!((D.done||{})[SEAT]),!!((G.picked||{})[SEAT]),((D.hands||{})[SEAT]||[]).length].join('|');
   const warten=ROOM.players.map((p,i)=>(D.done||{})[i]?null:p.name).filter(Boolean);
@@ -377,17 +377,26 @@ function draftRender(){const G=g(),D=G&&G.draft;if(!D)return;const n=ROOM.player
     if(fertig||!hand.length){
       html+='<p id="dWait" style="text-align:center;font-size:14px;padding:10px 0">✓ Karte gewählt – warten auf '+(warten.length?warten.join(', '):'…')+'</p>';
       if(gew.length)html+='<div style="font-size:12px;color:#8a7d63;margin:6px 0 4px">Deine bisher gewählten Karten</div><div id="dGew"></div>'}
-    else html+='<div id="dOff"></div><button class="go" id="dGo" disabled>Karte wählen</button>';
+    else{html+='<div id="dOff"></div><button class="go" id="dGo" disabled>Karte wählen</button>';
+      const hand0=(me()&&me().tickets)||[];
+      if(gew.length||hand0.length)html+='<details style="margin-top:8px;text-align:left"><summary style="cursor:pointer;font-size:13px;color:#8a7d63">📋 Bisher gewählt: '+gew.length+(hand0.length?' · schon auf der Hand: '+hand0.length:'')+'</summary>'
+        +(gew.length?'<div style="font-size:12px;color:#8a7d63;margin:6px 0 4px">In diesem Draft gewählt</div><div id="dGew"></div>':'')
+        +(hand0.length?'<div style="font-size:12px;color:#8a7d63;margin:6px 0 4px">Schon auf der Hand</div><div id="dHand"></div>':'')+'</details>'}
     const m=modal(html,true);m.id='draftModal';m.querySelector('#dPeek').onclick=()=>brettGucken(m);
     if(m.querySelector('#dGew'))m.querySelector('#dGew').innerHTML=gew.map(t=>ticketCard(t,'')).join('');
+    if(m.querySelector('#dHand'))m.querySelector('#dHand').innerHTML=((me()&&me().tickets)||[]).map(t=>ticketCard(t,'')).join('');
     if(!fertig&&hand.length){let sel=-1;const wrap=m.querySelector('#dOff'),go=m.querySelector('#dGo');
       hand.forEach((t,i)=>{const d=document.createElement('div');d.innerHTML=ticketCard(t,'');const c=d.firstChild;
         c.onclick=()=>{sel=i;wrap.querySelectorAll('.tcard').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');go.disabled=false};wrap.appendChild(c)});
       go.onclick=()=>{if(sel<0)return;go.disabled=true;draftPick(sel)}}
     return}
   if(D.phase==='keep'){if((G.picked||{})[SEAT])return;
+    // Schutz gegen doppelte Anzeige: zwischen lokalem Abschluss und Ankunft von picked=true vom Server
+    // darf das Behalten-Modal fuer diesen Draft nicht erneut aufgehen
+    if(draftKeepFertig===D.nr||document.getElementById('draftModal'))return;
     const gew=(D.gew||{})[SEAT]||[];
-    ticketModal(gew,4,keep=>{const zk=[];gew.forEach((t,i)=>{if(keep.has(i))me().tickets.push(t);else zk.push(t)});draftKeepCommit(zk)},
+    ticketModal(gew,4,keep=>{draftKeepFertig=D.nr;const zk=[],beh=[];gew.forEach((t,i)=>{if(keep.has(i))beh.push(t);else zk.push(t)});
+        const p=me();beh.forEach(t=>{if(!p.tickets.some(x=>tkGleich(x,t)))p.tickets.push(t)});draftKeepCommit(zk)},
       sel=>({ok:sel.size===4,txt:'Genau 4 behalten ('+sel.size+'/4)'}),'Draft abgeschlossen: behalte <b>genau 4</b> deiner 6 Karten. Die 2 übrigen kommen '+(D.nr===1?'zurück in den Stapel.':'unter den Zielkartenstapel.'));
     const tm=document.getElementById('tkModal');if(tm)tm.id='draftModal'}}
 function draftPick(idx){if(!sitzOk())return;const n=ROOM.players.length;
@@ -400,7 +409,8 @@ function draftPick(idx){if(!sitzOk())return;const n=ROOM.players.length;
     return d}).catch(()=>{})}
 function draftKeepCommit(zk){if(!sitzOk()){toast('Sitzplatz konnte nicht zugeordnet werden – bitte Seite neu laden.');return}
   const G=g(),D=G.draft||{};G.picked[SEAT]=true;zk.forEach(t=>G.ticketDeck.push(t));
-  const ops=[roomRef.child('players/'+SEAT).set(JSON.parse(JSON.stringify(me()))),roomRef.child('game/picked/'+SEAT).set(true)];
+  const upd={};upd['players/'+SEAT]=JSON.parse(JSON.stringify(me()));upd['game/picked/'+SEAT]=true;
+  const ops=[roomRef.update(upd)];
   if(zk.length)ops.push(roomRef.child('game/ticketDeck').transaction(d=>{const a=(d||[]).concat(zk);return D.nr===1?shuffle(a):a}));
   Promise.all(ops).then(pickFertigPruefen).catch(()=>{});pickFertigPruefen()}
 function lokReset(g){let guard=0;
@@ -1806,7 +1816,7 @@ function zeigeRps(){
 }
 function onState(){
   if(p0Name&&ROOM.players&&(!ROOM.players[SEAT]||ROOM.players[SEAT].name!==p0Name))meinenSitzFinden();
-  if(ROOM.status==='lobby'){renderLobby();return}
+  if(ROOM.status==='lobby'){draftKeepFertig=0;draftKey='';renderLobby();return}
   document.getElementById('lobbyModal')?.remove();
   document.getElementById('top').classList.remove('hidden');
   document.getElementById('stage').classList.remove('hidden');
@@ -2173,7 +2183,7 @@ function joinRoom(code,name,pin){
     const ph=pin?await hashPin(pin,code):'';
     if(i>=0){
       if(v.players[i].pin&&v.players[i].pin!==ph){toast('Falscher PIN für '+v.players[i].name+'.');return}
-      CODE=code;SEAT=i;ROOM=v;roomRef=ref;MYPIN=pin;p0Name=name;pickShown=false;
+      CODE=code;SEAT=i;ROOM=v;roomRef=ref;MYPIN=pin;p0Name=name;pickShown=false;draftKeepFertig=0;draftKey='';
       sdReset();erfuellt=new Set();erfuelltInit=false;   // erledigte Aufträge beim Wiedereinstieg nicht erneut anzeigen
       if(!v.players[i].pin&&ph){v.players[i].pin=ph;ref.update({players:v.players})}
       toast('Willkommen zurück, '+v.players[i].name+'!');listen();return;
@@ -2437,7 +2447,7 @@ function adminPanel(){
 function wechsleRaum(code,name,pin){
   try{if(roomRef)roomRef.off()}catch(e){}
   if(window._strafT){clearTimeout(window._strafT);window._strafT=null}
-  sdReset();erfuellt=new Set();erfuelltInit=false;pickShown=false;lastNotice='';
+  sdReset();erfuellt=new Set();erfuelltInit=false;pickShown=false;draftKeepFertig=0;draftKey='';lastNotice='';
   document.querySelectorAll('.modal').forEach(x=>x.remove());
   joinRoom(code,name,pin);
 }
@@ -2563,7 +2573,7 @@ function zumStart(){
   if(window._strafT){clearTimeout(window._strafT);window._strafT=null}
   sdReset();
   roomRef=null;ROOM=null;CODE=null;SEAT=null;
-  pickShown=false;erfuellt=new Set();erfuelltInit=false;lastNotice='';
+  pickShown=false;draftKeepFertig=0;draftKey='';erfuellt=new Set();erfuelltInit=false;lastNotice='';
   document.querySelectorAll('.modal').forEach(x=>x.remove());
   ['top','stage','bottom'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   landing();
