@@ -265,7 +265,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.43 · 07.09.2026';
+const APP_VERSION='7.44 · 07.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -894,19 +894,54 @@ function renderClaims(){
   for(const nr in claims){const grp=routeEls[nr];if(!grp)continue;
     if(claims[nr]==='X'){grp.querySelectorAll('.seg').forEach(r=>grp.appendChild(expressWaggon(+r.dataset.cx,+r.dataset.cy,+r.dataset.l,+r.dataset.w,+r.dataset.deg)));continue}
     const colId=ROOM.players[claims[nr]].col;
-    grp.querySelectorAll('.seg').forEach(r=>grp.appendChild(waggon(+r.dataset.cx,+r.dataset.cy,+r.dataset.l,+r.dataset.w,+r.dataset.deg,colId)));
+    const st=MAP.strecken.find(x=>x.nr===+nr),schiff=WR()&&st&&st.typ==='schiff';
+    grp.querySelectorAll('.seg').forEach(r=>{let deg=+r.dataset.deg;
+      if(schiff&&nodes[st.nach]&&(nodes[st.nach].x*10-(+r.dataset.cx))<0)deg+=180;   // Bug zur Zielstadt
+      grp.appendChild((schiff?schiffStein:waggon)(+r.dataset.cx,+r.dataset.cy,+r.dataset.l,+r.dataset.w,deg,colId))});
   }
 }
-const STEIN_ORD=['blau','rot','gruen','gelb','schwarz'];
-let steineBereit=false;
-function steineVorbereiten(){
-  if(steineBereit)return;steineBereit=true;
-  const defs=document.querySelector('#svg defs');
-  STEIN_ORD.forEach((n,i)=>{
-    const sym=el('symbol',{id:'st_'+n,viewBox:'0 0 450 126'});
-    sym.appendChild(el('image',{href:'steine.png',x:0,y:-126*i,width:450,height:630,preserveAspectRatio:'none'}));
-    defs.appendChild(sym);
-  });
+// ---------- Spielsteine (SVG, aus der Spielerfarbe berechnet) ----------
+// Zugstein: Kesselwagen mit Raedern (25 % der Steinhoehe); Schiffsstein (Weltreise): Dampfer mit Mast.
+const STEIN_RAD=0.25;
+function hex2rgb(x){const s=x.replace('#','');return [parseInt(s.slice(0,2),16),parseInt(s.slice(2,4),16),parseInt(s.slice(4,6),16)]}
+function mix(x,ziel,f){const a=hex2rgb(x),b=hex2rgb(ziel);
+  return '#'+a.map((v,i)=>Math.round(v+(b[i]-v)*f).toString(16).padStart(2,'0')).join('')}
+function steinFarben(colId){
+  const hex=(PCOL.find(c=>c.id===colId)||PCOL[0]).hex;
+  return {base:hex,hi:mix(hex,'#ffffff',colId==='schwarz'?0.42:0.48),lo:mix(hex,'#000000',0.34),
+          edge:mix(hex,'#000000',colId==='schwarz'?0.55:0.62),rad:mix(hex,'#000000',0.72)};
+}
+function waggon(cx,cy,fl,fw,deg,colId){
+  const L=fl*0.96,H=L/3.65,c=steinFarben(colId);
+  const g2=el('g',{class:'wagon',transform:'rotate('+deg+' '+cx+' '+cy+')'});
+  const x0=cx-L/2,y0=cy-H/2,body=y0+H*0.80,bh=body-y0,R=bh/2;
+  g2.appendChild(el('rect',{x:x0,y:y0,width:L,height:bh,rx:R,fill:c.base,stroke:c.edge,'stroke-width':Math.max(0.5,H*0.09)}));
+  g2.appendChild(el('rect',{x:x0+L*0.06,y:y0+bh*0.14,width:L*0.88,height:bh*0.22,rx:bh*0.11,fill:c.hi}));
+  g2.appendChild(el('rect',{x:x0+L*0.06,y:body-bh*0.30,width:L*0.88,height:bh*0.16,rx:bh*0.08,fill:c.lo}));
+  [0.30,0.70].forEach(f=>g2.appendChild(el('line',{x1:x0+L*f,y1:y0+bh*0.18,x2:x0+L*f,y2:body-bh*0.18,
+    stroke:c.lo,'stroke-width':Math.max(0.4,H*0.07)})));
+  g2.appendChild(el('rect',{x:x0+L*0.05,y:body-H*0.03,width:L*0.90,height:H*0.07,fill:c.edge}));
+  const rr=H*STEIN_RAD;
+  [0.22,0.5,0.78].forEach(f=>g2.appendChild(el('circle',{cx:x0+L*f,cy:body+rr*0.8,r:rr,
+    fill:c.rad,stroke:'#ebdcc0','stroke-width':Math.max(0.3,H*0.05)})));
+  return g2;
+}
+function schiffStein(cx,cy,fl,fw,deg,colId){
+  const L=fl*0.96,H=L/3.65,c=steinFarben(colId);
+  const g2=el('g',{class:'wagon',transform:'rotate('+deg+' '+cx+' '+cy+')'});
+  const x0=cx-L/2,y0=cy-H/2,x1=x0+L,y1=y0+H,rt=y0+H*0.34,bug=L*0.22,sw=Math.max(0.5,H*0.09);
+  g2.appendChild(el('path',{d:'M'+x0+' '+rt+'H'+(x1-bug*0.15)+'L'+x1+' '+(rt+(y1-rt)*0.45)
+    +'L'+(x1-bug*0.30)+' '+y1+'H'+(x0+L*0.03)+'Z',fill:c.base,stroke:c.edge,'stroke-width':sw,'stroke-linejoin':'round'}));
+  g2.appendChild(el('line',{x1:x0+L*0.05,y1:y1-(y1-rt)*0.30,x2:x1-bug*0.45,y2:y1-(y1-rt)*0.30,
+    stroke:c.lo,'stroke-width':Math.max(0.4,H*0.08)}));
+  const aw=L*0.34,ax=x0+L*0.16;
+  g2.appendChild(el('rect',{x:ax,y:y0+H*0.10,width:aw,height:rt-(y0+H*0.10)+H*0.04,rx:H*0.08,
+    fill:c.hi,stroke:c.edge,'stroke-width':sw*0.8}));
+  g2.appendChild(el('rect',{x:ax+aw*0.55,y:y0+H*0.01,width:L*0.055,height:H*0.30,rx:H*0.05,
+    fill:c.lo,stroke:c.edge,'stroke-width':sw*0.7}));
+  g2.appendChild(el('line',{x1:x0+L*0.68,y1:y0+H*0.03,x2:x0+L*0.68,y2:rt,stroke:c.edge,'stroke-width':Math.max(0.4,H*0.07)}));
+  g2.appendChild(el('line',{x1:x0+L*0.07,y1:rt+H*0.05,x2:x1-bug*0.5,y2:rt+H*0.05,stroke:c.hi,'stroke-width':Math.max(0.4,H*0.07)}));
+  return g2;
 }
 // Weisser Expresszug (Japan) – gemeinsame Strecke aller Spieler
 function expressWaggon(cx,cy,fl,fw,deg){
@@ -914,14 +949,6 @@ function expressWaggon(cx,cy,fl,fw,deg){
   const g2=el('g',{class:'wagon',transform:'rotate('+deg+' '+cx+' '+cy+')'});
   g2.appendChild(el('rect',{x:cx-L/2,y:cy-H/2,width:L,height:H,rx:H/2.1,fill:'#ffffff',stroke:'#39434f','stroke-width':1.4}));
   g2.appendChild(el('rect',{x:cx-L/2+L*0.14,y:cy-H/6,width:L*0.48,height:H/3,rx:1.5,fill:'#9fb6c8'}));
-  return g2;
-}
-function waggon(cx,cy,fl,fw,deg,colId){
-  steineVorbereiten();
-  const L=fl*0.96,H=L/3.65;                 // Seitenverhältnis der Steingrafik beibehalten
-  const g2=el('g',{class:'wagon',transform:'rotate('+deg+' '+cx+' '+cy+')'});
-  g2.appendChild(el('use',{href:'#st_'+(STEIN_ORD.includes(colId)?colId:'blau'),
-    x:cx-L/2,y:cy-H/2,width:L,height:H}));
   return g2;
 }
 // ---------- Zuglogik (nur wer dran ist, verändert den Zustand) ----------
