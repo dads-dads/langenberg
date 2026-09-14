@@ -1,11 +1,11 @@
-# Zug um Zug – Südkorea · Spezifikation (Kartenpaket v1.01 · App v7.49, 12.09.2026)
+# Zug um Zug – Südkorea · Spezifikation (Kartenpaket v1.02 · App v7.52, 12.09.2026)
 
 Edition `suedkorea` für die Zug-um-Zug-Online-App. Quelle: Brettscan `Südkorea.png` (2250×3375), Regelheft `Spielregeln_Zug_um_Zug_Südkorea.pdf` (ZIP mit Seitentexten), 44 Zielkarten aus Davids Liste, Foto des Provinzen-Plans, drei Scans der Expresszug-Karten, Änderungsliste + Editor-Export `Änderungen_Südkorea.docx`.
 
 ## Dateien
 | Datei | Inhalt |
 |---|---|
-| `index.html` | App v7.49 mit der Edition `suedkorea` als 15. Eintrag |
+| `index.html` | App v7.52 mit der Edition `suedkorea` als 15. Eintrag |
 | `suedkorea_karte.json` | meta, 33 knoten, 100 strecken (262 Felder), 44 auftraege |
 | `suedkorea_karte.jpg` | Brett, um den weißen Rand beschnitten (2198×2878, `board_h` 1309, Zählleiste bleibt) |
 | `auftrag_suedkorea.jpg` | Zielkarten-Hintergrund 700×1120, ausgeblichenes Brett (Stil Skandinavien/Deutschland), Brettfeld `tk` {mx0 38, my0 150, mw 624, mh 817} |
@@ -148,7 +148,7 @@ Alle Städte wie auf dem Brett geschrieben, `rand: false`. Koordinaten in % des 
 Alle Längen und Farben nach Davids Änderungsliste vom 08.09.2026 korrigiert. Nachgetragene Strecken: 94 Wonju–Jecheon pink 2 (Doppel zu 13), 95 Cheonan–Cheongju pink 1 (Doppel zu 35), 96 Cheongju–Sejong pink 1 (Doppel zu 38), 97 Gwangju–Jeonju weiß 3 (Doppel zu 81), 98 Gunsan–Jeonju weiß 1, 99 Suncheon–Yeosu rot 1 (Doppel zu 76), 100 Namwon–Suncheon rot 2.
 
 ## Feldpositionen
-140 Feldpositionen stammen aus Davids Editor-Exporten (v0.92 und v0.93); die übrigen aus der Farbmaskenerkennung bzw. Interpolation. Die Felder der neuen Strecken 94–96 und 100 sitzen auf erkannten Feldern des Brettscans, 97, 98 und 99 wurden im zweiten Korrekturbatch nachjustiert. Feldmaß einheitlich l 4.64 / w 1.04 (%). Alle Strecken `geprueft: false`; Feinjustage im Editor, Export dann als Korrekturbatch.
+150 Feldpositionen stammen aus Davids Editor-Exporten (v0.92, v0.93 und v1.02); die übrigen aus der Farbmaskenerkennung bzw. Interpolation. Die Felder der neuen Strecken 94–96 und 100 sitzen auf erkannten Feldern des Brettscans, 97, 98 und 99 wurden im zweiten Korrekturbatch nachjustiert; im dritten Batch wurden bei fünf Doppelstrecken (2/3, 33/34, 66/67, 68/69, 77/78) die Felder der beiden Gleise entkreuzt. Feldmaß einheitlich l 4.64 / w 1.04 (%). Alle Strecken `geprueft: false`; Feinjustage im Editor, Export dann als Korrekturbatch.
 
 ## Zielkarten (44)
 | von | nach | Punkte |
@@ -198,10 +198,11 @@ Alle Längen und Farben nach Davids Änderungsliste vom 08.09.2026 korrigiert. N
 | Gangneung | Ulsan | 20 |
 | Wonju | Changwon | 15 |
 
-## Integration in die App (v7.49, umgesetzt)
+## Integration in die App (v7.52, umgesetzt)
 - Edition `suedkorea` als 15. Eintrag in `EDITIONEN`; alle Strecken `geprueft: true`.
 - **Namenskonflikt gelöst:** `meta.express` ist in der Japan-Edition belegt (Express-Strecken / Entwicklungsleiste). Die Südkorea-Karten liegen deshalb unter `meta.expresskarten`.
-- **Start-Draft** vom Iberia-Code entkoppelt: neue Weiche `DR()` (greift, sobald `meta.draft` vorhanden ist). Südkorea nutzt nur den Start-Draft (6 wählen, genau 4 behalten, 2 gemischt zurück); Zielkarten ziehen ist ab dem ersten Zug erlaubt.
+- **Start-Draft** vom Iberia-Code entkoppelt: Weiche `DR()` (greift, sobald `meta.draft` vorhanden ist und keine einfache Variante gewählt wurde). Südkorea nutzt nur den Start-Draft (6 wählen, genau 4 behalten, 2 gemischt zurück); Zielkarten ziehen ist ab dem ersten Zug erlaubt.
+- **Zwei Startvarianten** (seit v7.52, analog Iberia, Auswahl in der Lobby über `ROOM.ibStart`): Standard ist der Draft; alternativ die einfache Variante „6 Zielkarten ziehen, genau 4 behalten“ ohne Draft – die 12 zurückgegebenen Karten werden beim Übergang zu playing in den Stapel gemischt. Beide Varianten schreiben dieselbe `statId` und zählen damit in dieselbe Rangliste; das Ergebnisprotokoll vermerkt `variante: 'draft'` bzw. `'6/4'`.
 - **Expresszug-Karten:** `skExpModal()` mit den beiden sofort wirksamen Einsätzen; der dritte (Feldwert erhöhen) steckt im Provinzen-Dialog. Höchstens eine Karte pro Zug.
 - **Provinzen-Plan:** `game.prov[farbe][feld] = Sitzplatz`. Nach jedem Streckenbau fragt `skNachBau()`, ob ein Waggon gelegt wird – Linie (bei Grau frei wählbar), Zusatzkarten in der gezahlten Farbe bzw. Joker, optional Expresszug. Belegtes Feld → nächstes freies darunter; kein freies Feld → kein Waggon. Der Waggon wird vom Vorrat abgezogen und löst damit auch die normale Spielende-Regel mit aus.
 - **Endwertung** `skProvWertung()`: je Linie Summe der Feldwerte, Rangliste, Punkte 10/6/4/2 nach Spielerzahl; Gleichstand über das höhere Einzelfeld. Ergebnis erscheint im Showdown und in der Punktetabelle.

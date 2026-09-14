@@ -271,7 +271,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.51 · 14.09.2026';
+const APP_VERSION='7.52 · 14.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -336,7 +336,7 @@ function drawCard(g){for(let k=0;k<400;k++){if(!g.deck.length){if(!g.discard.len
 // ---------- Iberia: Festivalkarten & Zielkarten-Draft ----------
 function IB(){return !!(MAP.meta&&MAP.meta.festival)}
 // Zielkarten-Draft: Iberia (2 Drafts) und Suedkorea (nur Start-Draft)
-function DR(){return !!(MAP.meta&&MAP.meta.draft)&&(!IB()||!ibEinfach())}
+function DR(){return !!(MAP.meta&&MAP.meta.draft)&&!ibEinfach()}
 function ibEinfach(){if(typeof ROOM==='undefined'||!ROOM)return false;const G=ROOM.game;return G&&G.ibStart!==undefined?G.ibStart==='einfach':ROOM.ibStart==='einfach'}
 function festM(){return (MAP.meta&&MAP.meta.festival)||{}}
 // Stapel-Kennung einer Stadt (Porto und Coimbra teilen sich einen Stapel); null = keine Festivalstadt
@@ -919,7 +919,8 @@ function hostStart(){
   if(GEL())gelNachlegen(g);
   if(IB()){g.ibStart=ROOM.ibStart==='einfach'?'einfach':'draft';const einfach=g.ibStart==='einfach';ibDeckVorbereiten(g,einfach);g.draft2Done=einfach;
     if(!einfach){for(const i in g.startOffers)(g.startOffers[i]||[]).forEach(t=>g.ticketDeck.push(t));g.startOffers={};draftStart(g,1,1)}}
-  else if(rs.draft){for(const i in g.startOffers)(g.startOffers[i]||[]).forEach(t=>g.ticketDeck.push(t));g.startOffers={};draftStart(g,1,1)}
+  else if(rs.draft){g.ibStart=ROOM.ibStart==='einfach'?'einfach':'draft';
+    if(g.ibStart!=='einfach'){for(const i in g.startOffers)(g.startOffers[i]||[]).forEach(t=>g.ticketDeck.push(t));g.startOffers={};draftStart(g,1,1)}}
   if(SK())g.prov={};
   g.start=Date.now();
   g.frist=limitMs()?Date.now()+limitMs():0;
@@ -1793,7 +1794,7 @@ function statsSchreiben(){
       spieler:ROOM.players.map(p=>p.name),
       punkte:ROOM.players.map(p=>p.total||0),
       zuege:(ROOM.game&&ROOM.game.zuege)||0,
-      sieger:sieger.name,custom:!!ROOM.custom,test:!!ROOM.test,variante:(IB()?(ibEinfach()?'5/3':'draft'):null)});
+      sieger:sieger.name,custom:!!ROOM.custom,test:!!ROOM.test,variante:(IB()?(ibEinfach()?'5/3':'draft'):SK()?(ibEinfach()?'6/4':'draft'):null)});
   });
 }
 let sdAsked=false;
@@ -2017,6 +2018,7 @@ function pickFertigPruefen(){
   if(!ROOM||ROOM.status!=='picking'||!g())return;
   if(ROOM.players.every((p,i)=>g().picked[i])){
     if(DR()&&g().draft){const u={status:'playing','game/draft':null};if(g().draft.nr===2||!IB()){if(IB())u['game/draft2Done']=true;u['game/frist']=limitMs()?Date.now()+limitMs():0}roomRef.update(u)}
+    else if(SK())roomRef.update({status:'playing','game/ticketDeck':shuffle((g().ticketDeck||[]).slice())});
     else roomRef.child('status').set('playing')}
 }
 let rpsShown=false;
@@ -2094,6 +2096,9 @@ function onState(){
       }
       const offer=offer0;
       let chk=null,hint=null;
+      if(SK()&&(R().startauftraege||{}).draft){const beh=(R().startauftraege||{}).behalten||4;
+        hint='Behalte <b>genau '+beh+'</b> deiner '+offer.length+' Karten. Die übrigen kommen zurück in den Stapel (gemischt).';
+        chk=s2=>({ok:s2.size===beh,txt:'Behalten ('+s2.size+'/'+beh+')'})}
       if(rs0.lange_ziehen){
         const mMit=rs0.min_normale_mit_lang||2,mOhne=rs0.min_normale_ohne_lang||3,lMax=rs0.lange_max||1;
         hint='Höchstens '+lMax+' lange Strecke behalten (beide ablegen ist erlaubt). Mit langer Strecke mindestens '+mMit+' normale behalten, ohne lange mindestens '+mOhne+'.';
@@ -2196,7 +2201,7 @@ function regelnModal(){
   if(M.gelaende&&M.gelaende.regel)p('Landschaftskarten',M.gelaende.regel);
   if(FK()&&FK().aktion)p('Fährenkarten',FK().aktion+' Eine Fährenkarte deckt beim Bau bis zu '+(FK().deckt_wellen||2)+' Wellenfelder ab, höchstens '+(FK().max_hand||2)+' auf der Hand.');
   if(M.express&&M.express.regel)p('Express-Strecken',M.express.regel);
-  if(SK()){p('Zielkarten-Draft',(M.draft||{}).regel);p('Expresszug-Karten',(M.expresskarten||{}).regel);
+  if(SK()){p('Zielkarten-Draft',(M.draft||{}).regel+' Alternativ kann der Gastgeber in der Lobby die einfache Variante wählen: 6 Zielkarten ziehen, genau 4 behalten (ohne Draft). Beide Varianten zählen für die Rangliste.');p('Expresszug-Karten',(M.expresskarten||{}).regel);
     const PW=(M.provinzen||{}).wertung||{};
     p('Provinzen-Plan',(M.provinzen||{}).regel+' Linien: '+skLinien().map(skFName).join(', ')+'.');
     p('Provinzen-Wertung',Object.keys(PW).sort().map(k=>k+' Spieler: '+PW[k].join('/')).join(' · '))}
@@ -2375,8 +2380,8 @@ function renderLobby(){
       +'<span>Bonus Längste Strecke (0 = aus)</span>'+numIn('hrBL',hv('laengste_strecke_bonus',br.laengste_strecke_bonus||0))
       +'<span>Bonus Meiste Aufträge (0 = aus)</span>'+numIn('hrBA',hv('meiste_auftraege_bonus',br.meiste_auftraege_bonus||0))
       +'<span>Doppelstrecken bei 3 Spielern</span><label style="justify-self:start"><input type="checkbox" id="hrDop"'+(((hr.doppelstrecken_frei_ab!==undefined?hr.doppelstrecken_frei_ab:(br.doppelstrecken_frei_ab||3))<=3)?' checked':'')+'> erlaubt</label>'
-      +(IB()
-        ?'<span>Startaufträge</span><span style="font-size:12px;text-align:left"><label><input type="radio" name="ibStart" value="draft"'+(ROOM.ibStart!=='einfach'?' checked':'')+'> Draft nach Regelheft (6 wählen, 4 behalten)</label><br><label><input type="radio" name="ibStart" value="einfach"'+(ROOM.ibStart==='einfach'?' checked':'')+'> 5 ziehen, 3 behalten (ohne Draft)</label><br><small style="color:#8a7d63">beide Varianten zählen für die Rangliste</small></span>'
+      +((IB()||SK())
+        ?'<span>Startaufträge</span><span style="font-size:12px;text-align:left"><label><input type="radio" name="ibStart" value="draft"'+(ROOM.ibStart!=='einfach'?' checked':'')+'> Draft nach Regelheft (6 wählen, '+(IB()?'4':'genau 4')+' behalten)</label><br><label><input type="radio" name="ibStart" value="einfach"'+(ROOM.ibStart==='einfach'?' checked':'')+'> '+(IB()?'5 ziehen, 3 behalten (ohne Draft)':'6 ziehen, genau 4 behalten (ohne Draft)')+'</label><br><small style="color:#8a7d63">beide Varianten zählen für die Rangliste</small></span>'
         :sa.stapelwahl
         ?'<span>Startaufträge</span><span style="font-size:12px;color:#8a7d63">'+(sa.ziehen||4)+' Karten frei aus kurz/lang, mind. '+(sa.mindestens_behalten||2)+' behalten</span>'
         :((sa.lange_ziehen||sa.lange_strecken)
