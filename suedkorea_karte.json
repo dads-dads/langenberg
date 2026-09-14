@@ -3,13 +3,13 @@
   "name": "Südkorea",
   "statId": "Zug um Zug Südkorea",
   "kurz": "Südkorea",
-  "version": "1.01",
+  "version": "1.02",
   "spieler": "2-5",
   "wagons_pro_spieler": 45,
   "bild": "suedkorea_karte.jpg",
   "tkbild": "auftrag_suedkorea.jpg",
   "board_h": 1309,
-  "hinweis": "v1.0: 33 Staedte, 100 Strecken (60 Doppelstrecken-Eintraege), 262 Felder, 44 Zielkarten. Feldpositionen aus zwei Editor-Korrekturbatches uebernommen. Sonderregeln: Start-Draft (6 waehlen, genau 4 behalten), Expresszug-Karten (+1/+2/+3, je einmal pro Partie), Provinzen-Plan mit 8 Farblinien. Doppelstrecken wie in allen anderen Editionen ab 3 Spielern frei (Regelheft: ab 4).",
+  "hinweis": "v1.0: 33 Staedte, 100 Strecken (60 Doppelstrecken-Eintraege), 262 Felder, 44 Zielkarten. Feldpositionen aus zwei Editor-Korrekturbatches uebernommen. Sonderregeln: Start-Draft (6 waehlen, genau 4 behalten), Expresszug-Karten (+1/+2/+3, je einmal pro Partie), Provinzen-Plan mit 8 Farblinien. Doppelstrecken wie in allen anderen Editionen ab 3 Spielern frei (Regelheft: ab 4). v1.02: 10 Feldpositionen aus dem dritten Editor-Korrekturbatch.",
   "farben": [
    "rot",
    "orange",
@@ -503,8 +503,8 @@
    "geprueft": true,
    "felder": [
     {
-     "x": 19.75,
-     "y": 13.93,
+     "x": 17.81,
+     "y": 14.23,
      "deg": 80.7,
      "l": 4.64,
      "w": 1.04
@@ -528,8 +528,8 @@
    "geprueft": true,
    "felder": [
     {
-     "x": 17.88,
-     "y": 14.12,
+     "x": 19.76,
+     "y": 13.92,
      "deg": 81.6,
      "l": 4.64,
      "w": 1.04
@@ -1451,8 +1451,8 @@
    "geprueft": true,
    "felder": [
     {
-     "x": 38.67,
-     "y": 45.38,
+     "x": 36.72,
+     "y": 45.23,
      "deg": -88.3,
      "l": 4.64,
      "w": 1.04
@@ -1476,8 +1476,8 @@
    "geprueft": true,
    "felder": [
     {
-     "x": 36.7,
-     "y": 45.27,
+     "x": 38.58,
+     "y": 45.37,
      "deg": -87.7,
      "l": 4.64,
      "w": 1.04
@@ -2377,8 +2377,8 @@
      "w": 1.04
     },
     {
-     "x": 65.16,
-     "y": 77.2,
+     "x": 65.42,
+     "y": 78.64,
      "deg": -5.6,
      "l": 4.64,
      "w": 1.04
@@ -2402,8 +2402,8 @@
      "w": 1.04
     },
     {
-     "x": 65.4,
-     "y": 78.64,
+     "x": 65.21,
+     "y": 77.2,
      "deg": -5.2,
      "l": 4.64,
      "w": 1.04
@@ -2427,8 +2427,8 @@
      "w": 1.04
     },
     {
-     "x": 79.04,
-     "y": 78.17,
+     "x": 78.97,
+     "y": 79.7,
      "deg": 1.1,
      "l": 4.64,
      "w": 1.04
@@ -2452,8 +2452,8 @@
      "w": 1.04
     },
     {
-     "x": 78.91,
-     "y": 79.68,
+     "x": 79.04,
+     "y": 78.19,
      "deg": 1.7,
      "l": 4.64,
      "w": 1.04
@@ -2666,8 +2666,8 @@
    "geprueft": true,
    "felder": [
     {
-     "x": 20.16,
-     "y": 84.22,
+     "x": 21.78,
+     "y": 85.06,
      "deg": -55.5,
      "l": 4.64,
      "w": 1.04
@@ -2691,8 +2691,8 @@
    "geprueft": true,
    "felder": [
     {
-     "x": 21.59,
-     "y": 85.14,
+     "x": 20.1,
+     "y": 84.24,
      "deg": -55.5,
      "l": 4.64,
      "w": 1.04
