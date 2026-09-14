@@ -271,7 +271,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.52 · 14.09.2026';
+const APP_VERSION='7.53 · 14.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -2853,8 +2853,11 @@ function landing(){
   try{const aj=sessionStorage.getItem('autojoin');if(aj){sessionStorage.removeItem('autojoin');const o=JSON.parse(aj);if(o&&o.code){joinRoom(o.code,o.name||'',o.pin||'');return}}}catch(e){}
   const m=modal('<h2 class="serif" style="text-align:center;letter-spacacing:.08em;letter-spacing:.08em">ZUG UM ZUG</h2>'+
     '<p style="text-align:center;font-size:13px;color:#8a7d63;margin:6px 0 16px">Online spielen · 2–5 Spieler · Version '+APP_VERSION+'</p>'+
-    '<input type="text" id="pname" placeholder="Dein Name" maxlength="14" style="margin-bottom:8px">'+
-    '<input type="password" id="ppin" placeholder="Dein PIN (mind. 4 Zeichen)" maxlength="12" style="margin-bottom:10px">'+
+    '<form id="pform" action="javascript:void(0)" style="margin:0">'+
+    '<input type="text" id="pname" name="username" autocomplete="username" placeholder="Dein Name" maxlength="14" style="margin-bottom:8px">'+
+    '<input type="password" id="ppin" name="password" autocomplete="current-password" placeholder="Dein PIN (mind. 4 Zeichen)" maxlength="12" style="margin-bottom:6px;padding:11px;border-radius:8px;border:1.5px solid var(--frame);font-size:16px;width:100%">'+
+    '<label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#8a7d63;margin:0 0 10px;cursor:pointer"><input type="checkbox" id="pkeep" style="width:18px;height:18px"> Name &amp; PIN auf diesem Gerät merken</label>'+
+    '</form>'+
     (Object.keys(EDITIONEN).length>1?'<div style="font-size:13px;color:#8a7d63;margin-bottom:5px">Edition für ein neues Spiel:</div><div class="row" id="edRow" style="justify-content:center;margin:0 0 10px">'
       +Object.keys(EDITIONEN).map(k=>'<button class="opt'+(k===EDITION?' sel':'')+'" data-e="'+k+'" style="width:auto;padding:8px 14px;margin:0">'+(EDITIONEN[k].meta.name||k)+'</button>').join('')+'</div>':'')+
     '<button class="go" id="mkRoom">Neuen Raum erstellen</button>'+
@@ -2864,6 +2867,23 @@ function landing(){
     '<button class="cancel" id="rgG">🏆 Ranglisten</button>'+
     '<button class="cancel" id="admG" style="font-size:13px;color:#8a7d63">⚙ Admin</button>'+
     '<p style="font-size:12px;color:#8a7d63;margin-top:10px;text-align:center">Zum Wiedereinstieg denselben Namen wie zuvor eingeben.</p>',true);
+  // Gespeicherten Login vorbefüllen (localStorage; abwählbar über die Checkbox)
+  const LSN='zuz_name',LSP='zuz_pin',LSK='zuz_keep';
+  try{
+    const keep=localStorage.getItem(LSK)!=='0';
+    m.querySelector('#pkeep').checked=keep;
+    if(keep){
+      m.querySelector('#pname').value=localStorage.getItem(LSN)||'';
+      m.querySelector('#ppin').value=localStorage.getItem(LSP)||'';
+    }
+  }catch(e){}
+  const merkeLogin=(n,p)=>{try{
+    const keep=m.querySelector('#pkeep').checked;
+    localStorage.setItem(LSK,keep?'1':'0');
+    if(keep){localStorage.setItem(LSN,n);localStorage.setItem(LSP,p)}
+    else{localStorage.removeItem(LSN);localStorage.removeItem(LSP)}
+  }catch(e){}
+  try{m.querySelector('#pform').requestSubmit&&m.querySelector('#pform').requestSubmit()}catch(e){}};
   const nameOk=()=>{const n=m.querySelector('#pname').value.trim();
     if(!n){toast('Bitte zuerst deinen Namen eingeben.');return null}
     if(m.querySelector('#ppin').value.trim().length<4){toast('Bitte einen PIN mit mindestens 4 Zeichen wählen.');return null}
@@ -2875,11 +2895,11 @@ function landing(){
   m.querySelector('#rgG').onclick=()=>zeigeRangliste();
   m.querySelector('#admG').onclick=()=>adminLogin();
   m.querySelector('#myG2')&&0;
-  m.querySelector('#mkRoom').onclick=()=>{const n=nameOk();if(!n)return;const p=pinVal();m.remove();createRoom(n,p)};
-  m.querySelector('#myG').onclick=()=>{const n=nameOk();if(!n)return;MYPIN=pinVal();meineSpiele(n)};
+  m.querySelector('#mkRoom').onclick=()=>{const n=nameOk();if(!n)return;const p=pinVal();merkeLogin(n,p);m.remove();createRoom(n,p)};
+  m.querySelector('#myG').onclick=()=>{const n=nameOk();if(!n)return;MYPIN=pinVal();merkeLogin(n,MYPIN);meineSpiele(n)};
   m.querySelector('#jGo').onclick=()=>{const n=nameOk();if(!n)return;const c=m.querySelector('#jcode').value;
-    if(c.trim().length!==5){toast('Der Raum-Code hat 5 Buchstaben.');return}const p=pinVal();m.remove();joinRoom(c,n,p)};
-  m.querySelector('#rndRoom').onclick=()=>{const n=nameOk();if(!n)return;const p=pinVal();
+    if(c.trim().length!==5){toast('Der Raum-Code hat 5 Buchstaben.');return}const p=pinVal();merkeLogin(n,p);m.remove();joinRoom(c,n,p)};
+  m.querySelector('#rndRoom').onclick=()=>{const n=nameOk();if(!n)return;const p=pinVal();merkeLogin(n,p);
     const keys=Object.keys(EDITIONEN),k=keys[Math.floor(Math.random()*keys.length)];
     setEdition(k);m.remove();
     toast('Zufallskarte: '+(EDITIONEN[k].meta.name||k));
