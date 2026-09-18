@@ -277,7 +277,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.57 · 18.09.2026';
+const APP_VERSION='7.58 · 18.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -310,7 +310,7 @@ let pickShown=false, finalShown=false, lastNotice='';
 // Nach RTDB-Roundtrip fehlende Felder wiederherstellen (leere Arrays/Objekte verschwinden)
 function fix(r){
   if(!r) return r;
-  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fk!==undefined)q.fk=p.fk;if(p.exp!==undefined)q.exp=p.exp;if(p.fertig!==undefined)q.fertig=p.fertig;if(p.schiffe!==undefined)q.schiffe=p.schiffe;if(p.haefen!==undefined)q.haefen=p.haefen;if(p.boxW!==undefined)q.boxW=p.boxW;if(p.boxS!==undefined)q.boxS=p.boxS;if(p.fest!==undefined)q.fest=p.fest;if(p.skx!==undefined)q.skx=p.skx;return q});
+  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fk!==undefined)q.fk=p.fk;if(p.exp!==undefined)q.exp=p.exp;if(p.fertig!==undefined)q.fertig=p.fertig;if(p.schiffe!==undefined)q.schiffe=p.schiffe;if(p.haefen!==undefined)q.haefen=p.haefen;if(p.boxW!==undefined)q.boxW=p.boxW;if(p.boxS!==undefined)q.boxS=p.boxS;if(p.fest!==undefined)q.fest=p.fest;if(p.skx!==undefined)q.skx=p.skx;if(p.ukTech!==undefined)q.ukTech=p.ukTech;return q});
   if(r.game){const g=r.game;
     g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
     g.claims=g.claims||{};g.startOffers=g.startOffers||{};if(g.tkPend)g.tkPend.tk=g.tkPend.tk||[];g.ticketDeckLang=g.ticketDeckLang||[];g.picked=g.picked||{};g.pend=g.pend||[];g.frist=g.frist||0;g.zuege=g.zuege||0;if(g.rps){g.rps.aktiv=g.rps.aktiv||[];g.rps.wahl=g.rps.wahl||{}}
