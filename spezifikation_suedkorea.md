@@ -1,11 +1,11 @@
-# Zug um Zug – Südkorea · Spezifikation (Kartenpaket v1.02 · App v7.52, 12.09.2026)
+# Zug um Zug – Südkorea · Spezifikation (Kartenpaket v1.02 · App v7.55, 12.09.2026)
 
 Edition `suedkorea` für die Zug-um-Zug-Online-App. Quelle: Brettscan `Südkorea.png` (2250×3375), Regelheft `Spielregeln_Zug_um_Zug_Südkorea.pdf` (ZIP mit Seitentexten), 44 Zielkarten aus Davids Liste, Foto des Provinzen-Plans, drei Scans der Expresszug-Karten, Änderungsliste + Editor-Export `Änderungen_Südkorea.docx`.
 
 ## Dateien
 | Datei | Inhalt |
 |---|---|
-| `index.html` | App v7.52 mit der Edition `suedkorea` als 15. Eintrag |
+| `index.html` | App v7.55 mit der Edition `suedkorea` als 15. Eintrag |
 | `suedkorea_karte.json` | meta, 33 knoten, 100 strecken (262 Felder), 44 auftraege |
 | `suedkorea_karte.jpg` | Brett, um den weißen Rand beschnitten (2198×2878, `board_h` 1309, Zählleiste bleibt) |
 | `auftrag_suedkorea.jpg` | Zielkarten-Hintergrund 700×1120, ausgeblichenes Brett (Stil Skandinavien/Deutschland), Brettfeld `tk` {mx0 38, my0 150, mw 624, mh 817} |
@@ -28,7 +28,7 @@ Jeder Spieler hat +1, +2, +3, je einmal pro Partie, danach aus dem Spiel. Pro Zu
 - **Wagenkarten nehmen:** vor der ersten Karte 1/2/3 zusätzliche Karten vom verdeckten Stapel, dann normale Aktion (2 Karten bzw. 1 offene Lok).
 - **Zielkarten ziehen:** 1/2/3 zusätzliche Zielkarten (also bis 6), mind. 1 behalten, beliebig viele behalten.
 - **Strecke nutzen:** Feldwert auf dem Provinzen-Plan um 1/2/3 erhöhen (nur beim Platzieren eines Waggons dort; Feldmaximum 8).
-- In der App: die drei Kartenbilder liegen links unter dem Zoom, verbrauchte sind ausgegraut. Ein Klick öffnet die Auswahl zwischen Wagenkarten nehmen und Zielkarten ziehen; beim Streckenbau wird die Karte im Provinzen-Dialog angeboten. Zustand: `players[i].skx`, Sperre pro Zug über `game.skExpZug`.
+- In der App (seit v7.55 drei Einstiege): die drei Kartenbilder links unter dem Zoom (verbraucht = ausgegraut), ein 🚄-Knopf direkt unter dem Nachziehstapel, und im Dialog „Aufträge ziehen?“ eigene Express-Buttons („🚄 +N → X ziehen“). Klick öffnet die Auswahl Wagenkarten/Zielkarten; beim Streckenbau wird die Karte im Provinzen-Dialog angeboten, der den Provinzen-Plan auf Wunsch einblendet. Zustand: `players[i].skx`, Sperre pro Zug über `game.skExpZug` (wird bei Zugende UND bei Zeitüberschreitung `strafZug` gelöscht); bei leerem Zielkartenstapel wird die Karte nicht verbraucht.
 
 ## Sonderregel 2: Provinzen-Plan (`meta.provinzen`)
 - 8 Linien in Spaltenreihenfolge des Plans: schwarz, grün, orange, lila, blau, rot, gelb, weiß; je Felder 1–8 (`spalten_x`/`zeilen_y` in % von `bild_vb` 900×1230).
@@ -198,11 +198,11 @@ Alle Längen und Farben nach Davids Änderungsliste vom 08.09.2026 korrigiert. N
 | Gangneung | Ulsan | 20 |
 | Wonju | Changwon | 15 |
 
-## Integration in die App (v7.52, umgesetzt)
+## Integration in die App (v7.55, umgesetzt)
 - Edition `suedkorea` als 15. Eintrag in `EDITIONEN`; alle Strecken `geprueft: true`.
 - **Namenskonflikt gelöst:** `meta.express` ist in der Japan-Edition belegt (Express-Strecken / Entwicklungsleiste). Die Südkorea-Karten liegen deshalb unter `meta.expresskarten`.
 - **Start-Draft** vom Iberia-Code entkoppelt: Weiche `DR()` (greift, sobald `meta.draft` vorhanden ist und keine einfache Variante gewählt wurde). Südkorea nutzt nur den Start-Draft (6 wählen, genau 4 behalten, 2 gemischt zurück); Zielkarten ziehen ist ab dem ersten Zug erlaubt.
-- **Zwei Startvarianten** (seit v7.52, analog Iberia, Auswahl in der Lobby über `ROOM.ibStart`): Standard ist der Draft; alternativ die einfache Variante „6 Zielkarten ziehen, genau 4 behalten“ ohne Draft – die 12 zurückgegebenen Karten werden beim Übergang zu playing in den Stapel gemischt. Beide Varianten schreiben dieselbe `statId` und zählen damit in dieselbe Rangliste; das Ergebnisprotokoll vermerkt `variante: 'draft'` bzw. `'6/4'`.
+- **Zwei Startvarianten** (seit v7.55, analog Iberia, Auswahl in der Lobby über `ROOM.ibStart`): Standard ist der Draft; alternativ die einfache Variante „6 Zielkarten ziehen, genau 4 behalten“ ohne Draft – die 12 zurückgegebenen Karten werden beim Übergang zu playing in den Stapel gemischt. Beide Varianten schreiben dieselbe `statId` und zählen damit in dieselbe Rangliste; das Ergebnisprotokoll vermerkt `variante: 'draft'` bzw. `'6/4'`.
 - **Expresszug-Karten:** `skExpModal()` mit den beiden sofort wirksamen Einsätzen; der dritte (Feldwert erhöhen) steckt im Provinzen-Dialog. Höchstens eine Karte pro Zug.
 - **Provinzen-Plan:** `game.prov[farbe][feld] = Sitzplatz`. Nach jedem Streckenbau fragt `skNachBau()`, ob ein Waggon gelegt wird – Linie (bei Grau frei wählbar), Zusatzkarten in der gezahlten Farbe bzw. Joker, optional Expresszug. Belegtes Feld → nächstes freies darunter; kein freies Feld → kein Waggon. Der Waggon wird vom Vorrat abgezogen und löst damit auch die normale Spielende-Regel mit aus.
 - **Endwertung** `skProvWertung()`: je Linie Summe der Feldwerte, Rangliste, Punkte 10/6/4/2 nach Spielerzahl; Gleichstand über das höhere Einzelfeld. Ergebnis erscheint im Showdown und in der Punktetabelle.

@@ -51,6 +51,7 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 #deckWrap{position:relative;margin-top:6px}
 #deckWrap .cnt{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);background:#2b2419dd;color:#f0e6d2;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;white-space:nowrap}
 #ablage{margin-top:4px;text-align:center;font-size:10px;color:#2b2419;background:#faf7eee6;border:1px solid #b08d3e;border-radius:6px;padding:3px 7px;line-height:1.2}
+#skOpenExp{margin-top:4px;text-align:center;font-size:11px;font-weight:700;color:#f0e6d2;background:#20344ae6;border:1px solid #b08d3e;border-radius:6px;padding:4px 7px;line-height:1.2;cursor:pointer;white-space:nowrap}
 .pcard{width:74px;height:48px;border-radius:5px;border:1px solid #00000025;background-image:url('kartensatz.jpg');background-size:500% 200%;background-repeat:no-repeat;flex-shrink:0;position:relative;cursor:pointer;box-shadow:0 1px 3px #0003}
 .pc-lok{background-position:0% 0%}.pc-rot{background-position:25% 0%}.pc-gruen{background-position:50% 0%}.pc-gelb{background-position:75% 0%}.pc-orange{background-position:100% 0%}
 .pc-schwarz{background-position:0% 100%}.pc-weiss{background-position:25% 100%}.pc-pink{background-position:50% 100%}.pc-blau{background-position:75% 100%}.pc-rueck{background-position:100% 100%}
@@ -271,7 +272,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.54 · 16.09.2026';
+const APP_VERSION='7.55 · 16.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -579,7 +580,9 @@ function skExpKarten(w){
   sync();
 }
 function skExpZiel(w){
-  const G=g();skExpVerbrauchen(w);G.skTkPlus=w;
+  const G=g();
+  if(!G.ticketDeck.length){toast('Keine Aufträge mehr im Stapel – die Expresszug-Karte bleibt dir erhalten.');return}
+  skExpVerbrauchen(w);G.skTkPlus=w;
   me().last='setzt die Expresszug-Karte +'+w+' ein';G.notice=me().name+' '+me().last+' und zieht Zielkarten';
   zieheAuftraege();
 }
@@ -630,9 +633,16 @@ function skNachBau(s,o,fertig){
             +'<button class="cancel ske" data-w="0" style="margin:0;flex:1">keine</button>'
             +expFrei.map(w=>'<button class="cancel ske" data-w="'+w+'" style="margin:0;flex:1">+'+w+'</button>').join('')+'</div>':'')
     +'<p id="skInfo" style="font-size:14px;text-align:center;margin:10px 0"></p>'
+    +'<button class="cancel" id="skPlanTgl" style="margin-bottom:6px">🗺 Provinzen-Plan anzeigen</button>'
+    +'<div id="skPlanBox" style="display:none;margin-bottom:8px"></div>'
     +'<button class="go" id="skGo">Waggon setzen</button><button class="cancel" id="skNein">Verzichten</button>';
   const m=modal(html);
   const info=m.querySelector('#skInfo'),go=m.querySelector('#skGo');
+  const tgl=m.querySelector('#skPlanTgl'),box=m.querySelector('#skPlanBox');
+  tgl.onclick=()=>{const zu=box.style.display==='none';
+    if(zu&&!box.innerHTML)box.innerHTML=skPlanHtml();
+    box.style.display=zu?'block':'none';
+    tgl.textContent=zu?'🗺 Provinzen-Plan verbergen':'🗺 Provinzen-Plan anzeigen'};
   const upd=()=>{
     m.querySelectorAll('.skl').forEach(b=>{const an=(b.dataset.f===farbe);b.style.background=an?'#6b4a17':'';b.style.color=an?'#f6ead0':''});
     m.querySelectorAll('.ske').forEach(b=>{const an=(+b.dataset.w===exp);b.style.background=an?'#6b4a17':'';b.style.color=an?'#f6ead0':''});
@@ -1425,11 +1435,16 @@ function drawTickets(){
   const gesamt=g().ticketDeck.length+((R().auftraege_nachziehen||{}).stapelwahl?((g().ticketDeckLang||[]).length):0);
   if(!gesamt){toast('Keine Aufträge mehr im Stapel.');return}
   const anz=Math.min((R().auftraege_nachziehen||{}).ziehen||4,gesamt);
+  const skW=(SK()&&!g().skExpZug)?skFrei(me()):[];
   const f=modal('<h2>Aufträge ziehen?</h2><p style="font-size:14px;margin-bottom:12px">Du ziehst '+anz
     +' Auftragskarten und musst mindestens eine behalten. Das ist dein kompletter Zug – du kannst dann keine Wagenkarten nehmen und keine Strecke bauen.</p>'
-    +'<button class="go" id="ja">Ja, Aufträge ziehen</button><button class="cancel" id="nein">Abbrechen</button>');
+    +'<button class="go" id="ja">Ja, '+anz+' Aufträge ziehen</button>'
+    +(skW.length?'<p style="font-size:13px;color:#8a7d63;margin:10px 0 4px">Oder mit Expresszug-Karte zusätzliche Aufträge ziehen (Karte wird verbraucht):</p>'
+      +'<div style="display:flex;gap:6px">'+skW.map(w=>'<button class="cancel skje" data-w="'+w+'" style="margin:0;flex:1">🚄 +'+w+' → '+Math.min(anz+w,g().ticketDeck.length)+' ziehen</button>').join('')+'</div>':'')
+    +'<button class="cancel" id="nein">Abbrechen</button>');
   f.querySelector('#nein').onclick=()=>f.remove();
   f.querySelector('#ja').onclick=()=>{f.remove();zieheAuftraege()};
+  f.querySelectorAll('.skje').forEach(b=>b.onclick=()=>{f.remove();skExpZiel(+b.dataset.w)});
 }
 function stapelWahl(n,maxK,maxL,done){
   let h='<h2>Aufträge ziehen</h2><p style="font-size:14px;margin-bottom:10px">Du ziehst <b>'+n+'</b> Karten. Sag vorher an, wie viele davon <b>lange Strecken</b> sein sollen:</p><div id="swOpts"></div>';
@@ -2145,7 +2160,7 @@ function strafZug(){
   }
   const p=cur(),gez=[];
   for(let k=0;k<2;k++){const c=WR()?wrDraw(G,k?'s':'w'):drawCard(G);if(c===null)break;p.hand[c]=(p.hand[c]||0)+1;gez.push(c)}
-  delete G.pend;G.drawn=0;G.zuege=(G.zuege||0)+1;
+  delete G.pend;G.drawn=0;delete G.skExpZug;delete G.skTkPlus;G.zuege=(G.zuege||0)+1;
   const t=gez.length?('hat die Zugzeit überschritten – '+gez.length+' Karten automatisch vom Stapel gezogen'):'hat den Zug verstreichen lassen (Stapel leer)';
   p.last=t;G.notice=p.name+' '+t;
   if(G.lastRounds>0){G.lastRounds--;if(G.lastRounds===0){G.over=true;ROOM.status='over';finalScore();sync();return}}
@@ -2269,6 +2284,9 @@ function renderHud(){
   dw.appendChild(cn);o.appendChild(dw);
   const ab=document.createElement('div');ab.id='ablage';
   ab.innerHTML='<b>'+(g().discard||[]).length+'</b> verbraucht';o.appendChild(ab);
+  if(SK()&&skFrei(me()||{}).length){const ex=document.createElement('div');ex.id='skOpenExp';
+    ex.innerHTML='🚄 +'+skFrei(me()).join('/+');ex.title='Expresszug-Karte einsetzen';
+    ex.onclick=skExpModal;o.appendChild(ex)}
   }
   const dock=document.getElementById('gelDock');
   if(dock){dock.innerHTML='';dock.classList.toggle('an',!!GEL()||!!FK()||!!EXPM()||WR()||SK())}
