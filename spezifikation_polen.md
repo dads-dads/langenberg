@@ -1,10 +1,10 @@
-# Zug um Zug – Polen · Spezifikation (Kartenpaket v0.92, App v7.59)
+# Zug um Zug – Polen · Spezifikation (Kartenpaket v0.93, App v7.60)
 
 ## Eckdaten
 - Schlüssel `polen`, Name „Polen", statId „Zug um Zug Polen"
 - 2–4 Spieler, 35 Waggons pro Spieler, normales 110er-Wagenkartendeck, 4 Starthandkarten
-- Brett: `polen_karte.jpg` (2150×2150, quadratisch → board_h 1000)
-- Auftragskarte: `auftrag_polen.jpg` (1120×700), tk-Rechteck {mx0 290, my0 140, mw 540, mh 540} (quadratisch, passend zum Brettverhältnis 1:1)
+- Brett: `polen_karte.jpg` (2117×1931, weißer Scan-Rand entfernt → board_h 912)
+- Auftragskarte: `auftrag_polen.jpg` (1120×700), tk-Rechteck {mx0 275, my0 140, mw 570, mh 520} — Seitenverhältnis wie das beschnittene Brett (1,096)
 - 28 Städte + 7 Länderknoten (Randmedaillons), 102 Strecken-Einträge, 35 Zielkarten, 20 Länderkarten
 
 ## Zielkarten
@@ -75,6 +75,13 @@ Karten-Assets: `pl_land_<land>_<wert>.jpg` (20 Stück, generiert: Flagge + Punkt
 - `pl_land_*.jpg` – 20 Länderkarten
 - `editor_polen.html` – Feld-Editor (Korrekturbatch-Export wie gewohnt)
 - `kontrolle_polen.jpg` – Kontrollbild (alle 232 Felder magenta, Knoten cyan, Streckennummern)
+
+## v0.93 (19.09.2026)
+- Weißer Scan-Rand entfernt: Beschnitt auf x 7–2123 / y 24–1954 → 2117×1931, `board_h` 912.
+  Alle Knoten- und Feldkoordinaten umgerechnet; Feldlänge (% der Breite) ×1,0156, Feldbreite (% der Höhe) ×1,1134.
+- Auftragskarte aus dem beschnittenen Brett neu erzeugt, tk-Rechteck angepasst.
+- **Top-Level-Schlüssel `tickets` → `auftraege`**: `hostStart()` liest `MAP.auftraege`; mit `tickets` warf der
+  Spielstart einen TypeError und der Startknopf blieb wirkungslos. Alle anderen Editionen nutzen `auftraege`.
 
 ## Datenherkunft / Hinweise v0.90
 - Feldpositionen per Farbmasken-Detektion (220 Felder), 12 Felder manuell interpoliert, wo Brettfalz
