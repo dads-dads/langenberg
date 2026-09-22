@@ -1,0 +1,5726 @@
+{
+ "meta": {
+  "name": "Frankreich",
+  "statId": "Zug um Zug Frankreich",
+  "kurz": "Frankreich",
+  "version": "0.94",
+  "spieler": "2-5",
+  "wagons_pro_spieler": 40,
+  "bild": "frankreich_karte.jpg",
+  "tkbild": "auftrag_frankreich.jpg",
+  "board_h": 1177,
+  "hinweis": "v0.94: Integrationsfassung - Regeltexte spielerfreundlich formuliert. v0.93: allemagne_1 auf Davids Editor-Position (92.19/27.64). v0.92: Korrekturbatch 1 (David): alle Staedte +10px nach rechts, Laender-Randknoten auf Davids Editor-Positionen, 45 Feldpositionen aktualisiert, Lorient-Saint-Malo auf Laenge 2 und Le Mans-Paris auf Laenge 3 gekuerzt (je 1 Feld entfernt). v0.91: Winkelkonvention korrigiert (deg = Bildwinkel wie Old West, vorher gespiegelt), Feldmasse einheitlich l=3.1/w=0.79 (Vorgabe David). v0.90: Erstversion aus Bilddetektion (Rosetten/Flaggen per Template-Matching, Gleisbett-Felder per Farbmaske). Alle Strecken geprueft:false. Feldpositionen an Kreuzungen und bei Doppelspuren teils interpoliert - bitte per Editor und Kontrollbild pruefen.",
+  "farben": [
+   "rot",
+   "orange",
+   "gelb",
+   "gruen",
+   "blau",
+   "pink",
+   "weiss",
+   "schwarz",
+   "grau"
+  ],
+  "gleise": {
+   "farben": [
+    "rot",
+    "orange",
+    "gelb",
+    "gruen",
+    "blau",
+    "pink",
+    "weiss",
+    "schwarz"
+   ],
+   "pro_farbe": {
+    "2": 3,
+    "3": 3,
+    "4": 1,
+    "5": 1
+   }
+  },
+  "gleisbettregel": "Die meisten Strecken sind zu Beginn leere Gleisbetten. Nach der Aktion \"Wagenkarten nehmen\" musst du genau ein Gleis aus dem Vorrat auf ein leeres Gleisbett passender Länge legen - das Gleis bestimmt die Farbe der Strecke. Gibt es kein passendes freies Bett, entfällt das Legen. Wer eine Strecke mit Gleis baut, zahlt Karten in der Gleisfarbe; das Gleis geht danach zurück in den Vorrat. Vorrat: je Farbe 3 Gleise der Länge 2, 3 der Länge 3, 1 der Länge 4 und 1 der Länge 5 (insgesamt 64).",
+  "einzelfeldregel": "Gedruckte farbige 1-Feld-Strecken und alle grauen Strecken (inklusive Fähren) sind ohne Gleis jederzeit baubar.",
+  "kreuzungsregel": "Kreuzen sich Gleisbetten, gilt: Sobald auf eines ein Gleis gelegt wurde, sind die kreuzenden Betten dauerhaft gesperrt - auch wenn das Gleis später beim Bau wieder entfernt wird.",
+  "faehrenregel": "Faehren sind graue Strecken mit Lokomotivsymbol(en); pro Symbol muss eine Lokkarte gezahlt werden. Faehren: Brest-Cherbourg (6, 1 Lok), Cherbourg-Calais (6, 1 Lok), Perpignan-Corse (5, 1 Lok), Marseille-Corse (3, 1 Lok), Nice-Corse (2, 1 Lok). Toulouse-Avignon (6) ist grau ohne Lok.",
+  "gebieteregel": "Die Gebiete Belgique, Allemagne, Suisse, Italie, Espagne und Corse haben mehrere Zugänge. Strecken, die in dasselbe Gebiet führen, gelten dort NICHT als miteinander verbunden.",
+  "doppelregel": "Bei 2 Spielern kann auf einer Doppelstrecke nur ein Gleis gelegt und genutzt werden; Dreifachstrecken sind immer voll nutzbar.",
+  "regeln": {
+   "startauftraege": {
+    "ziehen": 5,
+    "mindestens_behalten": 3
+   },
+   "auftraege_nachziehen": {
+    "ziehen": 4,
+    "mindestens_behalten": 1
+   },
+   "starthandkarten": 8,
+   "doppelstrecken_frei_ab": 3,
+   "punkte_pro_laenge": {
+    "1": 1,
+    "2": 2,
+    "3": 4,
+    "4": 7,
+    "5": 10,
+    "6": 15
+   },
+   "laengste_strecke_bonus": 10,
+   "meiste_auftraege_bonus": 15,
+   "zugzeit": "Zugzeit pro Spiel frei einstellbar (Stunden + Minuten); nach Ablauf werden automatisch 2 Karten vom verdeckten Stapel gezogen.",
+   "kennwort": "Jeder Spieler waehlt einen PIN; Wiedereinstieg nur mit Name + PIN."
+  },
+  "tk_vb": {
+   "w": 700,
+   "h": 1120
+  },
+  "tk_hoch": true,
+  "tk_einzelziel": true,
+  "tk": {
+   "mx0": 40,
+   "my0": 180,
+   "mw": 620,
+   "mh": 730
+  },
+  "tk_titel": {
+   "y1": 60,
+   "y2": 88,
+   "font": 26,
+   "farbe": "#5a3d18"
+  },
+  "tk_punkte": {
+   "x": 628,
+   "y": 1098,
+   "font": 44,
+   "farbe": "#7a1a1a"
+  }
+ },
+ "knoten": [
+  {
+   "id": "calais",
+   "name": "Calais",
+   "x": 59.0,
+   "y": 6.8,
+   "rand": false,
+   "tkx": 57.97,
+   "tky": 20.5
+  },
+  {
+   "id": "cherbourg",
+   "name": "Cherbourg",
+   "x": 31.69,
+   "y": 10.58,
+   "rand": false,
+   "tkx": 33.78,
+   "tky": 22.97
+  },
+  {
+   "id": "lille",
+   "name": "Lille",
+   "x": 68.68,
+   "y": 12.56,
+   "rand": false,
+   "tkx": 66.55,
+   "tky": 24.26
+  },
+  {
+   "id": "brest",
+   "name": "Brest",
+   "x": 6.6,
+   "y": 13.93,
+   "rand": false,
+   "tkx": 11.56,
+   "tky": 25.15
+  },
+  {
+   "id": "le_havre",
+   "name": "Le Havre",
+   "x": 42.43,
+   "y": 15.0,
+   "rand": false,
+   "tkx": 43.3,
+   "tky": 25.85
+  },
+  {
+   "id": "amiens",
+   "name": "Amiens",
+   "x": 58.69,
+   "y": 17.65,
+   "rand": false,
+   "tkx": 57.7,
+   "tky": 27.58
+  },
+  {
+   "id": "saint_malo",
+   "name": "Saint-Malo",
+   "x": 23.03,
+   "y": 17.8,
+   "rand": false,
+   "tkx": 26.11,
+   "tky": 27.67
+  },
+  {
+   "id": "rouen",
+   "name": "Rouen",
+   "x": 49.93,
+   "y": 18.64,
+   "rand": false,
+   "tkx": 49.94,
+   "tky": 28.22
+  },
+  {
+   "id": "rennes",
+   "name": "Rennes",
+   "x": 23.51,
+   "y": 24.05,
+   "rand": false,
+   "tkx": 26.54,
+   "tky": 31.75
+  },
+  {
+   "id": "lorient",
+   "name": "Lorient",
+   "x": 10.68,
+   "y": 24.31,
+   "rand": false,
+   "tkx": 15.17,
+   "tky": 31.92
+  },
+  {
+   "id": "reims",
+   "name": "Reims",
+   "x": 69.33,
+   "y": 27.01,
+   "rand": false,
+   "tkx": 67.12,
+   "tky": 33.68
+  },
+  {
+   "id": "paris",
+   "name": "Paris",
+   "x": 55.13,
+   "y": 28.03,
+   "rand": false,
+   "tkx": 54.54,
+   "tky": 34.34
+  },
+  {
+   "id": "le_mans",
+   "name": "Le Mans",
+   "x": 34.91,
+   "y": 30.01,
+   "rand": false,
+   "tkx": 36.63,
+   "tky": 35.63
+  },
+  {
+   "id": "metz",
+   "name": "Metz",
+   "x": 86.24,
+   "y": 31.14,
+   "rand": false,
+   "tkx": 82.1,
+   "tky": 36.37
+  },
+  {
+   "id": "nantes",
+   "name": "Nantes",
+   "x": 19.54,
+   "y": 33.32,
+   "rand": false,
+   "tkx": 23.02,
+   "tky": 37.79
+  },
+  {
+   "id": "tours",
+   "name": "Tours",
+   "x": 39.15,
+   "y": 36.17,
+   "rand": false,
+   "tkx": 40.39,
+   "tky": 39.65
+  },
+  {
+   "id": "angers",
+   "name": "Angers",
+   "x": 28.71,
+   "y": 33.79,
+   "rand": false,
+   "tkx": 31.14,
+   "tky": 38.1
+  },
+  {
+   "id": "orleans",
+   "name": "Orléans",
+   "x": 49.11,
+   "y": 34.31,
+   "rand": false,
+   "tkx": 49.21,
+   "tky": 38.43
+  },
+  {
+   "id": "nancy",
+   "name": "Nancy",
+   "x": 82.72,
+   "y": 36.14,
+   "rand": false,
+   "tkx": 78.98,
+   "tky": 39.63
+  },
+  {
+   "id": "strasbourg",
+   "name": "Strasbourg",
+   "x": 93.08,
+   "y": 40.33,
+   "rand": false,
+   "tkx": 88.16,
+   "tky": 42.36
+  },
+  {
+   "id": "la_rochelle",
+   "name": "La Rochelle",
+   "x": 18.48,
+   "y": 43.56,
+   "rand": false,
+   "tkx": 22.08,
+   "tky": 44.46
+  },
+  {
+   "id": "bourges",
+   "name": "Bourges",
+   "x": 47.36,
+   "y": 44.0,
+   "rand": false,
+   "tkx": 47.66,
+   "tky": 44.75
+  },
+  {
+   "id": "poitiers",
+   "name": "Poitiers",
+   "x": 31.0,
+   "y": 44.61,
+   "rand": false,
+   "tkx": 33.17,
+   "tky": 45.15
+  },
+  {
+   "id": "mulhouse",
+   "name": "Mulhouse",
+   "x": 87.95,
+   "y": 46.73,
+   "rand": false,
+   "tkx": 83.61,
+   "tky": 46.53
+  },
+  {
+   "id": "dijon",
+   "name": "Dijon",
+   "x": 67.49,
+   "y": 46.93,
+   "rand": false,
+   "tkx": 65.49,
+   "tky": 46.66
+  },
+  {
+   "id": "besancon",
+   "name": "Besançon",
+   "x": 77.17,
+   "y": 49.05,
+   "rand": false,
+   "tkx": 74.06,
+   "tky": 48.04
+  },
+  {
+   "id": "limoges",
+   "name": "Limoges",
+   "x": 34.56,
+   "y": 53.5,
+   "rand": false,
+   "tkx": 36.32,
+   "tky": 50.94
+  },
+  {
+   "id": "clermont_ferrand",
+   "name": "Clermont-Ferrand",
+   "x": 48.7,
+   "y": 58.04,
+   "rand": false,
+   "tkx": 48.85,
+   "tky": 53.9
+  },
+  {
+   "id": "bordeaux",
+   "name": "Bordeaux",
+   "x": 18.03,
+   "y": 58.62,
+   "rand": false,
+   "tkx": 21.68,
+   "tky": 54.28
+  },
+  {
+   "id": "brive",
+   "name": "Brive-la-Gaillarde",
+   "x": 34.12,
+   "y": 60.54,
+   "rand": false,
+   "tkx": 35.93,
+   "tky": 55.53
+  },
+  {
+   "id": "lyon",
+   "name": "Lyon",
+   "x": 63.48,
+   "y": 60.72,
+   "rand": false,
+   "tkx": 61.94,
+   "tky": 55.65
+  },
+  {
+   "id": "bayonne",
+   "name": "Bayonne",
+   "x": 4.31,
+   "y": 67.64,
+   "rand": false,
+   "tkx": 9.53,
+   "tky": 60.16
+  },
+  {
+   "id": "grenoble",
+   "name": "Grenoble",
+   "x": 66.56,
+   "y": 69.44,
+   "rand": false,
+   "tkx": 64.67,
+   "tky": 61.33
+  },
+  {
+   "id": "rodez",
+   "name": "Rodez",
+   "x": 38.98,
+   "y": 70.4,
+   "rand": false,
+   "tkx": 40.24,
+   "tky": 61.96
+  },
+  {
+   "id": "pau",
+   "name": "Pau",
+   "x": 10.71,
+   "y": 72.17,
+   "rand": false,
+   "tkx": 15.2,
+   "tky": 63.11
+  },
+  {
+   "id": "briancon",
+   "name": "Briançon",
+   "x": 72.0,
+   "y": 73.63,
+   "rand": false,
+   "tkx": 69.49,
+   "tky": 64.06
+  },
+  {
+   "id": "toulouse",
+   "name": "Toulouse",
+   "x": 25.87,
+   "y": 74.73,
+   "rand": false,
+   "tkx": 28.63,
+   "tky": 64.78
+  },
+  {
+   "id": "avignon",
+   "name": "Avignon",
+   "x": 55.37,
+   "y": 77.78,
+   "rand": false,
+   "tkx": 54.76,
+   "tky": 66.77
+  },
+  {
+   "id": "montpellier",
+   "name": "Montpellier",
+   "x": 43.7,
+   "y": 80.75,
+   "rand": false,
+   "tkx": 44.42,
+   "tky": 68.7
+  },
+  {
+   "id": "perpignan",
+   "name": "Perpignan",
+   "x": 34.56,
+   "y": 86.04,
+   "rand": false,
+   "tkx": 36.32,
+   "tky": 72.15
+  },
+  {
+   "id": "nice",
+   "name": "Nice",
+   "x": 72.04,
+   "y": 87.12,
+   "rand": false,
+   "tkx": 69.52,
+   "tky": 72.86
+  },
+  {
+   "id": "marseille",
+   "name": "Marseille",
+   "x": 57.53,
+   "y": 87.87,
+   "rand": false,
+   "tkx": 56.67,
+   "tky": 73.34
+  },
+  {
+   "id": "belgique_1",
+   "name": "Belgique",
+   "x": 70.87,
+   "y": 5.88,
+   "rand": true,
+   "tkx": 68.48,
+   "tky": 19.9
+  },
+  {
+   "id": "belgique_2",
+   "name": "Belgique",
+   "x": 74.92,
+   "y": 8.96,
+   "rand": true,
+   "tkx": 72.07,
+   "tky": 21.91
+  },
+  {
+   "id": "belgique_3",
+   "name": "Belgique",
+   "x": 78.54,
+   "y": 12.68,
+   "rand": true,
+   "tkx": 75.28,
+   "tky": 24.34
+  },
+  {
+   "id": "allemagne_1",
+   "name": "Allemagne",
+   "x": 92.19,
+   "y": 27.64,
+   "rand": true,
+   "tkx": 87.37,
+   "tky": 34.09
+  },
+  {
+   "id": "allemagne_2",
+   "name": "Allemagne",
+   "x": 98.99,
+   "y": 43.05,
+   "rand": true,
+   "tkx": 93.39,
+   "tky": 44.13
+  },
+  {
+   "id": "allemagne_3",
+   "name": "Allemagne",
+   "x": 98.72,
+   "y": 46.37,
+   "rand": true,
+   "tkx": 93.15,
+   "tky": 46.29
+  },
+  {
+   "id": "suisse_1",
+   "name": "Suisse",
+   "x": 89.19,
+   "y": 56.15,
+   "rand": true,
+   "tkx": 84.71,
+   "tky": 52.67
+  },
+  {
+   "id": "suisse_2",
+   "name": "Suisse",
+   "x": 83.37,
+   "y": 57.46,
+   "rand": true,
+   "tkx": 79.56,
+   "tky": 53.52
+  },
+  {
+   "id": "suisse_3",
+   "name": "Suisse",
+   "x": 79.05,
+   "y": 61.32,
+   "rand": true,
+   "tkx": 75.73,
+   "tky": 56.04
+  },
+  {
+   "id": "italie_1",
+   "name": "Italie",
+   "x": 85.4,
+   "y": 68.23,
+   "rand": true,
+   "tkx": 81.35,
+   "tky": 60.54
+  },
+  {
+   "id": "italie_2",
+   "name": "Italie",
+   "x": 86.79,
+   "y": 73.58,
+   "rand": true,
+   "tkx": 82.59,
+   "tky": 64.03
+  },
+  {
+   "id": "italie_3",
+   "name": "Italie",
+   "x": 84.4,
+   "y": 79.17,
+   "rand": true,
+   "tkx": 80.47,
+   "tky": 67.67
+  },
+  {
+   "id": "espagne_1",
+   "name": "Espagne",
+   "x": 6.92,
+   "y": 80.24,
+   "rand": true,
+   "tkx": 11.84,
+   "tky": 68.37
+  },
+  {
+   "id": "espagne_2",
+   "name": "Espagne",
+   "x": 11.71,
+   "y": 81.62,
+   "rand": true,
+   "tkx": 16.09,
+   "tky": 69.27
+  },
+  {
+   "id": "espagne_3",
+   "name": "Espagne",
+   "x": 14.55,
+   "y": 88.63,
+   "rand": true,
+   "tkx": 18.6,
+   "tky": 73.84
+  },
+  {
+   "id": "espagne_4",
+   "name": "Espagne",
+   "x": 25.68,
+   "y": 90.93,
+   "rand": true,
+   "tkx": 28.46,
+   "tky": 75.34
+  },
+  {
+   "id": "corse_1",
+   "name": "Corse",
+   "x": 55.37,
+   "y": 93.5,
+   "rand": true,
+   "tkx": 54.76,
+   "tky": 77.01
+  },
+  {
+   "id": "corse_2",
+   "name": "Corse",
+   "x": 69.75,
+   "y": 95.93,
+   "rand": true,
+   "tkx": 67.49,
+   "tky": 78.6
+  },
+  {
+   "id": "corse_3",
+   "name": "Corse",
+   "x": 77.18,
+   "y": 95.39,
+   "rand": true,
+   "tkx": 74.07,
+   "tky": 78.25
+  }
+ ],
+ "strecken": [
+  {
+   "nr": 1,
+   "von": "calais",
+   "nach": "belgique_1",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 63.33,
+     "y": 5.9,
+     "deg": 0.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 67.25,
+     "y": 5.9,
+     "deg": 0.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 2,
+   "von": "calais",
+   "nach": "lille",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 62.49,
+     "y": 8.27,
+     "deg": 37.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.59,
+     "y": 10.3,
+     "deg": 37.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 3,
+   "von": "calais",
+   "nach": "amiens",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 59.9,
+     "y": 10.76,
+     "deg": -78.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 59.15,
+     "y": 13.99,
+     "deg": -78.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 4,
+   "von": "calais",
+   "nach": "le_havre",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 55.76,
+     "y": 8.57,
+     "deg": -29.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 52.37,
+     "y": 10.17,
+     "deg": -29.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 48.98,
+     "y": 11.78,
+     "deg": -29.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 45.6,
+     "y": 13.38,
+     "deg": -29.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 5,
+   "von": "calais",
+   "nach": "rouen",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 56.96,
+     "y": 10.51,
+     "deg": -48.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 54.41,
+     "y": 12.98,
+     "deg": -48.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 51.83,
+     "y": 15.45,
+     "deg": -48.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 6,
+   "von": "lille",
+   "nach": "belgique_2",
+   "laenge": 1,
+   "farbe": "gruen",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 71.83,
+     "y": 10.73,
+     "deg": -33.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 7,
+   "von": "lille",
+   "nach": "amiens",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 8,
+   "felder": [
+    {
+     "x": 64.91,
+     "y": 13.6,
+     "deg": -39.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 61.91,
+     "y": 15.69,
+     "deg": -39.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 8,
+   "von": "lille",
+   "nach": "amiens",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 7,
+   "felder": [
+    {
+     "x": 65.89,
+     "y": 14.58,
+     "deg": -38.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 62.87,
+     "y": 16.67,
+     "deg": -39.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 9,
+   "von": "lille",
+   "nach": "reims",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 69.3,
+     "y": 16.24,
+     "deg": 90.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 69.3,
+     "y": 19.54,
+     "deg": 90.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 69.34,
+     "y": 22.83,
+     "deg": 90.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 10,
+   "von": "reims",
+   "nach": "belgique_3",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 71.81,
+     "y": 24.04,
+     "deg": -62.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 73.57,
+     "y": 21.11,
+     "deg": -62.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 75.33,
+     "y": 18.17,
+     "deg": -62.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 77.1,
+     "y": 15.24,
+     "deg": -62.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 11,
+   "von": "amiens",
+   "nach": "reims",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 63.02,
+     "y": 21.2,
+     "deg": 46.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.7,
+     "y": 23.61,
+     "deg": 46.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 12,
+   "von": "amiens",
+   "nach": "paris",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 13,
+   "felder": [
+    {
+     "x": 57.3,
+     "y": 20.53,
+     "deg": -74.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 56.23,
+     "y": 23.7,
+     "deg": -74.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 13,
+   "von": "amiens",
+   "nach": "paris",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 12,
+   "felder": [
+    {
+     "x": 58.74,
+     "y": 20.88,
+     "deg": -73.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 57.66,
+     "y": 24.06,
+     "deg": -74.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 14,
+   "von": "cherbourg",
+   "nach": "le_havre",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 35.45,
+     "y": 12.49,
+     "deg": 24.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 38.98,
+     "y": 13.83,
+     "deg": 24.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 15,
+   "von": "cherbourg",
+   "nach": "saint_malo",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 28.52,
+     "y": 13.37,
+     "deg": -57.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 26.41,
+     "y": 16.14,
+     "deg": -57.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 16,
+   "von": "cherbourg",
+   "nach": "le_mans",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    20
+   ],
+   "felder": [
+    {
+     "x": 31.56,
+     "y": 14.05,
+     "deg": 80.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 32.17,
+     "y": 17.3,
+     "deg": 81.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 32.75,
+     "y": 20.56,
+     "deg": 81.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 33.36,
+     "y": 23.82,
+     "deg": 81.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 33.94,
+     "y": 27.09,
+     "deg": 81.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 17,
+   "von": "le_havre",
+   "nach": "rouen",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 46.3,
+     "y": 16.66,
+     "deg": 23.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 18,
+   "von": "rouen",
+   "nach": "amiens",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 54.48,
+     "y": 17.59,
+     "deg": -9.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 19,
+   "von": "rouen",
+   "nach": "paris",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 51.71,
+     "y": 22.91,
+     "deg": 61.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 20,
+   "von": "saint_malo",
+   "nach": "rouen",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    16,
+    21
+   ],
+   "felder": [
+    {
+     "x": 28.15,
+     "y": 19.21,
+     "deg": -0.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 32.0,
+     "y": 19.16,
+     "deg": -0.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 35.86,
+     "y": 19.13,
+     "deg": -1.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 39.73,
+     "y": 19.08,
+     "deg": -1.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 43.61,
+     "y": 19.02,
+     "deg": -1.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 21,
+   "von": "le_havre",
+   "nach": "le_mans",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    20
+   ],
+   "felder": [
+    {
+     "x": 41.07,
+     "y": 17.74,
+     "deg": -69.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 39.7,
+     "y": 20.79,
+     "deg": -69.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 38.3,
+     "y": 23.88,
+     "deg": -67.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 36.79,
+     "y": 26.93,
+     "deg": -67.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 22,
+   "von": "rouen",
+   "nach": "le_mans",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 47.2,
+     "y": 20.97,
+     "deg": -44.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 44.44,
+     "y": 23.28,
+     "deg": -44.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 41.66,
+     "y": 25.57,
+     "deg": -44.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 38.87,
+     "y": 27.88,
+     "deg": -44.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 23,
+   "von": "brest",
+   "nach": "cherbourg",
+   "laenge": 6,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "lok_feld": 6,
+   "felder": [
+    {
+     "x": 9.07,
+     "y": 11.4,
+     "deg": -22.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 12.73,
+     "y": 10.12,
+     "deg": -19.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 16.32,
+     "y": 9.19,
+     "deg": -14.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 20.2,
+     "y": 8.65,
+     "deg": -6.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 24,
+     "y": 8.53,
+     "deg": 2.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 27.73,
+     "y": 8.72,
+     "deg": 5.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 24,
+   "von": "cherbourg",
+   "nach": "calais",
+   "laenge": 6,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "lok_feld": 6,
+   "felder": [
+    {
+     "x": 36.04,
+     "y": 8.61,
+     "deg": -23.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 39.46,
+     "y": 7.36,
+     "deg": -21.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 43.08,
+     "y": 6.43,
+     "deg": -15.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 46.92,
+     "y": 5.89,
+     "deg": -4.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 50.89,
+     "y": 5.68,
+     "deg": 1.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 54.72,
+     "y": 5.87,
+     "deg": 6.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 25,
+   "von": "brest",
+   "nach": "saint_malo",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 11.91,
+     "y": 14.2,
+     "deg": 22.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 15.49,
+     "y": 15.49,
+     "deg": 22.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 19.07,
+     "y": 16.77,
+     "deg": 22.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 26,
+   "von": "brest",
+   "nach": "lorient",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 27,
+   "felder": [
+    {
+     "x": 6.6,
+     "y": 17.98,
+     "deg": 66.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 8.15,
+     "y": 21.0,
+     "deg": 66.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 27,
+   "von": "brest",
+   "nach": "lorient",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 26,
+   "felder": [
+    {
+     "x": 7.98,
+     "y": 17.47,
+     "deg": 66.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 9.53,
+     "y": 20.49,
+     "deg": 66.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 28,
+   "von": "brest",
+   "nach": "rennes",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    29
+   ],
+   "felder": [
+    {
+     "x": 10.17,
+     "y": 15.82,
+     "deg": 35.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 13.36,
+     "y": 17.71,
+     "deg": 34.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 16.52,
+     "y": 19.63,
+     "deg": 34.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 19.74,
+     "y": 21.47,
+     "deg": 34.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 29,
+   "von": "lorient",
+   "nach": "saint_malo",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    28
+   ],
+   "felder": [
+    {
+     "x": 14.49,
+     "y": 21.01,
+     "deg": -23.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 18.12,
+     "y": 19.64,
+     "deg": -25.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 30,
+   "von": "saint_malo",
+   "nach": "rennes",
+   "laenge": 1,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 23.37,
+     "y": 20.91,
+     "deg": 87.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 31,
+   "von": "lorient",
+   "nach": "rennes",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 15.38,
+     "y": 23.52,
+     "deg": 3.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 19.24,
+     "y": 23.71,
+     "deg": 3.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 32,
+   "von": "lorient",
+   "nach": "nantes",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 33,
+   "felder": [
+    {
+     "x": 12.76,
+     "y": 28.25,
+     "deg": 50.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 15.25,
+     "y": 30.79,
+     "deg": 50.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 33,
+   "von": "lorient",
+   "nach": "nantes",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 32,
+   "felder": [
+    {
+     "x": 13.92,
+     "y": 27.43,
+     "deg": 50.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 16.41,
+     "y": 29.97,
+     "deg": 50.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 34,
+   "von": "lorient",
+   "nach": "le_mans",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    36,
+    37
+   ],
+   "felder": [
+    {
+     "x": 15.56,
+     "y": 25.44,
+     "deg": 15.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 19.28,
+     "y": 26.34,
+     "deg": 15.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 22.93,
+     "y": 27.26,
+     "deg": 14.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 26.79,
+     "y": 28.21,
+     "deg": 15.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 30.49,
+     "y": 29.05,
+     "deg": 15.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 35,
+   "von": "rennes",
+   "nach": "le_mans",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 27.3,
+     "y": 25.29,
+     "deg": 31.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 30.6,
+     "y": 27.0,
+     "deg": 31.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 36,
+   "von": "rennes",
+   "nach": "nantes",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    34
+   ],
+   "felder": [
+    {
+     "x": 22.52,
+     "y": 27.26,
+     "deg": -70.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 21.13,
+     "y": 30.41,
+     "deg": -70.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 37,
+   "von": "rennes",
+   "nach": "angers",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    34
+   ],
+   "felder": [
+    {
+     "x": 26.31,
+     "y": 27.52,
+     "deg": 66.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 27.74,
+     "y": 30.67,
+     "deg": 67.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 38,
+   "von": "nantes",
+   "nach": "angers",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": false,
+   "doppel_mit": 39,
+   "felder": [
+    {
+     "x": 24.26,
+     "y": 33.24,
+     "deg": -0.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 39,
+   "von": "nantes",
+   "nach": "angers",
+   "laenge": 1,
+   "farbe": "orange",
+   "geprueft": false,
+   "doppel_mit": 38,
+   "felder": [
+    {
+     "x": 24.37,
+     "y": 34.46,
+     "deg": -0.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 40,
+   "von": "nantes",
+   "nach": "la_rochelle",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 41,
+   "felder": [
+    {
+     "x": 18.2,
+     "y": 36.65,
+     "deg": -84.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 17.85,
+     "y": 39.95,
+     "deg": -84.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 41,
+   "von": "nantes",
+   "nach": "la_rochelle",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 40,
+   "felder": [
+    {
+     "x": 19.7,
+     "y": 36.77,
+     "deg": -84.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 19.35,
+     "y": 40.06,
+     "deg": -84.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 42,
+   "von": "le_mans",
+   "nach": "paris",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 41.91,
+     "y": 28.99,
+     "deg": -8.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 45.74,
+     "y": 28.5,
+     "deg": -8.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 49.55,
+     "y": 27.91,
+     "deg": -8.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 43,
+   "von": "le_mans",
+   "nach": "orleans",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 38.49,
+     "y": 30.84,
+     "deg": 18.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 42.18,
+     "y": 31.87,
+     "deg": 18.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 45.84,
+     "y": 32.92,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 44,
+   "von": "le_mans",
+   "nach": "angers",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 32.0,
+     "y": 31.78,
+     "deg": -33.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 45,
+   "von": "le_mans",
+   "nach": "tours",
+   "laenge": 1,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 36.28,
+     "y": 32.8,
+     "deg": 58.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 46,
+   "von": "angers",
+   "nach": "tours",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": false,
+   "doppel_mit": 47,
+   "felder": [
+    {
+     "x": 33.23,
+     "y": 34.25,
+     "deg": 12.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 47,
+   "von": "angers",
+   "nach": "tours",
+   "laenge": 1,
+   "farbe": "gruen",
+   "geprueft": false,
+   "doppel_mit": 46,
+   "felder": [
+    {
+     "x": 32.85,
+     "y": 35.59,
+     "deg": 12.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 48,
+   "von": "angers",
+   "nach": "poitiers",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 28.73,
+     "y": 36.98,
+     "deg": 83.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 29.15,
+     "y": 40.26,
+     "deg": 83.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 49,
+   "von": "paris",
+   "nach": "reims",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 50,
+   "felder": [
+    {
+     "x": 60.92,
+     "y": 27.89,
+     "deg": 0.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 64.82,
+     "y": 27.86,
+     "deg": 0.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 50,
+   "von": "paris",
+   "nach": "reims",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 49,
+   "felder": [
+    {
+     "x": 60.88,
+     "y": 26.61,
+     "deg": 0.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 64.78,
+     "y": 26.58,
+     "deg": 0.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 51,
+   "von": "paris",
+   "nach": "orleans",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": false,
+   "doppel_mit": 52,
+   "felder": [
+    {
+     "x": 50.1,
+     "y": 30.74,
+     "deg": -51.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 52,
+   "von": "paris",
+   "nach": "orleans",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": false,
+   "doppel_mit": 51,
+   "felder": [
+    {
+     "x": 51.37,
+     "y": 31.49,
+     "deg": -51.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 53,
+   "von": "paris",
+   "nach": "dijon",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    54,
+    55
+   ],
+   "felder": [
+    {
+     "x": 59.5,
+     "y": 30.91,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 61.36,
+     "y": 33.76,
+     "deg": 60.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 63.23,
+     "y": 36.62,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.15,
+     "y": 39.5,
+     "deg": 60.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 67.03,
+     "y": 42.39,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 54,
+   "von": "paris",
+   "nach": "dijon",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    53,
+    55
+   ],
+   "felder": [
+    {
+     "x": 58.19,
+     "y": 31.53,
+     "deg": 61.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 60.05,
+     "y": 34.37,
+     "deg": 60.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 61.92,
+     "y": 37.23,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 63.8,
+     "y": 40.12,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.71,
+     "y": 43.0,
+     "deg": 60.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 55,
+   "von": "paris",
+   "nach": "dijon",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    53,
+    54
+   ],
+   "felder": [
+    {
+     "x": 56.84,
+     "y": 32.16,
+     "deg": 60.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 58.73,
+     "y": 35.01,
+     "deg": 60.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 60.6,
+     "y": 37.85,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 62.48,
+     "y": 40.73,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 64.39,
+     "y": 43.62,
+     "deg": 61.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 56,
+   "von": "reims",
+   "nach": "metz",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 74.69,
+     "y": 27.53,
+     "deg": 17.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 78.4,
+     "y": 28.5,
+     "deg": 17.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 82.11,
+     "y": 29.48,
+     "deg": 17.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 57,
+   "von": "reims",
+   "nach": "nancy",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 58,
+   "felder": [
+    {
+     "x": 71.92,
+     "y": 30.41,
+     "deg": 35.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 75.08,
+     "y": 32.32,
+     "deg": 35.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 78.23,
+     "y": 34.15,
+     "deg": 35.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 58,
+   "von": "reims",
+   "nach": "nancy",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 57,
+   "felder": [
+    {
+     "x": 72.78,
+     "y": 29.37,
+     "deg": 35.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 75.94,
+     "y": 31.28,
+     "deg": 35.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 79.1,
+     "y": 33.15,
+     "deg": 34.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 59,
+   "von": "metz",
+   "nach": "allemagne_1",
+   "laenge": 1,
+   "farbe": "gelb",
+   "geprueft": false,
+   "doppel_mit": 60,
+   "felder": [
+    {
+     "x": 88.81,
+     "y": 28.85,
+     "deg": -33.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 60,
+   "von": "metz",
+   "nach": "allemagne_1",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": false,
+   "doppel_mit": 59,
+   "felder": [
+    {
+     "x": 89.6,
+     "y": 29.92,
+     "deg": -34.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 61,
+   "von": "metz",
+   "nach": "nancy",
+   "laenge": 1,
+   "farbe": "gruen",
+   "geprueft": false,
+   "doppel_mit": 62,
+   "felder": [
+    {
+     "x": 83.78,
+     "y": 33.29,
+     "deg": -59.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 62,
+   "von": "metz",
+   "nach": "nancy",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "doppel_mit": 61,
+   "felder": [
+    {
+     "x": 85.08,
+     "y": 33.91,
+     "deg": -59.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 63,
+   "von": "metz",
+   "nach": "strasbourg",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 89.02,
+     "y": 34.03,
+     "deg": 46.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 91.54,
+     "y": 36.47,
+     "deg": 48.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 64,
+   "von": "nancy",
+   "nach": "strasbourg",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 65,
+   "felder": [
+    {
+     "x": 86.04,
+     "y": 38.61,
+     "deg": 19.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 89.68,
+     "y": 39.73,
+     "deg": 19.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 65,
+   "von": "nancy",
+   "nach": "strasbourg",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 64,
+   "felder": [
+    {
+     "x": 86.55,
+     "y": 37.41,
+     "deg": 19.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 90.19,
+     "y": 38.53,
+     "deg": 19.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 66,
+   "von": "nancy",
+   "nach": "dijon",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 67,
+   "felder": [
+    {
+     "x": 79.27,
+     "y": 37.21,
+     "deg": -40.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 76.31,
+     "y": 39.36,
+     "deg": -40.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 73.39,
+     "y": 41.53,
+     "deg": -40.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 70.44,
+     "y": 43.68,
+     "deg": -40.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 67,
+   "von": "nancy",
+   "nach": "dijon",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 66,
+   "felder": [
+    {
+     "x": 80.25,
+     "y": 38.18,
+     "deg": -40.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 77.29,
+     "y": 40.34,
+     "deg": -40.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 74.37,
+     "y": 42.48,
+     "deg": -40.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 71.43,
+     "y": 44.64,
+     "deg": -40.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 68,
+   "von": "nancy",
+   "nach": "besancon",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    73
+   ],
+   "felder": [
+    {
+     "x": 81.79,
+     "y": 40.16,
+     "deg": -67.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 80.34,
+     "y": 43.2,
+     "deg": -67.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 78.93,
+     "y": 46.2,
+     "deg": -68.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 69,
+   "von": "strasbourg",
+   "nach": "allemagne_2",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": false,
+   "doppel_mit": 70,
+   "felder": [
+    {
+     "x": 96.58,
+     "y": 41.23,
+     "deg": 29.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 70,
+   "von": "strasbourg",
+   "nach": "allemagne_2",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": false,
+   "doppel_mit": 69,
+   "felder": [
+    {
+     "x": 95.93,
+     "y": 42.31,
+     "deg": 28.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 71,
+   "von": "strasbourg",
+   "nach": "mulhouse",
+   "laenge": 1,
+   "farbe": "orange",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 90.21,
+     "y": 43.59,
+     "deg": -57.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 72,
+   "von": "dijon",
+   "nach": "besancon",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 72.93,
+     "y": 48.91,
+     "deg": 10.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 73,
+   "von": "dijon",
+   "nach": "mulhouse",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    68
+   ],
+   "felder": [
+    {
+     "x": 72.38,
+     "y": 47.17,
+     "deg": -3.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 76.21,
+     "y": 47.02,
+     "deg": -3.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 80.15,
+     "y": 46.85,
+     "deg": -3.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 84.01,
+     "y": 46.6,
+     "deg": -3.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 74,
+   "von": "besancon",
+   "nach": "mulhouse",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 80.94,
+     "y": 49.11,
+     "deg": -13.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 84.73,
+     "y": 48.38,
+     "deg": -12.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 75,
+   "von": "mulhouse",
+   "nach": "allemagne_3",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 91.74,
+     "y": 46.52,
+     "deg": -1.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 95.62,
+     "y": 46.42,
+     "deg": -1.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 76,
+   "von": "mulhouse",
+   "nach": "suisse_1",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 88.43,
+     "y": 49.89,
+     "deg": 84.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 88.81,
+     "y": 53.17,
+     "deg": 84.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 77,
+   "von": "besancon",
+   "nach": "suisse_2",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 79.44,
+     "y": 52.17,
+     "deg": 58.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 81.5,
+     "y": 54.96,
+     "deg": 58.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 78,
+   "von": "orleans",
+   "nach": "bourges",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 48.53,
+     "y": 37.39,
+     "deg": -85.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 48.21,
+     "y": 40.68,
+     "deg": -85.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 79,
+   "von": "tours",
+   "nach": "orleans",
+   "laenge": 1,
+   "farbe": "gelb",
+   "geprueft": false,
+   "doppel_mit": [
+    80,
+    81
+   ],
+   "felder": [
+    {
+     "x": 43.67,
+     "y": 34.72,
+     "deg": -18.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 80,
+   "von": "tours",
+   "nach": "orleans",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "doppel_mit": [
+    79,
+    81
+   ],
+   "felder": [
+    {
+     "x": 44.08,
+     "y": 36.0,
+     "deg": -19.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 81,
+   "von": "tours",
+   "nach": "orleans",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": false,
+   "doppel_mit": [
+    79,
+    80
+   ],
+   "felder": [
+    {
+     "x": 44.7,
+     "y": 37.16,
+     "deg": -19.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 82,
+   "von": "tours",
+   "nach": "bourges",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 42.05,
+     "y": 39.26,
+     "deg": 47.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 44.66,
+     "y": 41.68,
+     "deg": 47.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 83,
+   "von": "tours",
+   "nach": "poitiers",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    84,
+    85
+   ],
+   "felder": [
+    {
+     "x": 35.02,
+     "y": 37.97,
+     "deg": -49.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 32.58,
+     "y": 40.5,
+     "deg": -49.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 84,
+   "von": "tours",
+   "nach": "poitiers",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    83,
+    85
+   ],
+   "felder": [
+    {
+     "x": 36.16,
+     "y": 38.81,
+     "deg": -49.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 33.74,
+     "y": 41.35,
+     "deg": -50.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 85,
+   "von": "tours",
+   "nach": "poitiers",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    83,
+    84
+   ],
+   "felder": [
+    {
+     "x": 37.31,
+     "y": 39.64,
+     "deg": -49.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 34.87,
+     "y": 42.16,
+     "deg": -50.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 86,
+   "von": "poitiers",
+   "nach": "la_rochelle",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 22.92,
+     "y": 43.48,
+     "deg": 5.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 26.78,
+     "y": 43.81,
+     "deg": 5.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 87,
+   "von": "poitiers",
+   "nach": "bourges",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 35.11,
+     "y": 44.69,
+     "deg": -2.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 38.97,
+     "y": 44.48,
+     "deg": -3.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 42.84,
+     "y": 44.32,
+     "deg": -3.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 88,
+   "von": "poitiers",
+   "nach": "limoges",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 32.93,
+     "y": 47.49,
+     "deg": 74.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 33.84,
+     "y": 50.68,
+     "deg": 74.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 89,
+   "von": "poitiers",
+   "nach": "bordeaux",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    90,
+    91
+   ],
+   "felder": [
+    {
+     "x": 27.34,
+     "y": 47.0,
+     "deg": -54.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 25.1,
+     "y": 49.7,
+     "deg": -54.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 22.86,
+     "y": 52.4,
+     "deg": -55.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 20.6,
+     "y": 55.09,
+     "deg": -54.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 90,
+   "von": "poitiers",
+   "nach": "bordeaux",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    89,
+    91
+   ],
+   "felder": [
+    {
+     "x": 28.57,
+     "y": 47.73,
+     "deg": -55.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 26.32,
+     "y": 50.43,
+     "deg": -54.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 24.09,
+     "y": 53.14,
+     "deg": -54.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 21.85,
+     "y": 55.82,
+     "deg": -54.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 91,
+   "von": "poitiers",
+   "nach": "bordeaux",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    89,
+    90
+   ],
+   "felder": [
+    {
+     "x": 29.8,
+     "y": 48.47,
+     "deg": -54.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 27.56,
+     "y": 51.17,
+     "deg": -55.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 25.32,
+     "y": 53.87,
+     "deg": -54.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 23.07,
+     "y": 56.56,
+     "deg": -54.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 92,
+   "von": "la_rochelle",
+   "nach": "bordeaux",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 93,
+   "felder": [
+    {
+     "x": 16.99,
+     "y": 47.53,
+     "deg": -84.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 16.65,
+     "y": 50.81,
+     "deg": -84.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 16.28,
+     "y": 54.1,
+     "deg": -84.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 93,
+   "von": "la_rochelle",
+   "nach": "bordeaux",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 92,
+   "felder": [
+    {
+     "x": 18.5,
+     "y": 47.64,
+     "deg": -84.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 18.14,
+     "y": 50.92,
+     "deg": -84.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 17.78,
+     "y": 54.21,
+     "deg": -84.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 94,
+   "von": "limoges",
+   "nach": "brive",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 33.37,
+     "y": 56.73,
+     "deg": -81.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 95,
+   "von": "bourges",
+   "nach": "dijon",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 51.26,
+     "y": 44.84,
+     "deg": 9.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 55.1,
+     "y": 45.36,
+     "deg": 9.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 58.92,
+     "y": 45.87,
+     "deg": 9.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 62.75,
+     "y": 46.4,
+     "deg": 9.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 96,
+   "von": "bourges",
+   "nach": "clermont_ferrand",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 48.12,
+     "y": 47.62,
+     "deg": 87.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 48.29,
+     "y": 50.91,
+     "deg": 87.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 48.46,
+     "y": 54.22,
+     "deg": 87.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 97,
+   "von": "bourges",
+   "nach": "brive",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    98
+   ],
+   "felder": [
+    {
+     "x": 45.06,
+     "y": 46.44,
+     "deg": -56.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 42.91,
+     "y": 49.17,
+     "deg": -56.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 40.74,
+     "y": 51.9,
+     "deg": -56.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 38.38,
+     "y": 54.66,
+     "deg": -53.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 36.41,
+     "y": 57.38,
+     "deg": -56.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 98,
+   "von": "limoges",
+   "nach": "clermont_ferrand",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    97
+   ],
+   "felder": [
+    {
+     "x": 38.33,
+     "y": 54.61,
+     "deg": 21.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 41.93,
+     "y": 55.6,
+     "deg": 20.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 45.56,
+     "y": 56.74,
+     "deg": 20.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 99,
+   "von": "brive",
+   "nach": "clermont_ferrand",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 45.23,
+     "y": 59.19,
+     "deg": -7.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 41.4,
+     "y": 59.63,
+     "deg": -7.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 37.56,
+     "y": 60.07,
+     "deg": -7.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 100,
+   "von": "clermont_ferrand",
+   "nach": "lyon",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 52.33,
+     "y": 58.76,
+     "deg": 12.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 56.13,
+     "y": 59.47,
+     "deg": 12.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 59.91,
+     "y": 60.19,
+     "deg": 12.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 101,
+   "von": "clermont_ferrand",
+   "nach": "rodez",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 45.7,
+     "y": 61.9,
+     "deg": -56.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 43.56,
+     "y": 64.65,
+     "deg": -56.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 41.44,
+     "y": 67.33,
+     "deg": -55.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 102,
+   "von": "brive",
+   "nach": "rodez",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 35.34,
+     "y": 63.63,
+     "deg": 69.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 36.72,
+     "y": 66.67,
+     "deg": 68.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 103,
+   "von": "bordeaux",
+   "nach": "brive",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 22.98,
+     "y": 59.28,
+     "deg": 5.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 26.86,
+     "y": 59.59,
+     "deg": 5.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 30.72,
+     "y": 59.91,
+     "deg": 5.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 104,
+   "von": "bordeaux",
+   "nach": "bayonne",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 105,
+   "felder": [
+    {
+     "x": 14.05,
+     "y": 60.8,
+     "deg": -41.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 11.16,
+     "y": 63.0,
+     "deg": -41.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 8.25,
+     "y": 65.22,
+     "deg": -41.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 105,
+   "von": "bordeaux",
+   "nach": "bayonne",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 104,
+   "felder": [
+    {
+     "x": 13.06,
+     "y": 59.85,
+     "deg": -41.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 10.16,
+     "y": 62.05,
+     "deg": -41.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 7.26,
+     "y": 64.24,
+     "deg": -41.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 106,
+   "von": "bordeaux",
+   "nach": "toulouse",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 107,
+   "felder": [
+    {
+     "x": 19.51,
+     "y": 62.19,
+     "deg": 66.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 21.05,
+     "y": 65.18,
+     "deg": 67.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 22.53,
+     "y": 68.15,
+     "deg": 68,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 24.13,
+     "y": 71.22,
+     "deg": 66.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 107,
+   "von": "bordeaux",
+   "nach": "toulouse",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 106,
+   "felder": [
+    {
+     "x": 20.89,
+     "y": 61.69,
+     "deg": 66.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 22.43,
+     "y": 64.72,
+     "deg": 66.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 23.98,
+     "y": 67.71,
+     "deg": 66.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 25.5,
+     "y": 70.72,
+     "deg": 66.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 108,
+   "von": "bordeaux",
+   "nach": "pau",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 15.87,
+     "y": 63.01,
+     "deg": -66.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 14.34,
+     "y": 65.99,
+     "deg": -66.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 12.8,
+     "y": 68.98,
+     "deg": -66.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 109,
+   "von": "bayonne",
+   "nach": "pau",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 8.25,
+     "y": 69.7,
+     "deg": 33.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 110,
+   "von": "bayonne",
+   "nach": "espagne_1",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 4.84,
+     "y": 71.0,
+     "deg": 79.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 5.56,
+     "y": 74.24,
+     "deg": 79.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 6.28,
+     "y": 77.47,
+     "deg": 79.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 111,
+   "von": "pau",
+   "nach": "espagne_2",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 11.07,
+     "y": 75.6,
+     "deg": 84.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 11.42,
+     "y": 78.88,
+     "deg": 84.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 112,
+   "von": "pau",
+   "nach": "toulouse",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 14.44,
+     "y": 72.94,
+     "deg": 12.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 18.24,
+     "y": 73.66,
+     "deg": 12.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 22.03,
+     "y": 74.37,
+     "deg": 12.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 113,
+   "von": "brive",
+   "nach": "toulouse",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 31.61,
+     "y": 63.85,
+     "deg": -67.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 30.14,
+     "y": 66.86,
+     "deg": -67.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 28.67,
+     "y": 69.87,
+     "deg": -67.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 114,
+   "von": "rodez",
+   "nach": "toulouse",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 34.68,
+     "y": 71.07,
+     "deg": -14.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 30.99,
+     "y": 71.89,
+     "deg": -13.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 115,
+   "von": "rodez",
+   "nach": "montpellier",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 41.91,
+     "y": 73.47,
+     "deg": 62.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 43.68,
+     "y": 76.36,
+     "deg": 60.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 116,
+   "von": "rodez",
+   "nach": "lyon",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 43.25,
+     "y": 69.13,
+     "deg": -28.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 46.72,
+     "y": 67.58,
+     "deg": -27.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 50.14,
+     "y": 66.09,
+     "deg": -27.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 53.45,
+     "y": 64.57,
+     "deg": -28.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 56.88,
+     "y": 63.0,
+     "deg": -28.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 117,
+   "von": "toulouse",
+   "nach": "espagne_3",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 118,
+   "felder": [
+    {
+     "x": 22.55,
+     "y": 77.6,
+     "deg": -56.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 20.4,
+     "y": 80.33,
+     "deg": -56.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 18.25,
+     "y": 83.08,
+     "deg": -56.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 16.1,
+     "y": 85.81,
+     "deg": -56.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 118,
+   "von": "toulouse",
+   "nach": "espagne_3",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 117,
+   "felder": [
+    {
+     "x": 23.8,
+     "y": 78.3,
+     "deg": -56.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 21.66,
+     "y": 81.04,
+     "deg": -56.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 19.5,
+     "y": 83.78,
+     "deg": -56.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 17.35,
+     "y": 86.52,
+     "deg": -56.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 119,
+   "von": "toulouse",
+   "nach": "perpignan",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 27.79,
+     "y": 78.66,
+     "deg": 49.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 30.32,
+     "y": 81.14,
+     "deg": 49.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 32.81,
+     "y": 83.62,
+     "deg": 50.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 120,
+   "von": "toulouse",
+   "nach": "montpellier",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 121,
+   "felder": [
+    {
+     "x": 30.16,
+     "y": 75.49,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 33.8,
+     "y": 76.52,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 37.43,
+     "y": 77.54,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 41.11,
+     "y": 78.58,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 121,
+   "von": "toulouse",
+   "nach": "montpellier",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 120,
+   "felder": [
+    {
+     "x": 29.69,
+     "y": 76.7,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 33.32,
+     "y": 77.72,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 36.96,
+     "y": 78.75,
+     "deg": 18.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 40.64,
+     "y": 79.79,
+     "deg": 18.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 122,
+   "von": "toulouse",
+   "nach": "avignon",
+   "laenge": 6,
+   "farbe": "grau",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 31.71,
+     "y": 73.87,
+     "deg": 6.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 35.5,
+     "y": 74.22,
+     "deg": 5.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 39.48,
+     "y": 74.63,
+     "deg": 7.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 43.19,
+     "y": 75.12,
+     "deg": 8.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 47.1,
+     "y": 75.54,
+     "deg": 9.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 51.05,
+     "y": 76.05,
+     "deg": 10.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 123,
+   "von": "perpignan",
+   "nach": "espagne_4",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 31.67,
+     "y": 87.7,
+     "deg": -32.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 28.41,
+     "y": 89.46,
+     "deg": -32.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 124,
+   "von": "montpellier",
+   "nach": "perpignan",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 40.92,
+     "y": 82.65,
+     "deg": -32.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 37.64,
+     "y": 84.4,
+     "deg": -32.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 125,
+   "von": "avignon",
+   "nach": "montpellier",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 126,
+   "felder": [
+    {
+     "x": 50.88,
+     "y": 78.39,
+     "deg": -12.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 47.08,
+     "y": 79.12,
+     "deg": -13.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 126,
+   "von": "avignon",
+   "nach": "montpellier",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 125,
+   "felder": [
+    {
+     "x": 51.21,
+     "y": 79.64,
+     "deg": -12.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 47.43,
+     "y": 80.37,
+     "deg": -12.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 127,
+   "von": "montpellier",
+   "nach": "marseille",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 128,
+   "felder": [
+    {
+     "x": 46.19,
+     "y": 83.13,
+     "deg": 33.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 49.41,
+     "y": 84.95,
+     "deg": 33.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 52.65,
+     "y": 86.79,
+     "deg": 33.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 128,
+   "von": "montpellier",
+   "nach": "marseille",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 127,
+   "felder": [
+    {
+     "x": 45.36,
+     "y": 84.18,
+     "deg": 34.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 48.58,
+     "y": 86.01,
+     "deg": 33.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 51.81,
+     "y": 87.85,
+     "deg": 33.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 129,
+   "von": "avignon",
+   "nach": "marseille",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    130,
+    131
+   ],
+   "felder": [
+    {
+     "x": 57.53,
+     "y": 81.22,
+     "deg": 79.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 58.21,
+     "y": 84.47,
+     "deg": 79.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 130,
+   "von": "avignon",
+   "nach": "marseille",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    129,
+    131
+   ],
+   "felder": [
+    {
+     "x": 56.05,
+     "y": 81.45,
+     "deg": 79.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 56.74,
+     "y": 84.69,
+     "deg": 79.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 131,
+   "von": "avignon",
+   "nach": "marseille",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    129,
+    130
+   ],
+   "felder": [
+    {
+     "x": 54.57,
+     "y": 81.68,
+     "deg": 79.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 55.26,
+     "y": 84.91,
+     "deg": 79.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 132,
+   "von": "lyon",
+   "nach": "avignon",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    133,
+    134
+   ],
+   "felder": [
+    {
+     "x": 59.43,
+     "y": 64.58,
+     "deg": -69.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 58.08,
+     "y": 67.6,
+     "deg": -68.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 56.72,
+     "y": 70.62,
+     "deg": -69.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 55.35,
+     "y": 73.7,
+     "deg": -69.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 133,
+   "von": "lyon",
+   "nach": "avignon",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    132,
+    134
+   ],
+   "felder": [
+    {
+     "x": 60.85,
+     "y": 64.9,
+     "deg": -69.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 59.48,
+     "y": 67.98,
+     "deg": -69.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 58.11,
+     "y": 71.07,
+     "deg": -69.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 56.75,
+     "y": 74.15,
+     "deg": -69.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 134,
+   "von": "lyon",
+   "nach": "avignon",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    132,
+    133
+   ],
+   "felder": [
+    {
+     "x": 62.25,
+     "y": 65.43,
+     "deg": -69.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 60.89,
+     "y": 68.44,
+     "deg": -69.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 59.52,
+     "y": 71.52,
+     "deg": -69.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 58.15,
+     "y": 74.61,
+     "deg": -69.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 135,
+   "von": "dijon",
+   "nach": "lyon",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    136,
+    137
+   ],
+   "felder": [
+    {
+     "x": 64.11,
+     "y": 49.69,
+     "deg": -69.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 62.77,
+     "y": 52.78,
+     "deg": -69.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 61.43,
+     "y": 55.87,
+     "deg": -69.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 136,
+   "von": "dijon",
+   "nach": "lyon",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    135,
+    137
+   ],
+   "felder": [
+    {
+     "x": 65.56,
+     "y": 50.13,
+     "deg": -69.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 64.18,
+     "y": 53.22,
+     "deg": -69.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 62.84,
+     "y": 56.31,
+     "deg": -69.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 137,
+   "von": "dijon",
+   "nach": "lyon",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": [
+    135,
+    136
+   ],
+   "felder": [
+    {
+     "x": 67.01,
+     "y": 50.56,
+     "deg": -69.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.62,
+     "y": 53.66,
+     "deg": -69.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 64.25,
+     "y": 56.76,
+     "deg": -69.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 138,
+   "von": "besancon",
+   "nach": "lyon",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 75.3,
+     "y": 51.61,
+     "deg": -42.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 72.41,
+     "y": 53.81,
+     "deg": -41.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 69.53,
+     "y": 56.0,
+     "deg": -41.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 66.58,
+     "y": 58.21,
+     "deg": -41.7,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 139,
+   "von": "lyon",
+   "nach": "suisse_3",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 140,
+   "felder": [
+    {
+     "x": 67.83,
+     "y": 61.81,
+     "deg": 1.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 71.72,
+     "y": 61.91,
+     "deg": 1.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 75.59,
+     "y": 61.99,
+     "deg": 1.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 140,
+   "von": "lyon",
+   "nach": "suisse_3",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 139,
+   "felder": [
+    {
+     "x": 67.87,
+     "y": 60.54,
+     "deg": 1.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 71.76,
+     "y": 60.63,
+     "deg": 1.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 75.63,
+     "y": 60.72,
+     "deg": 1.2,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 141,
+   "von": "lyon",
+   "nach": "grenoble",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 64.59,
+     "y": 63.69,
+     "deg": 73.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.7,
+     "y": 66.78,
+     "deg": 72.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 142,
+   "von": "grenoble",
+   "nach": "briancon",
+   "laenge": 1,
+   "farbe": "gelb",
+   "geprueft": false,
+   "felder": [
+    {
+     "x": 69.3,
+     "y": 71.62,
+     "deg": 37.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 143,
+   "von": "grenoble",
+   "nach": "italie_1",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 70.35,
+     "y": 68.9,
+     "deg": -2.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 74.22,
+     "y": 68.74,
+     "deg": -2.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 78.09,
+     "y": 68.59,
+     "deg": -2.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 81.99,
+     "y": 68.44,
+     "deg": -2.3,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 144,
+   "von": "briancon",
+   "nach": "italie_2",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 75.72,
+     "y": 73.3,
+     "deg": 1.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 79.6,
+     "y": 73.38,
+     "deg": 1.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 83.5,
+     "y": 73.47,
+     "deg": 1.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 145,
+   "von": "marseille",
+   "nach": "grenoble",
+   "laenge": 5,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    146,
+    147
+   ],
+   "felder": [
+    {
+     "x": 60.8,
+     "y": 84.85,
+     "deg": -72.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 62.03,
+     "y": 81.62,
+     "deg": -72.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 63.11,
+     "y": 78.57,
+     "deg": -72.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 64.29,
+     "y": 75.41,
+     "deg": -72.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.46,
+     "y": 72.27,
+     "deg": -72.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 146,
+   "von": "avignon",
+   "nach": "briancon",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    145
+   ],
+   "felder": [
+    {
+     "x": 60.09,
+     "y": 76.78,
+     "deg": -16.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 63.77,
+     "y": 75.91,
+     "deg": -16.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 67.57,
+     "y": 74.9,
+     "deg": -16.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 147,
+   "von": "avignon",
+   "nach": "nice",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    145,
+    148
+   ],
+   "felder": [
+    {
+     "x": 59.56,
+     "y": 79.45,
+     "deg": 33.4,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 62.64,
+     "y": 81.36,
+     "deg": 33.1,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 66.05,
+     "y": 83.05,
+     "deg": 31.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 69.35,
+     "y": 84.89,
+     "deg": 33.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 148,
+   "von": "briancon",
+   "nach": "marseille",
+   "laenge": 4,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "kreuzt": [
+    147
+   ],
+   "felder": [
+    {
+     "x": 69.4,
+     "y": 76.87,
+     "deg": -57.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 67.32,
+     "y": 79.66,
+     "deg": -57.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 65.23,
+     "y": 82.47,
+     "deg": -57.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 63.12,
+     "y": 85.25,
+     "deg": -57.6,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 149,
+   "von": "briancon",
+   "nach": "nice",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "felder": [
+    {
+     "x": 72.28,
+     "y": 76.65,
+     "deg": 90.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 72.25,
+     "y": 79.95,
+     "deg": 90.0,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 72.23,
+     "y": 83.25,
+     "deg": -89.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 150,
+   "von": "nice",
+   "nach": "italie_3",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 151,
+   "felder": [
+    {
+     "x": 75.38,
+     "y": 84.57,
+     "deg": -38.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 78.41,
+     "y": 82.52,
+     "deg": -38.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 81.45,
+     "y": 80.46,
+     "deg": -38.4,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 151,
+   "von": "nice",
+   "nach": "italie_3",
+   "laenge": 3,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 150,
+   "felder": [
+    {
+     "x": 76.31,
+     "y": 85.57,
+     "deg": -38.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 79.34,
+     "y": 83.52,
+     "deg": -38.5,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 82.39,
+     "y": 81.46,
+     "deg": -38.5,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 152,
+   "von": "marseille",
+   "nach": "nice",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 153,
+   "felder": [
+    {
+     "x": 63.93,
+     "y": 87.7,
+     "deg": -6.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 67.83,
+     "y": 87.29,
+     "deg": -7.0,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 153,
+   "von": "marseille",
+   "nach": "nice",
+   "laenge": 2,
+   "farbe": null,
+   "geprueft": false,
+   "bett": true,
+   "doppel_mit": 152,
+   "felder": [
+    {
+     "x": 64.11,
+     "y": 88.96,
+     "deg": -7.2,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 68.01,
+     "y": 88.55,
+     "deg": -6.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 154,
+   "von": "perpignan",
+   "nach": "corse_1",
+   "laenge": 5,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "lok_feld": 1,
+   "felder": [
+    {
+     "x": 37.9,
+     "y": 87.55,
+     "deg": 28.6,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 41.37,
+     "y": 89.09,
+     "deg": 27.7,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 44.73,
+     "y": 90.55,
+     "deg": 24.3,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 48.36,
+     "y": 91.76,
+     "deg": 18,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 52.04,
+     "y": 92.77,
+     "deg": 16.9,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 155,
+   "von": "marseille",
+   "nach": "corse_2",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "lok_feld": 1,
+   "felder": [
+    {
+     "x": 60.62,
+     "y": 90.58,
+     "deg": 39,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 63.69,
+     "y": 92.61,
+     "deg": 35.9,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 66.82,
+     "y": 94.43,
+     "deg": 33.1,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  },
+  {
+   "nr": 156,
+   "von": "nice",
+   "nach": "corse_3",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": false,
+   "faehre": 1,
+   "lok_feld": 1,
+   "felder": [
+    {
+     "x": 73.49,
+     "y": 90.1,
+     "deg": 59.8,
+     "l": 3.1,
+     "w": 0.79
+    },
+    {
+     "x": 75.48,
+     "y": 92.69,
+     "deg": 59.8,
+     "l": 3.1,
+     "w": 0.79
+    }
+   ]
+  }
+ ],
+ "auftraege": [
+  {
+   "von": "Le Havre",
+   "nach": "Marseille",
+   "punkte": 16
+  },
+  {
+   "von": "Paris",
+   "nach": "Nice",
+   "punkte": 14
+  },
+  {
+   "von": "Nancy",
+   "nach": "Marseille",
+   "punkte": 13
+  },
+  {
+   "von": "Lorient",
+   "nach": "Espagne",
+   "punkte": 12
+  },
+  {
+   "von": "Paris",
+   "nach": "Bayonne",
+   "punkte": 11
+  },
+  {
+   "von": "Bordeaux",
+   "nach": "Marseille",
+   "punkte": 10
+  },
+  {
+   "von": "Rennes",
+   "nach": "Nancy",
+   "punkte": 10
+  },
+  {
+   "von": "Nantes",
+   "nach": "Pau",
+   "punkte": 8
+  },
+  {
+   "von": "La Rochelle",
+   "nach": "Toulouse",
+   "punkte": 7
+  },
+  {
+   "von": "Metz",
+   "nach": "Angers",
+   "punkte": 8
+  },
+  {
+   "von": "Tours",
+   "nach": "Dijon",
+   "punkte": 6
+  },
+  {
+   "von": "Brest",
+   "nach": "Paris",
+   "punkte": 9
+  },
+  {
+   "von": "Le Mans",
+   "nach": "Bordeaux",
+   "punkte": 7
+  },
+  {
+   "von": "Le Mans",
+   "nach": "Suisse",
+   "punkte": 10
+  },
+  {
+   "von": "Brest",
+   "nach": "Clermont-Ferrand",
+   "punkte": 11
+  },
+  {
+   "von": "Allemagne",
+   "nach": "Avignon",
+   "punkte": 12
+  },
+  {
+   "von": "Lille",
+   "nach": "Dijon",
+   "punkte": 9
+  },
+  {
+   "von": "Allemagne",
+   "nach": "Espagne",
+   "punkte": 18
+  },
+  {
+   "von": "Rennes",
+   "nach": "Lyon",
+   "punkte": 11
+  },
+  {
+   "von": "Angers",
+   "nach": "Briançon",
+   "punkte": 12
+  },
+  {
+   "von": "Calais",
+   "nach": "Nantes",
+   "punkte": 9
+  },
+  {
+   "von": "Paris",
+   "nach": "Marseille",
+   "punkte": 14
+  },
+  {
+   "von": "Lille",
+   "nach": "Saint-Malo",
+   "punkte": 8
+  },
+  {
+   "von": "Amiens",
+   "nach": "Montpellier",
+   "punkte": 13
+  },
+  {
+   "von": "Strasbourg",
+   "nach": "Avignon",
+   "punkte": 11
+  },
+  {
+   "von": "Strasbourg",
+   "nach": "Italie",
+   "punkte": 13
+  },
+  {
+   "von": "Strasbourg",
+   "nach": "Corse",
+   "punkte": 15
+  },
+  {
+   "von": "Belgique",
+   "nach": "Suisse",
+   "punkte": 12
+  },
+  {
+   "von": "Metz",
+   "nach": "Perpignan",
+   "punkte": 16
+  },
+  {
+   "von": "Reims",
+   "nach": "Orléans",
+   "punkte": 3
+  },
+  {
+   "von": "Mulhouse",
+   "nach": "Lyon",
+   "punkte": 6
+  },
+  {
+   "von": "Besançon",
+   "nach": "Bordeaux",
+   "punkte": 12
+  },
+  {
+   "von": "Lorient",
+   "nach": "Rodez",
+   "punkte": 10
+  },
+  {
+   "von": "Le Havre",
+   "nach": "Bourges",
+   "punkte": 5
+  },
+  {
+   "von": "Calais",
+   "nach": "Allemagne",
+   "punkte": 9
+  },
+  {
+   "von": "Dijon",
+   "nach": "Montpellier",
+   "punkte": 9
+  },
+  {
+   "von": "Lyon",
+   "nach": "Toulouse",
+   "punkte": 7
+  },
+  {
+   "von": "Suisse",
+   "nach": "Marseille",
+   "punkte": 9
+  },
+  {
+   "von": "La Rochelle",
+   "nach": "Montpellier",
+   "punkte": 11
+  },
+  {
+   "von": "Bordeaux",
+   "nach": "Clermont-Ferrand",
+   "punkte": 6
+  },
+  {
+   "von": "Paris",
+   "nach": "Brive-la-Gaillarde",
+   "punkte": 7
+  },
+  {
+   "von": "Espagne",
+   "nach": "Italie",
+   "punkte": 12
+  },
+  {
+   "von": "Toulouse",
+   "nach": "Nice",
+   "punkte": 9
+  },
+  {
+   "von": "Rennes",
+   "nach": "Bayonne",
+   "punkte": 10
+  },
+  {
+   "von": "Brest",
+   "nach": "Belgique",
+   "punkte": 12
+  },
+  {
+   "von": "Nantes",
+   "nach": "Nice",
+   "punkte": 15
+  },
+  {
+   "von": "Reims",
+   "nach": "Toulouse",
+   "punkte": 13
+  },
+  {
+   "von": "Strasbourg",
+   "nach": "Limoges",
+   "punkte": 13
+  },
+  {
+   "von": "Belgique",
+   "nach": "Brive-la-Gaillarde",
+   "punkte": 12
+  },
+  {
+   "von": "Rouen",
+   "nach": "Grenoble",
+   "punkte": 11
+  },
+  {
+   "von": "Paris",
+   "nach": "Lyon",
+   "punkte": 8
+  },
+  {
+   "von": "Lille",
+   "nach": "Poitiers",
+   "punkte": 8
+  },
+  {
+   "von": "Cherbourg",
+   "nach": "Limoges",
+   "punkte": 9
+  },
+  {
+   "von": "Paris",
+   "nach": "Strasbourg",
+   "punkte": 7
+  },
+  {
+   "von": "Cherbourg",
+   "nach": "Paris",
+   "punkte": 4
+  },
+  {
+   "von": "Lyon",
+   "nach": "Marseille",
+   "punkte": 6
+  },
+  {
+   "von": "Dijon",
+   "nach": "Grenoble",
+   "punkte": 5
+  },
+  {
+   "von": "Toulouse",
+   "nach": "Corse",
+   "punkte": 8
+  }
+ ]
+}
