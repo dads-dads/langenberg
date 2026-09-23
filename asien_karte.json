@@ -1,0 +1,3655 @@
+{
+ "meta": {
+  "name": "Asien",
+  "statId": "Zug um Zug Asien",
+  "kurz": "Asien",
+  "version": "0.93",
+  "spieler": "2-5",
+  "wagons_pro_spieler": 45,
+  "bild": "asien_karte.jpg",
+  "tkbild": "auftrag_asien.jpg",
+  "board_h": 668,
+  "hinweis": "v0.93 (Integrationsfassung fuer App v7.65): start_raus=true ergaenzt (abgelegte Startauftraege kommen aus dem Spiel, Regelheft S.2). Sagenhaftes Asien, Karte v0.93 (final, 22.09.2026): 39 Staedte, 100 Strecken-Eintraege (60 Doppelstrecken-Eintraege), 31 Gebirgsstrecken mit insgesamt 39 X-Symbolen (Streckenfeld gebirge = Anzahl, X-Felder mit felder[i].gebirge=true), 15 Faehrstrecken, 36 Zielkarten (6 lange). Schreibweise brettgetreu: ONSK (Davids Omsk-Auftraege auf Onsk gemappt). Doppelstrecken laut Regelheft erst ab 4 Spielern, wie in allen Editionen auf doppelstrecken_frei_ab 3 gesetzt. Korrekturbatches 1+2 von David eingearbeitet, alle Strecken geprueft.",
+  "farben": [
+   "rot",
+   "orange",
+   "gelb",
+   "gruen",
+   "blau",
+   "pink",
+   "weiss",
+   "schwarz",
+   "grau"
+  ],
+  "faehrenregel": "Faehren sind Strecken mit Lokomotiv-Symbolen. Pro Lok-Symbol muss eine Lokomotivkarte gezahlt werden, die restlichen Felder mit Wagenkarten der Streckenfarbe (grau: beliebige Farbe).",
+  "gebirge": {
+   "punkte_pro_waggon": 2,
+   "regel": "Gebirgsstrecken sind an X-Symbolen auf den Feldern erkennbar (Feld 'gebirge' = Anzahl X). Beim Bau gibt der Spieler zusaetzlich zu den Wagenkarten einen Waggon pro X aus seinem Vorrat endgueltig ab (auf den Gebirgspass, zaehlt nicht als gebaut) und erhaelt sofort 2 Siegpunkte pro abgegebenem Waggon. Wer nicht genug Waggons fuer Felder + X hat, kann die Strecke nicht bauen. Graue Parallelstrecken einer farbigen Gebirgsstrecke fuehren nicht uebers Gebirge (kein Waggon-Abwurf)."
+  },
+  "bonusregel": "Asien-Entdecker: Wer am Ende die meisten Staedte in einem einzigen zusammenhaengenden Streckennetz verbunden hat, erhaelt 10 Punkte (jede Stadt zaehlt nur einmal; bei Gleichstand erhalten alle Beteiligten den Bonus). Kein Bonus fuer laengste Strecke oder meiste Auftraege. Sieg-Gleichstand: meiste erfuellte Zielkarten, danach meiste genutzte Gebirgsstrecken.",
+  "regeln": {
+   "startauftraege": {
+    "lange_ziehen": 1,
+    "lange_max": 1,
+    "normale_ziehen": 3,
+    "min_normale_mit_lang": 1,
+    "min_normale_ohne_lang": 2,
+    "hinweis": "Jeder erhaelt 1 lange Zielkarte (lila) und 3 normale; mindestens 2 der 4 behalten (lange darf abgelegt werden). Uebrige lange Karten und abgelegte Startkarten kommen aus dem Spiel."
+   },
+   "auftraege_nachziehen": {
+    "ziehen": 3,
+    "mindestens_behalten": 1
+   },
+   "starthandkarten": 4,
+   "doppelstrecken_frei_ab": 3,
+   "punkte_pro_laenge": {
+    "1": 1,
+    "2": 2,
+    "3": 4,
+    "4": 7,
+    "5": 10,
+    "6": 15
+   },
+   "laengste_strecke_bonus": 0,
+   "meiste_auftraege_bonus": 0,
+   "entdecker_bonus": 10,
+   "gebirge_punkte_pro_waggon": 2,
+   "sieg_tiebreak": [
+    "punkte",
+    "erfuellte_auftraege",
+    "gebirgsstrecken"
+   ],
+   "zugzeit": "Zugzeit pro Spiel frei einstellbar (Stunden + Minuten); nach Ablauf werden automatisch 2 Karten vom verdeckten Stapel gezogen.",
+   "kennwort": "Jeder Spieler waehlt einen PIN; Wiedereinstieg nur mit Name + PIN.",
+   "start_raus": true
+  },
+  "tk_vb": {
+   "w": 1120,
+   "h": 700
+  },
+  "tk_hoch": false,
+  "tk_einzelziel": true,
+  "tk": {
+   "mx0": 206,
+   "my0": 145,
+   "mw": 708,
+   "mh": 473
+  },
+  "tk_titel": {
+   "y1": 50,
+   "y2": 85,
+   "font": 28,
+   "farbe": "#5a3d18"
+  },
+  "tk_punkte": {
+   "x": 1073,
+   "y": 670,
+   "font": 40,
+   "farbe": "#7a1a1a"
+  }
+ },
+ "knoten": [
+  {
+   "id": "moscow",
+   "name": "Moscow",
+   "x": 9.27,
+   "y": 8.93,
+   "rand": false,
+   "tkx": 24.25,
+   "tky": 26.75
+  },
+  {
+   "id": "perm",
+   "name": "Perm",
+   "x": 22.97,
+   "y": 8.23,
+   "rand": false,
+   "tkx": 32.91,
+   "tky": 26.28
+  },
+  {
+   "id": "onsk",
+   "name": "Onsk",
+   "x": 36.27,
+   "y": 8.63,
+   "rand": false,
+   "tkx": 41.32,
+   "tky": 26.55
+  },
+  {
+   "id": "krasnoyarsk",
+   "name": "Krasnoyarsk",
+   "x": 49.5,
+   "y": 9.13,
+   "rand": false,
+   "tkx": 49.68,
+   "tky": 26.88
+  },
+  {
+   "id": "irkutsk",
+   "name": "Irkutsk",
+   "x": 62.47,
+   "y": 10.03,
+   "rand": false,
+   "tkx": 57.88,
+   "tky": 27.49
+  },
+  {
+   "id": "chita",
+   "name": "Chita",
+   "x": 71.7,
+   "y": 12.13,
+   "rand": false,
+   "tkx": 63.72,
+   "tky": 28.91
+  },
+  {
+   "id": "khabarovsk",
+   "name": "Khabarovsk",
+   "x": 90.57,
+   "y": 15.22,
+   "rand": false,
+   "tkx": 75.64,
+   "tky": 31.0
+  },
+  {
+   "id": "ulan_bator",
+   "name": "Ulan Bator",
+   "x": 65.0,
+   "y": 21.46,
+   "rand": false,
+   "tkx": 59.48,
+   "tky": 35.21
+  },
+  {
+   "id": "astrakhan",
+   "name": "Astrakhan",
+   "x": 16.37,
+   "y": 24.25,
+   "rand": false,
+   "tkx": 28.74,
+   "tky": 37.1
+  },
+  {
+   "id": "dihua",
+   "name": "Dihua",
+   "x": 50.57,
+   "y": 27.79,
+   "rand": false,
+   "tkx": 50.36,
+   "tky": 39.5
+  },
+  {
+   "id": "vladivostok",
+   "name": "Vladivostok",
+   "x": 88.3,
+   "y": 28.44,
+   "rand": false,
+   "tkx": 74.21,
+   "tky": 39.93
+  },
+  {
+   "id": "tbilisi",
+   "name": "Tbilisi",
+   "x": 13.7,
+   "y": 31.44,
+   "rand": false,
+   "tkx": 27.05,
+   "tky": 41.96
+  },
+  {
+   "id": "ankara",
+   "name": "Ankara",
+   "x": 4.9,
+   "y": 33.83,
+   "rand": false,
+   "tkx": 21.49,
+   "tky": 43.58
+  },
+  {
+   "id": "samarkand",
+   "name": "Samarkand",
+   "x": 33.27,
+   "y": 34.08,
+   "rand": false,
+   "tkx": 39.42,
+   "tky": 43.74
+  },
+  {
+   "id": "peking",
+   "name": "Peking",
+   "x": 74.6,
+   "y": 34.53,
+   "rand": false,
+   "tkx": 65.55,
+   "tky": 44.05
+  },
+  {
+   "id": "tehran",
+   "name": "Tehran",
+   "x": 20.2,
+   "y": 41.12,
+   "rand": false,
+   "tkx": 31.16,
+   "tky": 48.5
+  },
+  {
+   "id": "kobe",
+   "name": "Kobe",
+   "x": 93.84,
+   "y": 41.45,
+   "rand": false,
+   "tkx": 77.71,
+   "tky": 48.72
+  },
+  {
+   "id": "seoul",
+   "name": "Seoul",
+   "x": 84.4,
+   "y": 41.57,
+   "rand": false,
+   "tkx": 71.75,
+   "tky": 48.8
+  },
+  {
+   "id": "xian",
+   "name": "Xi'An",
+   "x": 67.07,
+   "y": 42.91,
+   "rand": false,
+   "tkx": 60.79,
+   "tky": 49.71
+  },
+  {
+   "id": "baghdad",
+   "name": "Baghdad",
+   "x": 14.57,
+   "y": 45.61,
+   "rand": false,
+   "tkx": 27.6,
+   "tky": 51.53
+  },
+  {
+   "id": "rawalpindi",
+   "name": "Rawalpindi",
+   "x": 38.07,
+   "y": 45.81,
+   "rand": false,
+   "tkx": 42.46,
+   "tky": 51.67
+  },
+  {
+   "id": "shanghai",
+   "name": "Shanghai",
+   "x": 78.8,
+   "y": 47.31,
+   "rand": false,
+   "tkx": 68.21,
+   "tky": 52.68
+  },
+  {
+   "id": "lhasa",
+   "name": "Lhasa",
+   "x": 53.8,
+   "y": 47.75,
+   "rand": false,
+   "tkx": 52.4,
+   "tky": 52.98
+  },
+  {
+   "id": "shiraz",
+   "name": "Shiraz",
+   "x": 24.47,
+   "y": 52.99,
+   "rand": false,
+   "tkx": 33.86,
+   "tky": 56.52
+  },
+  {
+   "id": "kathmandu",
+   "name": "Kathmandu",
+   "x": 48.87,
+   "y": 52.99,
+   "rand": false,
+   "tkx": 49.28,
+   "tky": 56.52
+  },
+  {
+   "id": "agra",
+   "name": "Agra",
+   "x": 41.7,
+   "y": 54.94,
+   "rand": false,
+   "tkx": 44.75,
+   "tky": 57.84
+  },
+  {
+   "id": "karachi",
+   "name": "Karachi",
+   "x": 33.0,
+   "y": 57.29,
+   "rand": false,
+   "tkx": 39.25,
+   "tky": 59.42
+  },
+  {
+   "id": "taipei",
+   "name": "Taipei",
+   "x": 79.77,
+   "y": 58.03,
+   "rand": false,
+   "tkx": 68.82,
+   "tky": 59.93
+  },
+  {
+   "id": "calcutta",
+   "name": "Calcutta",
+   "x": 51.1,
+   "y": 59.23,
+   "rand": false,
+   "tkx": 50.7,
+   "tky": 60.74
+  },
+  {
+   "id": "hanoi",
+   "name": "Hanoi",
+   "x": 66.1,
+   "y": 60.58,
+   "rand": false,
+   "tkx": 60.18,
+   "tky": 61.65
+  },
+  {
+   "id": "mandalay",
+   "name": "Mandalay",
+   "x": 57.2,
+   "y": 61.03,
+   "rand": false,
+   "tkx": 54.55,
+   "tky": 61.95
+  },
+  {
+   "id": "macau",
+   "name": "Macau",
+   "x": 71.64,
+   "y": 62.21,
+   "rand": false,
+   "tkx": 63.68,
+   "tky": 62.75
+  },
+  {
+   "id": "mecca",
+   "name": "Mecca",
+   "x": 10.67,
+   "y": 63.72,
+   "rand": false,
+   "tkx": 25.14,
+   "tky": 63.77
+  },
+  {
+   "id": "bombay",
+   "name": "Bombay",
+   "x": 38.9,
+   "y": 67.37,
+   "rand": false,
+   "tkx": 42.98,
+   "tky": 66.23
+  },
+  {
+   "id": "rangoon",
+   "name": "Rangoon",
+   "x": 57.14,
+   "y": 69.93,
+   "rand": false,
+   "tkx": 54.51,
+   "tky": 67.97
+  },
+  {
+   "id": "bangkok",
+   "name": "Bangkok",
+   "x": 61.49,
+   "y": 74.53,
+   "rand": false,
+   "tkx": 57.26,
+   "tky": 71.08
+  },
+  {
+   "id": "saigon",
+   "name": "Saigon",
+   "x": 65.87,
+   "y": 79.14,
+   "rand": false,
+   "tkx": 60.03,
+   "tky": 74.19
+  },
+  {
+   "id": "colombo",
+   "name": "Colombo",
+   "x": 45.3,
+   "y": 86.83,
+   "rand": false,
+   "tkx": 47.03,
+   "tky": 79.38
+  },
+  {
+   "id": "singapore",
+   "name": "Singapore",
+   "x": 63.8,
+   "y": 91.92,
+   "rand": false,
+   "tkx": 58.72,
+   "tky": 82.82
+  }
+ ],
+ "strecken": [
+  {
+   "nr": 1,
+   "von": "moscow",
+   "nach": "perm",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 12.86,
+     "y": 7.84,
+     "deg": -3.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 16.17,
+     "y": 7.5,
+     "deg": -3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 19.5,
+     "y": 7.26,
+     "deg": -2.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 2
+  },
+  {
+   "nr": 2,
+   "von": "moscow",
+   "nach": "perm",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 13.0,
+     "y": 9.78,
+     "deg": -3.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 16.23,
+     "y": 9.48,
+     "deg": -2.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 19.6,
+     "y": 9.28,
+     "deg": -2.2,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 1
+  },
+  {
+   "nr": 3,
+   "von": "moscow",
+   "nach": "astrakhan",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 9.4,
+     "y": 14.12,
+     "deg": 61.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 11.2,
+     "y": 18.41,
+     "deg": 54.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 13.33,
+     "y": 22.31,
+     "deg": 46.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 4
+  },
+  {
+   "nr": 4,
+   "von": "moscow",
+   "nach": "astrakhan",
+   "laenge": 3,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 10.47,
+     "y": 13.02,
+     "deg": 62.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 12.26,
+     "y": 17.28,
+     "deg": 54.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 14.37,
+     "y": 21.09,
+     "deg": 46.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 3
+  },
+  {
+   "nr": 5,
+   "von": "perm",
+   "nach": "onsk",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 26.31,
+     "y": 7.24,
+     "deg": 2.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 29.61,
+     "y": 7.32,
+     "deg": 2.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 32.94,
+     "y": 7.43,
+     "deg": 2.9,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 6
+  },
+  {
+   "nr": 6,
+   "von": "perm",
+   "nach": "onsk",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 26.28,
+     "y": 9.18,
+     "deg": 0.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 29.59,
+     "y": 9.38,
+     "deg": 2.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 32.89,
+     "y": 9.33,
+     "deg": 2.9,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 5
+  },
+  {
+   "nr": 7,
+   "von": "perm",
+   "nach": "astrakhan",
+   "laenge": 3,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 21.23,
+     "y": 12.04,
+     "deg": -46.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 19.06,
+     "y": 15.89,
+     "deg": -57,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 17.44,
+     "y": 20.27,
+     "deg": -63.5,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 8,
+   "von": "onsk",
+   "nach": "krasnoyarsk",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 39.63,
+     "y": 7.88,
+     "deg": 1.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 42.97,
+     "y": 8.03,
+     "deg": 2.0,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 46.3,
+     "y": 8.23,
+     "deg": 2.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 9
+  },
+  {
+   "nr": 9,
+   "von": "onsk",
+   "nach": "krasnoyarsk",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 39.63,
+     "y": 9.78,
+     "deg": 1.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 42.97,
+     "y": 9.93,
+     "deg": 2.0,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 46.3,
+     "y": 10.13,
+     "deg": 2.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 8
+  },
+  {
+   "nr": 10,
+   "von": "onsk",
+   "nach": "samarkand",
+   "laenge": 4,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 35.43,
+     "y": 14.08,
+     "deg": -83,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 35.02,
+     "y": 18.99,
+     "deg": -83.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 34.54,
+     "y": 23.85,
+     "deg": -83,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 34.08,
+     "y": 29.04,
+     "deg": -82.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 11,
+   "von": "onsk",
+   "nach": "dihua",
+   "laenge": 5,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 37.57,
+     "y": 13.22,
+     "deg": 60.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 39.23,
+     "y": 17.66,
+     "deg": 54.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 41.5,
+     "y": 21.46,
+     "deg": 42.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 44.2,
+     "y": 24.5,
+     "deg": 31.0,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 47.27,
+     "y": 26.65,
+     "deg": 19.1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 12,
+   "von": "tbilisi",
+   "nach": "astrakhan",
+   "laenge": 1,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 14.48,
+     "y": 27.74,
+     "deg": -64.9,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 13
+  },
+  {
+   "nr": 13,
+   "von": "tbilisi",
+   "nach": "astrakhan",
+   "laenge": 1,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 15.55,
+     "y": 28.52,
+     "deg": -64.9,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 12
+  },
+  {
+   "nr": 14,
+   "von": "ankara",
+   "nach": "tbilisi",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 7.77,
+     "y": 33.13,
+     "deg": 0.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 11.2,
+     "y": 32.47,
+     "deg": -15.6,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 15,
+   "von": "tbilisi",
+   "nach": "tehran",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 14.77,
+     "y": 35.42,
+     "deg": 50.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 17.07,
+     "y": 39.25,
+     "deg": 42.6,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 16
+  },
+  {
+   "nr": 16,
+   "von": "tbilisi",
+   "nach": "tehran",
+   "laenge": 2,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 15.85,
+     "y": 34.13,
+     "deg": 53,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 18.07,
+     "y": 38.04,
+     "deg": 45,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 15
+  },
+  {
+   "nr": 17,
+   "von": "astrakhan",
+   "nach": "samarkand",
+   "laenge": 5,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 19.21,
+     "y": 23.14,
+     "deg": -16.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 22.67,
+     "y": 22.6,
+     "deg": 3.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 26.1,
+     "y": 23.7,
+     "deg": 22.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 29.07,
+     "y": 26.6,
+     "deg": 42.1,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 31.37,
+     "y": 30.34,
+     "deg": 49.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 18,
+   "von": "astrakhan",
+   "nach": "tehran",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 18.46,
+     "y": 27.31,
+     "deg": 51.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 20.15,
+     "y": 31.75,
+     "deg": 68.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 20.68,
+     "y": 37.03,
+     "deg": -88.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 19,
+   "von": "ankara",
+   "nach": "baghdad",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 6.21,
+     "y": 38.18,
+     "deg": 44.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 8.87,
+     "y": 41.52,
+     "deg": 36,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 11.71,
+     "y": 44.2,
+     "deg": 27.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 20
+  },
+  {
+   "nr": 20,
+   "von": "ankara",
+   "nach": "baghdad",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 7.03,
+     "y": 36.73,
+     "deg": 39.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 9.63,
+     "y": 39.97,
+     "deg": 35.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 12.5,
+     "y": 42.61,
+     "deg": 31.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 19
+  },
+  {
+   "nr": 21,
+   "von": "baghdad",
+   "nach": "tehran",
+   "laenge": 1,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 16.98,
+     "y": 43.47,
+     "deg": -26,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 22
+  },
+  {
+   "nr": 22,
+   "von": "baghdad",
+   "nach": "tehran",
+   "laenge": 1,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 17.6,
+     "y": 45.21,
+     "deg": -28.0,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 21
+  },
+  {
+   "nr": 23,
+   "von": "baghdad",
+   "nach": "mecca",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 14,
+     "y": 50,
+     "deg": 114,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 12.66,
+     "y": 54.55,
+     "deg": 107.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 11.81,
+     "y": 59.54,
+     "deg": -78.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 24
+  },
+  {
+   "nr": 24,
+   "von": "baghdad",
+   "nach": "mecca",
+   "laenge": 3,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 12.67,
+     "y": 49.18,
+     "deg": 115.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 11.39,
+     "y": 53.84,
+     "deg": -71.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 10.43,
+     "y": 58.89,
+     "deg": -79.5,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 23
+  },
+  {
+   "nr": 25,
+   "von": "mecca",
+   "nach": "shiraz",
+   "laenge": 4,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 13.73,
+     "y": 63.27,
+     "deg": -14.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 16.97,
+     "y": 61.68,
+     "deg": -23.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 19.93,
+     "y": 59.32,
+     "deg": -33.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 22.51,
+     "y": 55.83,
+     "deg": -47.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 26,
+   "von": "tehran",
+   "nach": "shiraz",
+   "laenge": 2,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 21.0,
+     "y": 45.51,
+     "deg": 59.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 22.54,
+     "y": 49.68,
+     "deg": 59.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2,
+   "doppel_mit": 27
+  },
+  {
+   "nr": 27,
+   "von": "tehran",
+   "nach": "shiraz",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 22.13,
+     "y": 44.41,
+     "deg": 59.7,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 23.67,
+     "y": 48.71,
+     "deg": 59.7,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2,
+   "doppel_mit": 26
+  },
+  {
+   "nr": 28,
+   "von": "tehran",
+   "nach": "samarkand",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 23.45,
+     "y": 38.65,
+     "deg": -31.9,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 26.49,
+     "y": 36.47,
+     "deg": -21,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 29.77,
+     "y": 34.93,
+     "deg": -16,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 29,
+   "von": "samarkand",
+   "nach": "rawalpindi",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 34.23,
+     "y": 38.52,
+     "deg": 68.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 36.11,
+     "y": 43.12,
+     "deg": 44.9,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 30,
+   "von": "samarkand",
+   "nach": "karachi",
+   "laenge": 4,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 31.67,
+     "y": 37.75,
+     "deg": -61.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 30.5,
+     "y": 42.72,
+     "deg": -80.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 30.59,
+     "y": 47.82,
+     "deg": 77.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 31.82,
+     "y": 52.81,
+     "deg": 61,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 31,
+   "von": "shiraz",
+   "nach": "karachi",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 27.3,
+     "y": 53.79,
+     "deg": 30.5,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 30.37,
+     "y": 55.87,
+     "deg": 16.5,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2,
+   "doppel_mit": 32
+  },
+  {
+   "nr": 32,
+   "von": "shiraz",
+   "nach": "karachi",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 26.73,
+     "y": 55.64,
+     "deg": 30.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 29.84,
+     "y": 57.79,
+     "deg": 16.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2,
+   "doppel_mit": 31
+  },
+  {
+   "nr": 33,
+   "von": "rawalpindi",
+   "nach": "karachi",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 36.56,
+     "y": 49.38,
+     "deg": -54.8,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 34.52,
+     "y": 53.33,
+     "deg": -54.8,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 34,
+   "von": "rawalpindi",
+   "nach": "agra",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 40.42,
+     "y": 48.19,
+     "deg": 24,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 42.13,
+     "y": 51,
+     "deg": 114,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 35,
+   "von": "rawalpindi",
+   "nach": "kathmandu",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 40.8,
+     "y": 45.16,
+     "deg": 0.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 44.17,
+     "y": 46.31,
+     "deg": 22.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 47.09,
+     "y": 49.04,
+     "deg": 44.4,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 36,
+   "von": "karachi",
+   "nach": "agra",
+   "laenge": 2,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 35.54,
+     "y": 56.42,
+     "deg": -14.1,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 38.83,
+     "y": 55.25,
+     "deg": -14.1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 37,
+   "von": "karachi",
+   "nach": "bombay",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 33.53,
+     "y": 62.22,
+     "deg": 63.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 35.42,
+     "y": 66.32,
+     "deg": 45.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 38
+  },
+  {
+   "nr": 38,
+   "von": "karachi",
+   "nach": "bombay",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 34.57,
+     "y": 60.75,
+     "deg": 61.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 36.53,
+     "y": 64.81,
+     "deg": 45.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 37
+  },
+  {
+   "nr": 39,
+   "von": "agra",
+   "nach": "bombay",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 40.19,
+     "y": 58.37,
+     "deg": -62.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 39.07,
+     "y": 63.14,
+     "deg": -77.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 40,
+   "von": "agra",
+   "nach": "kathmandu",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 43.33,
+     "y": 51.83,
+     "deg": -67.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 45.89,
+     "y": 51.9,
+     "deg": 24.5,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 41,
+   "von": "agra",
+   "nach": "calcutta",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 44.58,
+     "y": 55.66,
+     "deg": 0,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 48.07,
+     "y": 56.69,
+     "deg": 18,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 42,
+   "von": "bombay",
+   "nach": "calcutta",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 41.3,
+     "y": 64.72,
+     "deg": -26.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 44.27,
+     "y": 62.48,
+     "deg": -26.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 47.23,
+     "y": 60.23,
+     "deg": -26.8,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 43
+  },
+  {
+   "nr": 43,
+   "von": "bombay",
+   "nach": "calcutta",
+   "laenge": 3,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 41.96,
+     "y": 66.43,
+     "deg": -28.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 44.79,
+     "y": 64.26,
+     "deg": -25.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 47.81,
+     "y": 61.95,
+     "deg": -25.5,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 42
+  },
+  {
+   "nr": 44,
+   "von": "bombay",
+   "nach": "colombo",
+   "laenge": 4,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 38.42,
+     "y": 71.56,
+     "deg": 93.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 38.8,
+     "y": 76.7,
+     "deg": 74.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 40.37,
+     "y": 81.29,
+     "deg": 50.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 42.77,
+     "y": 84.47,
+     "deg": 35.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1,
+   "doppel_mit": 45
+  },
+  {
+   "nr": 45,
+   "von": "bombay",
+   "nach": "colombo",
+   "laenge": 4,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 37.04,
+     "y": 72.15,
+     "deg": 93.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 37.39,
+     "y": 77.33,
+     "deg": 74.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 38.99,
+     "y": 82.09,
+     "deg": 48.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 41.39,
+     "y": 85.32,
+     "deg": 33.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1,
+   "doppel_mit": 44
+  },
+  {
+   "nr": 46,
+   "von": "calcutta",
+   "nach": "colombo",
+   "laenge": 5,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 48.78,
+     "y": 64.03,
+     "deg": -46.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 46.33,
+     "y": 67.76,
+     "deg": -53.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 44.74,
+     "y": 72.24,
+     "deg": -71.1,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 44.18,
+     "y": 77.54,
+     "deg": -89.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 44.7,
+     "y": 82.54,
+     "deg": 72.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 47,
+   "von": "kathmandu",
+   "nach": "mandalay",
+   "laenge": 2,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 51.73,
+     "y": 53.69,
+     "deg": 2.9,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 54.96,
+     "y": 55.84,
+     "deg": 40.9,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2
+  },
+  {
+   "nr": 48,
+   "von": "calcutta",
+   "nach": "mandalay",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 54.67,
+     "y": 58.94,
+     "deg": 13.1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 49
+  },
+  {
+   "nr": 49,
+   "von": "calcutta",
+   "nach": "mandalay",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 54.36,
+     "y": 60.83,
+     "deg": 13.1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 48
+  },
+  {
+   "nr": 50,
+   "von": "calcutta",
+   "nach": "rangoon",
+   "laenge": 2,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 52.87,
+     "y": 63.52,
+     "deg": 56.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 55.14,
+     "y": 67.13,
+     "deg": 38.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 51
+  },
+  {
+   "nr": 51,
+   "von": "calcutta",
+   "nach": "rangoon",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 51.95,
+     "y": 64.93,
+     "deg": 54.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 54.46,
+     "y": 68.66,
+     "deg": 36.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 50
+  },
+  {
+   "nr": 52,
+   "von": "krasnoyarsk",
+   "nach": "irkutsk",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 52.86,
+     "y": 8.56,
+     "deg": 1.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 56.17,
+     "y": 8.84,
+     "deg": 2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 59.5,
+     "y": 9.08,
+     "deg": 2.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 53
+  },
+  {
+   "nr": 53,
+   "von": "krasnoyarsk",
+   "nach": "irkutsk",
+   "laenge": 3,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 52.83,
+     "y": 10.31,
+     "deg": 2.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 56.1,
+     "y": 10.69,
+     "deg": 2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 59.43,
+     "y": 10.88,
+     "deg": 5.1,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 52
+  },
+  {
+   "nr": 54,
+   "von": "krasnoyarsk",
+   "nach": "dihua",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 49.24,
+     "y": 13.46,
+     "deg": 93.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 49.24,
+     "y": 18.67,
+     "deg": 85.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 49.82,
+     "y": 23.67,
+     "deg": 76.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 55,
+   "von": "irkutsk",
+   "nach": "chita",
+   "laenge": 2,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 65.22,
+     "y": 12.24,
+     "deg": 14.8,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 68.58,
+     "y": 13.08,
+     "deg": 0.8,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 100
+  },
+  {
+   "nr": 56,
+   "von": "irkutsk",
+   "nach": "ulan_bator",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 61.7,
+     "y": 14.32,
+     "deg": -72,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 62.63,
+     "y": 19.08,
+     "deg": 39,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2
+  },
+  {
+   "nr": 57,
+   "von": "ulan_bator",
+   "nach": "chita",
+   "laenge": 2,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 67.62,
+     "y": 19.06,
+     "deg": -35.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 70.27,
+     "y": 15.84,
+     "deg": -49.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 58,
+   "von": "chita",
+   "nach": "khabarovsk",
+   "laenge": 5,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 74.53,
+     "y": 11.08,
+     "deg": -14.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 77.97,
+     "y": 10.24,
+     "deg": -2.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 81.33,
+     "y": 10.28,
+     "deg": 3.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 84.67,
+     "y": 11.28,
+     "deg": 15.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 87.87,
+     "y": 12.97,
+     "deg": 19.5,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 59,
+   "von": "khabarovsk",
+   "nach": "peking",
+   "laenge": 5,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 87.62,
+     "y": 17.95,
+     "deg": -42.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 85.19,
+     "y": 21.03,
+     "deg": -41.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 82.56,
+     "y": 24.3,
+     "deg": -41,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 79.99,
+     "y": 27.43,
+     "deg": -41,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 77.42,
+     "y": 30.48,
+     "deg": -38.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 60,
+   "von": "khabarovsk",
+   "nach": "vladivostok",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 91.65,
+     "y": 20.32,
+     "deg": -76.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 90.43,
+     "y": 25.26,
+     "deg": -63.1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 61
+  },
+  {
+   "nr": 61,
+   "von": "khabarovsk",
+   "nach": "vladivostok",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 90.39,
+     "y": 19.52,
+     "deg": -76.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 89.16,
+     "y": 24.43,
+     "deg": -63.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 60
+  },
+  {
+   "nr": 62,
+   "von": "ulan_bator",
+   "nach": "peking",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 68.1,
+     "y": 23.04,
+     "deg": 32.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 70.8,
+     "y": 26.05,
+     "deg": 40.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 73.2,
+     "y": 29.59,
+     "deg": 44.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 63
+  },
+  {
+   "nr": 63,
+   "von": "ulan_bator",
+   "nach": "peking",
+   "laenge": 3,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 67.27,
+     "y": 24.5,
+     "deg": 30.2,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 70.0,
+     "y": 27.54,
+     "deg": 40.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 72.4,
+     "y": 31.09,
+     "deg": 44.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1,
+   "doppel_mit": 62
+  },
+  {
+   "nr": 64,
+   "von": "samarkand",
+   "nach": "dihua",
+   "laenge": 5,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 36.44,
+     "y": 35.04,
+     "deg": 19.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 39.66,
+     "y": 36.25,
+     "deg": 10.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 43.12,
+     "y": 36.49,
+     "deg": -8.1,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 46.33,
+     "y": 34.6,
+     "deg": -32.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 48.97,
+     "y": 31.14,
+     "deg": -47.8,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 65
+  },
+  {
+   "nr": 65,
+   "von": "samarkand",
+   "nach": "dihua",
+   "laenge": 5,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 36.61,
+     "y": 37.21,
+     "deg": 19.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 39.99,
+     "y": 38.43,
+     "deg": 8.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 43.34,
+     "y": 38.78,
+     "deg": -8.1,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 46.69,
+     "y": 36.9,
+     "deg": -32.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 49.36,
+     "y": 33.53,
+     "deg": -45.8,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 64
+  },
+  {
+   "nr": 66,
+   "von": "dihua",
+   "nach": "peking",
+   "laenge": 6,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 53.64,
+     "y": 28.53,
+     "deg": 10.1,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 56.87,
+     "y": 29.3,
+     "deg": 10.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 60.17,
+     "y": 30.28,
+     "deg": 10.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 63.46,
+     "y": 31.26,
+     "deg": 10.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 66.74,
+     "y": 32.07,
+     "deg": 12.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 70.16,
+     "y": 33.1,
+     "deg": 14,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 67,
+   "von": "dihua",
+   "nach": "xian",
+   "laenge": 5,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 53.4,
+     "y": 30.44,
+     "deg": 12.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 56.63,
+     "y": 31.54,
+     "deg": 15.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 59.83,
+     "y": 33.13,
+     "deg": 23.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 62.83,
+     "y": 35.58,
+     "deg": 34.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 65.43,
+     "y": 38.78,
+     "deg": 45.8,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 68,
+   "von": "lhasa",
+   "nach": "xian",
+   "laenge": 4,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 55.01,
+     "y": 43.58,
+     "deg": -56.2,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 57.73,
+     "y": 40.37,
+     "deg": -25,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 61.17,
+     "y": 39.47,
+     "deg": 3.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 64.53,
+     "y": 41.02,
+     "deg": 31.1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 69,
+   "von": "lhasa",
+   "nach": "mandalay",
+   "laenge": 2,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 56.04,
+     "y": 50.83,
+     "deg": 50.4,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 57.36,
+     "y": 55.75,
+     "deg": 86.4,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2
+  },
+  {
+   "nr": 70,
+   "von": "xian",
+   "nach": "peking",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 68.84,
+     "y": 39.36,
+     "deg": -36.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 71.45,
+     "y": 36.42,
+     "deg": -36.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 71
+  },
+  {
+   "nr": 71,
+   "von": "xian",
+   "nach": "peking",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 69.65,
+     "y": 40.81,
+     "deg": -36.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 72.26,
+     "y": 38.04,
+     "deg": -36.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 70
+  },
+  {
+   "nr": 72,
+   "von": "xian",
+   "nach": "mandalay",
+   "laenge": 4,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 66.23,
+     "y": 47.21,
+     "deg": -78.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 64.93,
+     "y": 52.1,
+     "deg": -58.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 62.6,
+     "y": 56.14,
+     "deg": -39.69999999999999,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 59.75,
+     "y": 58.78,
+     "deg": -20.7,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 73,
+   "von": "xian",
+   "nach": "macau",
+   "laenge": 3,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 68.8,
+     "y": 46.91,
+     "deg": 61.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 70.23,
+     "y": 51.6,
+     "deg": 69.0,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 71.2,
+     "y": 56.29,
+     "deg": 76.9,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 74
+  },
+  {
+   "nr": 74,
+   "von": "xian",
+   "nach": "macau",
+   "laenge": 3,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 70.07,
+     "y": 46.1,
+     "deg": 61.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 71.5,
+     "y": 50.87,
+     "deg": 69,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 72.47,
+     "y": 55.6,
+     "deg": 78.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 73
+  },
+  {
+   "nr": 75,
+   "von": "peking",
+   "nach": "shanghai",
+   "laenge": 2,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 75.02,
+     "y": 39.67,
+     "deg": 67.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 76.77,
+     "y": 44.16,
+     "deg": 51.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 76
+  },
+  {
+   "nr": 76,
+   "von": "peking",
+   "nach": "shanghai",
+   "laenge": 2,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 76.22,
+     "y": 38.83,
+     "deg": 69.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 77.9,
+     "y": 43.26,
+     "deg": 51.9,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 75
+  },
+  {
+   "nr": 77,
+   "von": "peking",
+   "nach": "seoul",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 77.4,
+     "y": 33.9,
+     "deg": -9.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 80.73,
+     "y": 34.43,
+     "deg": 23.0,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 83.36,
+     "y": 37.83,
+     "deg": 58.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 78,
+   "von": "vladivostok",
+   "nach": "seoul",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 88.19,
+     "y": 32.99,
+     "deg": -87.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 86.77,
+     "y": 37.65,
+     "deg": -49.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 2
+  },
+  {
+   "nr": 79,
+   "von": "seoul",
+   "nach": "kobe",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 87.19,
+     "y": 42.68,
+     "deg": 18.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 90.57,
+     "y": 42.11,
+     "deg": -35.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 2
+  },
+  {
+   "nr": 80,
+   "von": "kobe",
+   "nach": "shanghai",
+   "laenge": 4,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 91.26,
+     "y": 43.81,
+     "deg": -31.3,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 88.31,
+     "y": 46.07,
+     "deg": -20.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 84.97,
+     "y": 47.42,
+     "deg": -12.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 81.72,
+     "y": 47.86,
+     "deg": -1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 81,
+   "von": "kobe",
+   "nach": "taipei",
+   "laenge": 5,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 93.02,
+     "y": 45.97,
+     "deg": -72.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 91.57,
+     "y": 50.62,
+     "deg": -55.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 89.21,
+     "y": 54.23,
+     "deg": -34.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 86.15,
+     "y": 56.26,
+     "deg": -17.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 82.78,
+     "y": 57.24,
+     "deg": -4.1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1,
+   "doppel_mit": 82
+  },
+  {
+   "nr": 82,
+   "von": "kobe",
+   "nach": "taipei",
+   "laenge": 5,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 94.1,
+     "y": 47.71,
+     "deg": -72.4,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 92.46,
+     "y": 52.41,
+     "deg": -57.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 90.03,
+     "y": 56.07,
+     "deg": -34.9,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 86.94,
+     "y": 58.19,
+     "deg": -18,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 83.53,
+     "y": 59.09,
+     "deg": -3.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1,
+   "doppel_mit": 81
+  },
+  {
+   "nr": 83,
+   "von": "shanghai",
+   "nach": "taipei",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 80.38,
+     "y": 50.8,
+     "deg": 39.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 81.47,
+     "y": 54.19,
+     "deg": 129.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 84,
+   "von": "shanghai",
+   "nach": "macau",
+   "laenge": 3,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 77.4,
+     "y": 51,
+     "deg": -78,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 76,
+     "y": 55.9,
+     "deg": -57.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 73.74,
+     "y": 59.75,
+     "deg": -39.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ]
+  },
+  {
+   "nr": 85,
+   "von": "macau",
+   "nach": "taipei",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 74.6,
+     "y": 63.03,
+     "deg": 0.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 77.76,
+     "y": 61.3,
+     "deg": -41,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 86,
+   "von": "hanoi",
+   "nach": "macau",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 69.07,
+     "y": 59.68,
+     "deg": 10.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 87
+  },
+  {
+   "nr": 87,
+   "von": "hanoi",
+   "nach": "macau",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 68.84,
+     "y": 61.57,
+     "deg": 10.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 86
+  },
+  {
+   "nr": 88,
+   "von": "mandalay",
+   "nach": "hanoi",
+   "laenge": 2,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 59.97,
+     "y": 61.58,
+     "deg": -2.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 63.33,
+     "y": 61.38,
+     "deg": -2.3,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 2
+  },
+  {
+   "nr": 89,
+   "von": "mandalay",
+   "nach": "rangoon",
+   "laenge": 1,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 57.56,
+     "y": 65.58,
+     "deg": -93,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 90,
+   "von": "rangoon",
+   "nach": "bangkok",
+   "laenge": 1,
+   "farbe": "gruen",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 59.77,
+     "y": 71.51,
+     "deg": 35.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 91
+  },
+  {
+   "nr": 91,
+   "von": "rangoon",
+   "nach": "bangkok",
+   "laenge": 1,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 58.93,
+     "y": 72.95,
+     "deg": 35.2,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 90
+  },
+  {
+   "nr": 92,
+   "von": "hanoi",
+   "nach": "bangkok",
+   "laenge": 2,
+   "farbe": "weiss",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 64.22,
+     "y": 65.72,
+     "deg": -67.6,
+     "l": 2.83,
+     "w": 1.04,
+     "gebirge": true
+    },
+    {
+     "x": 62.9,
+     "y": 70.31,
+     "deg": -67.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "gebirge": 1
+  },
+  {
+   "nr": 93,
+   "von": "hanoi",
+   "nach": "saigon",
+   "laenge": 3,
+   "farbe": "gelb",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 66.67,
+     "y": 65.12,
+     "deg": 67.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 67.4,
+     "y": 70.11,
+     "deg": 86,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 66.9,
+     "y": 75.12,
+     "deg": -67.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 94
+  },
+  {
+   "nr": 94,
+   "von": "hanoi",
+   "nach": "saigon",
+   "laenge": 3,
+   "farbe": "orange",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 68.07,
+     "y": 65.12,
+     "deg": 67.6,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 68.8,
+     "y": 70.11,
+     "deg": 89.1,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 68.43,
+     "y": 75.32,
+     "deg": -69.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 93
+  },
+  {
+   "nr": 95,
+   "von": "bangkok",
+   "nach": "saigon",
+   "laenge": 1,
+   "farbe": "pink",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 63.97,
+     "y": 76.15,
+     "deg": 35.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 96
+  },
+  {
+   "nr": 96,
+   "von": "bangkok",
+   "nach": "saigon",
+   "laenge": 1,
+   "farbe": "rot",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 63.27,
+     "y": 77.74,
+     "deg": 35.3,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 95
+  },
+  {
+   "nr": 97,
+   "von": "bangkok",
+   "nach": "singapore",
+   "laenge": 3,
+   "farbe": "blau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 59.23,
+     "y": 79.19,
+     "deg": 93.8,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 59.37,
+     "y": 84.33,
+     "deg": 77.5,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 60.7,
+     "y": 89.12,
+     "deg": 51.4,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 98
+  },
+  {
+   "nr": 98,
+   "von": "bangkok",
+   "nach": "singapore",
+   "laenge": 3,
+   "farbe": "schwarz",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 60.73,
+     "y": 78.47,
+     "deg": 94,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 60.73,
+     "y": 83.75,
+     "deg": 80.2,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 62.12,
+     "y": 88.38,
+     "deg": 53.6,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 97
+  },
+  {
+   "nr": 99,
+   "von": "saigon",
+   "nach": "singapore",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 65.84,
+     "y": 83.28,
+     "deg": -87.7,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 65.27,
+     "y": 88.07,
+     "deg": -71.7,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "faehre": 1
+  },
+  {
+   "nr": 100,
+   "von": "irkutsk",
+   "nach": "chita",
+   "laenge": 2,
+   "farbe": "grau",
+   "geprueft": true,
+   "felder": [
+    {
+     "x": 65.47,
+     "y": 10.49,
+     "deg": 14,
+     "l": 2.83,
+     "w": 1.04
+    },
+    {
+     "x": 68.82,
+     "y": 11.26,
+     "deg": 1,
+     "l": 2.83,
+     "w": 1.04
+    }
+   ],
+   "doppel_mit": 55
+  }
+ ],
+ "auftraege": [
+  {
+   "von": "Ankara",
+   "nach": "Colombo",
+   "punkte": 18,
+   "lang": true
+  },
+  {
+   "von": "Astrakhan",
+   "nach": "Hanoi",
+   "punkte": 18,
+   "lang": true
+  },
+  {
+   "von": "Khabarovsk",
+   "nach": "Karachi",
+   "punkte": 17,
+   "lang": true
+  },
+  {
+   "von": "Krasnoyarsk",
+   "nach": "Singapore",
+   "punkte": 17,
+   "lang": true
+  },
+  {
+   "von": "Moscow",
+   "nach": "Calcutta",
+   "punkte": 16,
+   "lang": true
+  },
+  {
+   "von": "Onsk",
+   "nach": "Kobe",
+   "punkte": 16,
+   "lang": true
+  },
+  {
+   "von": "Astrakhan",
+   "nach": "Karachi",
+   "punkte": 10
+  },
+  {
+   "von": "Chita",
+   "nach": "Shanghai",
+   "punkte": 8
+  },
+  {
+   "von": "Dihua",
+   "nach": "Mandalay",
+   "punkte": 10
+  },
+  {
+   "von": "Dihua",
+   "nach": "Seoul",
+   "punkte": 9
+  },
+  {
+   "von": "Irkutsk",
+   "nach": "Dihua",
+   "punkte": 6
+  },
+  {
+   "von": "Irkutsk",
+   "nach": "Khabarovsk",
+   "punkte": 7
+  },
+  {
+   "von": "Kathmandu",
+   "nach": "Calcutta",
+   "punkte": 5
+  },
+  {
+   "von": "Kobe",
+   "nach": "Macau",
+   "punkte": 7
+  },
+  {
+   "von": "Krasnoyarsk",
+   "nach": "Peking",
+   "punkte": 9
+  },
+  {
+   "von": "Krasnoyarsk",
+   "nach": "Samarkand",
+   "punkte": 8
+  },
+  {
+   "von": "Lhasa",
+   "nach": "Bangkok",
+   "punkte": 7
+  },
+  {
+   "von": "Macau",
+   "nach": "Singapore",
+   "punkte": 6
+  },
+  {
+   "von": "Moscow",
+   "nach": "Ankara",
+   "punkte": 7
+  },
+  {
+   "von": "Moscow",
+   "nach": "Mecca",
+   "punkte": 10
+  },
+  {
+   "von": "Onsk",
+   "nach": "Astrakhan",
+   "punkte": 6
+  },
+  {
+   "von": "Onsk",
+   "nach": "Baghdad",
+   "punkte": 10
+  },
+  {
+   "von": "Peking",
+   "nach": "Saigon",
+   "punkte": 9
+  },
+  {
+   "von": "Perm",
+   "nach": "Irkutsk",
+   "punkte": 9
+  },
+  {
+   "von": "Perm",
+   "nach": "Tehran",
+   "punkte": 6
+  },
+  {
+   "von": "Rangoon",
+   "nach": "Colombo",
+   "punkte": 7
+  },
+  {
+   "von": "Rawalpindi",
+   "nach": "Bombay",
+   "punkte": 5
+  },
+  {
+   "von": "Samarkand",
+   "nach": "Agra",
+   "punkte": 6
+  },
+  {
+   "von": "Samarkand",
+   "nach": "Mecca",
+   "punkte": 8
+  },
+  {
+   "von": "Seoul",
+   "nach": "Hanoi",
+   "punkte": 9
+  },
+  {
+   "von": "Tbilisi",
+   "nach": "Shiraz",
+   "punkte": 7
+  },
+  {
+   "von": "Tehran",
+   "nach": "Kathmandu",
+   "punkte": 11
+  },
+  {
+   "von": "Ulan Bator",
+   "nach": "Vladivostok",
+   "punkte": 9
+  },
+  {
+   "von": "Vladivostok",
+   "nach": "Lhasa",
+   "punkte": 12
+  },
+  {
+   "von": "Xi'An",
+   "nach": "Bombay",
+   "punkte": 9
+  },
+  {
+   "von": "Xi'An",
+   "nach": "Taipei",
+   "punkte": 5
+  }
+ ]
+}
