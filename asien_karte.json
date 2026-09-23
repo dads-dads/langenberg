@@ -3,13 +3,13 @@
   "name": "Asien",
   "statId": "Zug um Zug Asien",
   "kurz": "Asien",
-  "version": "0.93",
+  "version": "0.94",
   "spieler": "2-5",
   "wagons_pro_spieler": 45,
   "bild": "asien_karte.jpg",
   "tkbild": "auftrag_asien.jpg",
   "board_h": 668,
-  "hinweis": "v0.93 (Integrationsfassung fuer App v7.65): start_raus=true ergaenzt (abgelegte Startauftraege kommen aus dem Spiel, Regelheft S.2). Sagenhaftes Asien, Karte v0.93 (final, 22.09.2026): 39 Staedte, 100 Strecken-Eintraege (60 Doppelstrecken-Eintraege), 31 Gebirgsstrecken mit insgesamt 39 X-Symbolen (Streckenfeld gebirge = Anzahl, X-Felder mit felder[i].gebirge=true), 15 Faehrstrecken, 36 Zielkarten (6 lange). Schreibweise brettgetreu: ONSK (Davids Omsk-Auftraege auf Onsk gemappt). Doppelstrecken laut Regelheft erst ab 4 Spielern, wie in allen Editionen auf doppelstrecken_frei_ab 3 gesetzt. Korrekturbatches 1+2 von David eingearbeitet, alle Strecken geprueft.",
+  "hinweis": "v0.94: Schreibweise Omsk (vorher Onsk) in Stadtnamen und Zielkarten korrigiert; Knoten-ID onsk unveraendert. v0.93 (Integrationsfassung fuer App v7.65): start_raus=true ergaenzt (abgelegte Startauftraege kommen aus dem Spiel, Regelheft S.2). Sagenhaftes Asien, Karte v0.93 (final, 22.09.2026): 39 Staedte, 100 Strecken-Eintraege (60 Doppelstrecken-Eintraege), 31 Gebirgsstrecken mit insgesamt 39 X-Symbolen (Streckenfeld gebirge = Anzahl, X-Felder mit felder[i].gebirge=true), 15 Faehrstrecken, 36 Zielkarten (6 lange). Schreibweise brettgetreu: ONSK (Davids Omsk-Auftraege auf Onsk gemappt). Doppelstrecken laut Regelheft erst ab 4 Spielern, wie in allen Editionen auf doppelstrecken_frei_ab 3 gesetzt. Korrekturbatches 1+2 von David eingearbeitet, alle Strecken geprueft.",
   "farben": [
    "rot",
    "orange",
@@ -109,7 +109,7 @@
   },
   {
    "id": "onsk",
-   "name": "Onsk",
+   "name": "Omsk",
    "x": 36.27,
    "y": 8.63,
    "rand": false,
@@ -3496,7 +3496,7 @@
    "lang": true
   },
   {
-   "von": "Onsk",
+   "von": "Omsk",
    "nach": "Kobe",
    "punkte": 16,
    "lang": true
@@ -3572,12 +3572,12 @@
    "punkte": 10
   },
   {
-   "von": "Onsk",
+   "von": "Omsk",
    "nach": "Astrakhan",
    "punkte": 6
   },
   {
-   "von": "Onsk",
+   "von": "Omsk",
    "nach": "Baghdad",
    "punkte": 10
   },
