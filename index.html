@@ -277,7 +277,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.71 · 28.09.2026';
+const APP_VERSION='7.72 · 28.09.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111'};
@@ -3483,7 +3483,8 @@ document.getElementById('btnMyTickets').onclick=showMyTickets;
 function renderLobby(){
   document.getElementById('lobbyModal')?.remove();
   let html='<h2 style="text-align:center">Warteraum</h2><div class="codebig">'+CODE+'</div>'+(ROOM.custom?'<div style="font-size:13px;color:#b3372c;font-weight:600;text-align:center;margin-bottom:8px">⚠ Eigene Regeln aktiv – dieses Spiel zählt nicht für die Rangliste.</div>':'')+
-    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin-bottom:12px">Diesen Code an die Mitspieler weitergeben</p>';
+    '<p style="text-align:center;font-size:13px;color:#8a7d63;margin-bottom:12px">Diesen Code an die Mitspieler weitergeben</p>'+
+    '<div id="lobCover" style="text-align:center;margin:0 0 12px"></div>';
   ROOM.players.forEach((p,i)=>{html+='<div class="lob-p"><span class="dot" style="width:16px;height:16px;border-radius:50%;background:'+((PCOL.find(x=>x.id===p.col)||PCOL[i]).hex)+'"></span>'+p.name+(i===SEAT?' (du)':'')+(i===0?' · Gastgeber':'')+'</div>'});
   html+='<div style="margin:12px 0 4px;font-size:13px;color:#8a7d63">Deine Spielerfarbe:</div><div class="row" id="colRow" style="justify-content:center"></div>';
   if(SEAT===0){const lm=ROOM.limitMin!==undefined?ROOM.limitMin:(ROOM.limitH?ROOM.limitH*60:0);
@@ -3524,6 +3525,7 @@ function renderLobby(){
   html+='<button class="cancel" id="lobSw">🔀 Meine laufenden Spiele</button>'
     +'<button class="cancel" id="lobHome">🏠 Zum Startbildschirm</button>';
   const m=modal(html,true);m.id='lobbyModal';
+  deckblattZeigen(m.querySelector('#lobCover'),170);
   m.querySelector('#lobSw').onclick=()=>spieleWechsler();
   m.querySelector('#lobHome').onclick=()=>zumStart();
   m.querySelectorAll('input[name="stMode"]').forEach(r=>r.onchange=()=>{ROOM.startMode=r.value;sync()});
@@ -4000,6 +4002,16 @@ function edKategorien(){
 // Deckblatt der Spielanleitung: meta.deckblatt oder deckblatt_<edition>.jpg neben der index.html;
 // fehlt die Datei, wird ersatzweise der Spielplan (meta.bild) gezeigt.
 function edDeckblatt(k){const M=(EDITIONEN[k]||{}).meta||{};return M.deckblatt||('deckblatt_'+k+'.jpg')}
+// Deckblatt der aktuellen Edition in ein Element zeichnen; fehlt das Bild, ersatzweise der Spielplan
+function deckblattZeigen(c,maxH){if(!c)return;
+  const src=edDeckblatt(EDITION),alt=(MAP.meta&&MAP.meta.bild)||'';
+  c.innerHTML='<img alt="" style="max-width:100%;max-height:'+(maxH||230)+'px;border-radius:8px;border:2px solid var(--frame);box-shadow:0 2px 8px #0003;cursor:zoom-in;display:inline-block">'
+    +'<div style="font-size:12px;color:#8a7d63;margin-top:3px">'+(MAP.meta.name||EDITION)+(MAP.meta.version?' · Karte v'+MAP.meta.version:'')+'</div>';
+  const img=c.querySelector('img');let fb=false;
+  img.onerror=()=>{if(!fb&&alt){fb=true;img.src=alt}else img.style.display='none'};
+  img.src=src;
+  img.onclick=()=>{const z=modal('<img src="'+img.src+'" style="width:100%;max-height:78vh;object-fit:contain;border-radius:8px"><button class="cancel" id="zu">Schließen</button>');
+    z.querySelector('#zu').onclick=()=>z.remove();z.onclick=e=>{if(e.target===z)z.remove()}}}
 function landing(){
   try{const aj=sessionStorage.getItem('autojoin');if(aj){sessionStorage.removeItem('autojoin');const o=JSON.parse(aj);if(o&&o.code){joinRoom(o.code,o.name||'',o.pin||'');return}}}catch(e){}
   const m=modal('<h2 class="serif" style="text-align:center;letter-spacacing:.08em;letter-spacing:.08em">ZUG UM ZUG</h2>'+
@@ -4044,15 +4056,7 @@ function landing(){
     return n};
   const pinVal=()=>m.querySelector('#ppin').value.trim();
   // Editionsauswahl in zwei Stufen: Kategorie -> Edition; darunter das Deckblatt der Anleitung
-  const edCover=()=>{const c=m.querySelector('#edCover');if(!c)return;
-    const src=edDeckblatt(EDITION),alt=(MAP.meta&&MAP.meta.bild)||'';
-    c.innerHTML='<img alt="" style="max-width:100%;max-height:230px;border-radius:8px;border:2px solid var(--frame);box-shadow:0 2px 8px #0003;cursor:zoom-in;display:inline-block">'
-      +'<div style="font-size:12px;color:#8a7d63;margin-top:3px">'+(MAP.meta.name||EDITION)+(MAP.meta.version?' · Karte v'+MAP.meta.version:'')+'</div>';
-    const img=c.querySelector('img');let fb=false;
-    img.onerror=()=>{if(!fb&&alt){fb=true;img.src=alt}else img.style.display='none'};
-    img.src=src;
-    img.onclick=()=>{const z=modal('<img src="'+img.src+'" style="width:100%;max-height:78vh;object-fit:contain;border-radius:8px"><button class="cancel" id="zu">Schließen</button>');
-      z.querySelector('#zu').onclick=()=>z.remove();z.onclick=e=>{if(e.target===z)z.remove()}}};
+  const edCover=()=>deckblattZeigen(m.querySelector('#edCover'));
   const edSub=katId=>{const r=m.querySelector('#edRow');if(!r)return;
     const kat=edKategorien().find(c=>c.id===katId)||edKategorien()[0];
     m.querySelectorAll('#edKat .opt').forEach(x=>x.classList.toggle('sel',x.dataset.k===kat.id));
