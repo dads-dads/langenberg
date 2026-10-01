@@ -277,7 +277,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.73 · 29.09.2026';
+const APP_VERSION='7.74 · 01.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -2531,14 +2531,17 @@ function connected(pi,t){
     if(RAND[s.von]&&!RAND[s.nach])(touches[RAND[s.von]]=touches[RAND[s.von]]||new Set()).add(find(s.nach));
     if(RAND[s.nach]&&!RAND[s.von])(touches[RAND[s.nach]]=touches[RAND[s.nach]]||new Set()).add(find(s.von))});
   const A=nameToIds[t.von]||[],B=nameToIds[t.nach]||[];
-  const cityOf=ids=>{for(const i of ids)if(RAND[i])return RAND[i];return null};
-  const ca=cityOf(A),cb=cityOf(B);
-  if(!ca&&!cb)return A.some(a=>B.some(b=>find(a)===find(b)));
-  if(ca&&!cb)return !!touches[ca]&&touches[ca].has(find(B[0]));
-  if(!ca&&cb)return !!touches[cb]&&touches[cb].has(find(A[0]));
-  if(!touches[ca]||!touches[cb])return false;
-  for(const r of touches[ca])if(touches[cb].has(r))return true;
-  return false;
+  // Ein Auslandsziel kann mehrere Einfahrten haben (z.B. Frankreich: allemagne_1..3).
+  // Es zaehlt jede Einfahrt des Landes, nicht nur die erste.
+  const citiesOf=ids=>[...new Set(ids.filter(i=>RAND[i]).map(i=>RAND[i]))];
+  const cas=citiesOf(A),cbs=citiesOf(B);
+  const An=A.filter(i=>!RAND[i]),Bn=B.filter(i=>!RAND[i]);
+  if(!cas.length&&!cbs.length)return A.some(a=>B.some(b=>find(a)===find(b)));
+  if(cas.length&&!cbs.length)return cas.some(c=>touches[c]&&Bn.some(x=>touches[c].has(find(x))));
+  if(!cas.length&&cbs.length)return cbs.some(c=>touches[c]&&An.some(x=>touches[c].has(find(x))));
+  return cas.some(c1=>{if(!touches[c1])return false;
+    return cbs.some(c2=>{if(!touches[c2])return false;
+      for(const r of touches[c1])if(touches[c2].has(r))return true;return false})});
 }
 function laengsteFor(pi){
   const adj={};MAP.strecken.forEach(s=>{if(g().claims[s.nr]!==pi&&!(g().claims2&&g().claims2[s.nr]===pi))return;
