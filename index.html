@@ -247,11 +247,11 @@ function dopAb(){
 function R(){
   const b=(MAP.meta&&MAP.meta.regeln)||{};
   const o=(typeof ROOM!=='undefined'&&ROOM&&ROOM.hausregeln)||null;
-  if(!o)return ibRegeln(b);
+  if(!o)return zfRegeln(ibRegeln(b));
   const r=Object.assign({},b,o);
   if(o.startauftraege)r.startauftraege=Object.assign({},b.startauftraege||{},o.startauftraege);
   if(o.auftraege_nachziehen)r.auftraege_nachziehen=Object.assign({},b.auftraege_nachziehen||{},o.auftraege_nachziehen);
-  return ibRegeln(r)}
+  return zfRegeln(ibRegeln(r))}
 // Iberia: Startaufträge-Variante "5 ziehen / 3 behalten" (zählt für die Rangliste)
 function ibRegeln(r){if(!(MAP.meta&&MAP.meta.festival)||!ibEinfach())return r;return Object.assign({},r,{startauftraege:{ziehen:5,mindestens_behalten:3}})}
 function PTSv(l){const p=R().punkte_pro_laenge||{};return p[l]||0}
@@ -277,7 +277,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.76 · 02.10.2026';
+const APP_VERSION='7.78 · 02.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -326,7 +326,7 @@ function fix(r){
   return r;
 }
 function sync(){const o={status:ROOM.status,players:ROOM.players};
-  if(ROOM.game)o.game=ROOM.game;if(ROOM.test!==undefined)o.test=ROOM.test;if(ROOM.limitH!==undefined)o.limitH=ROOM.limitH;if(ROOM.limitMin!==undefined)o.limitMin=ROOM.limitMin;if(ROOM.hausregeln!==undefined&&ROOM.hausregeln!==null)o.hausregeln=ROOM.hausregeln;if(ROOM.ibStart!==undefined)o.ibStart=ROOM.ibStart;if(ROOM.ukAdv!==undefined)o.ukAdv=ROOM.ukAdv;if(ROOM.owAlvin!==undefined)o.owAlvin=ROOM.owAlvin;if(ROOM.custom!==undefined)o.custom=ROOM.custom;if(ROOM.edition)o.edition=ROOM.edition;if(ROOM.dopAb!==undefined)o.dopAb=ROOM.dopAb;if(ROOM.startMode)o.startMode=ROOM.startMode;if(ROOM.statsDone!==undefined)o.statsDone=ROOM.statsDone;
+  if(ROOM.game)o.game=ROOM.game;if(ROOM.test!==undefined)o.test=ROOM.test;if(ROOM.limitH!==undefined)o.limitH=ROOM.limitH;if(ROOM.limitMin!==undefined)o.limitMin=ROOM.limitMin;if(ROOM.hausregeln!==undefined&&ROOM.hausregeln!==null)o.hausregeln=ROOM.hausregeln;if(ROOM.ibStart!==undefined)o.ibStart=ROOM.ibStart;if(ROOM.ukAdv!==undefined)o.ukAdv=ROOM.ukAdv;if(ROOM.owAlvin!==undefined)o.owAlvin=ROOM.owAlvin;if(ROOM.custom!==undefined)o.custom=ROOM.custom;if(ROOM.edition)o.edition=ROOM.edition;if(ROOM.dopAb!==undefined)o.dopAb=ROOM.dopAb;if(ROOM.startMode)o.startMode=ROOM.startMode;if(ROOM.tkZufall!==undefined)o.tkZufall=ROOM.tkZufall;if(ROOM.statsDone!==undefined)o.statsDone=ROOM.statsDone;
   return roomRef.update(o)}
 function listen(){
   roomRef.on('value',snap=>{
@@ -1088,13 +1088,90 @@ function ticketCardRoute(tk,cls,badge){
   return '<div class="tcard '+(cls||'')+'"><svg viewBox="0 0 '+VW+' '+VH+'" preserveAspectRatio="none">'+titel+svg+pkt+'</svg>'+(badge?'<div class="tcheck">✓</div>':'')+'</div>';
 }
 
+// ---------- Zufällig generierte Aufträge ("Shuffle") ----------
+// Aktiv, sobald der Gastgeber in der Lobby "Zufällig generiert" wählt: ROOM.tkZufall = {anzahl, avg, faktor}.
+function ZF(){return !!(typeof ROOM!=='undefined'&&ROOM&&ROOM.tkZufall)}
+// Nur für Editionen mit einfachen Stadt-Stadt-Aufträgen (nicht Weltreise-Routen, nicht Schweizer Länderaufträge).
+function zfMoeglich(){return !(MAP.auftraege||[]).some(t=>t.typ)}
+// Kürzeste Verbindungen (in Feldern) zwischen allen Orten. Außenstädte sind Sackgassen (nur Ziel, keine Durchfahrt),
+// Tor-Städte (meta.verbunden) zählen als ein Ort. Wird je Edition einmal berechnet.
+let _zfDist=null,_zfDistEd=null;
+function zfDistanzen(){
+  if(_zfDist&&_zfDistEd===EDITION)return _zfDist;
+  const adj={};
+  MAP.strecken.forEach(s=>{(adj[s.von]=adj[s.von]||[]).push([s.nach,s.laenge]);(adj[s.nach]=adj[s.nach]||[]).push([s.von,s.laenge])});
+  (MAP.meta.verbunden||[]).forEach(v=>{(adj[v[0]]=adj[v[0]]||[]).push([v[1],0]);(adj[v[1]]=adj[v[1]]||[]).push([v[0],0])});
+  const orte=Object.keys(nameToIds);
+  const dij=src=>{const d={},q=[];src.forEach(s=>{d[s]=0;q.push([0,s])});
+    while(q.length){q.sort((a,b)=>a[0]-b[0]);const [c,u]=q.shift();if(c>d[u])continue;
+      if(RAND[u]&&src.indexOf(u)<0)continue;
+      (adj[u]||[]).forEach(([v,w])=>{if(d[v]===undefined||c+w<d[v]){d[v]=c+w;q.push([c+w,v])}})}
+    return d};
+  const D={};
+  orte.forEach(a=>{const d=dij(nameToIds[a]);D[a]={};
+    orte.forEach(b=>{if(a===b)return;let best=null;nameToIds[b].forEach(id=>{if(d[id]!==undefined&&(best===null||d[id]<best))best=d[id]});
+      if(best!==null&&best>0)D[a][b]=best})});
+  _zfDist=D;_zfDistEd=EDITION;return D;
+}
+// Vorbelegung aus den Original-Aufträgen des Bretts: Anzahl, Ø Punkte, Faktor Punkte ÷ Felder
+function zfVorgabe(){
+  const D=zfDistanzen();let n=0,sp=0,sf=0;
+  (MAP.auftraege||[]).forEach(t=>{if(t.typ||!t.nach)return;const d=D[t.von]&&D[t.von][t.nach];if(!d)return;n++;sp+=t.punkte;sf+=t.punkte/d});
+  if(!n)return {anzahl:(MAP.auftraege||[]).length||40,avg:10,faktor:1};
+  return {anzahl:MAP.auftraege.length,avg:Math.round(sp/n*10)/10,faktor:Math.round(sf/n*100)/100};
+}
+function zfNorm(z){const v=zfVorgabe();z=z||{};
+  return {anzahl:Math.max(5,Math.min(400,Math.round(+z.anzahl||v.anzahl))),avg:Math.max(1,Math.round((+z.avg||v.avg)*10)/10),faktor:Math.max(0.1,Math.round((+z.faktor||v.faktor)*100)/100)}}
+// Erzeugt den Auftragssatz: jedes Städtepaar höchstens einmal, mindestens 4 Felder, jede Stadt möglichst gleich oft,
+// Durchschnitt der kürzesten Verbindungen ≈ Ø Punkte ÷ Faktor, Punkte = Faktor × Felder (gerundet).
+function zfErzeugen(z){
+  z=zfNorm(z);const D=zfDistanzen(),MIN=4,ziel=z.avg/z.faktor;
+  const orte=Object.keys(D),kand=[];
+  for(let i=0;i<orte.length;i++)for(let j=i+1;j<orte.length;j++){const d=D[orte[i]][orte[j]];if(d&&d>=MIN)kand.push({von:orte[i],nach:orte[j],d})}
+  if(!kand.length)return [];
+  shuffle(kand);
+  const use={},out=[];let sum=0;
+  for(let k=0;k<z.anzahl&&kand.length;k++){
+    // Städte mit der geringsten Nutzung bevorzugen; darunter die Verbindung, die den Zielmittelwert am besten trifft
+    let bestN=Infinity;kand.forEach(c=>{const u=Math.max(use[c.von]||0,use[c.nach]||0);if(u<bestN)bestN=u});
+    const pool=kand.filter(c=>Math.max(use[c.von]||0,use[c.nach]||0)<=bestN);
+    pool.forEach(c=>c.s=Math.abs((sum+c.d)/(k+1)-ziel)+Math.random()*1.5);
+    pool.sort((a,b)=>a.s-b.s);
+    const w=pool[Math.floor(Math.random()*Math.min(3,pool.length))];
+    out.push({von:w.von,nach:w.nach,punkte:Math.max(1,Math.round(z.faktor*w.d))});
+    use[w.von]=(use[w.von]||0)+1;use[w.nach]=(use[w.nach]||0)+1;sum+=w.d;
+    kand.splice(kand.indexOf(w),1);
+  }
+  out.forEach(t=>{if(Math.random()<0.5){const v=t.von;t.von=t.nach;t.nach=v}});   // Leserichtung mischen
+  return shuffle(out);
+}
+// Regeln bei Shuffle: ein einziger Stapel – keine langen Strecken, keine Stapelwahl kurz/lang
+function zfRegeln(r){
+  if(!ZF())return r;
+  const sa=r.startauftraege||{},an=r.auftraege_nachziehen||{},r2=Object.assign({},r);
+  if(sa.stapelwahl||sa.lange_ziehen||sa.lange_strecken){
+    r2.startauftraege={ziehen:sa.normale_ziehen||sa.normale_strecken||sa.ziehen||5,mindestens_behalten:sa.min_normale_ohne_lang||sa.mindestens_behalten||2};
+    if(sa.draft)r2.startauftraege.draft=sa.draft;
+  }
+  if(an.stapelwahl){r2.auftraege_nachziehen=Object.assign({},an);delete r2.auftraege_nachziehen.stapelwahl}
+  return r2;
+}
+function zfListeModal(){
+  const L=((g()&&g().tkSatz)||[]).slice().sort((a,b)=>b.punkte-a.punkte||a.von.localeCompare(b.von));
+  const z=zfNorm(ROOM.tkZufall);
+  const m=modal('<h2>🔀 Aufträge dieser Partie</h2><p style="font-size:13px;color:#8a7d63;margin:0 0 8px">'+L.length+' zufällig erzeugte Aufträge · Ø '+(L.length?Math.round(L.reduce((s,t)=>s+t.punkte,0)/L.length*10)/10:0)+' Punkte · Faktor '+z.faktor+'</p>'
+    +'<div style="max-height:60vh;overflow:auto;font-size:14px;text-align:left">'+L.map(t=>'<div class="score-row"><span>'+t.von+' – '+t.nach+'</span><span>'+t.punkte+'</span></div>').join('')+'</div>'
+    +'<button class="cancel" id="zu" style="margin-top:10px">Schließen</button>');
+  m.querySelector('#zu').onclick=()=>m.remove();
+}
 function hostStart(){
   const rs=R().startauftraege||{};
-  const alle=MAP.auftraege.map(t=>{const o=t.typ==='land'?{von:t.von,typ:'land',ziele:(t.ziele||[]).map(z=>({nach:z.nach,punkte:z.punkte}))}:(t.typ==='route'?{typ:'route',von:t.von,nach:t.nach,stationen:t.stationen.slice(),punkte:t.punkte,punkte_ungeordnet:t.punkte_ungeordnet,minus:t.minus}:{von:t.von,nach:t.nach,punkte:t.punkte});if(t.lang)o.lang=true;return o});
+  const alle=ROOM.tkZufall?zfErzeugen(ROOM.tkZufall):MAP.auftraege.map(t=>{const o=t.typ==='land'?{von:t.von,typ:'land',ziele:(t.ziele||[]).map(z=>({nach:z.nach,punkte:z.punkte}))}:(t.typ==='route'?{typ:'route',von:t.von,nach:t.nach,stationen:t.stationen.slice(),punkte:t.punkte,punkte_ungeordnet:t.punkte_ungeordnet,minus:t.minus}:{von:t.von,nach:t.nach,punkte:t.punkte});if(t.lang)o.lang=true;return o});
   const langD=shuffle(alle.filter(t=>t.lang));
   const g={deck:newDeck(),discard:[],open:[],ticketDeck:shuffle(alle.filter(t=>!t.lang)),
     turn:0,drawn:0,claims:{},startOffers:{},picked:{},lastRounds:-1,over:false};
   if(rs.stapelwahl)g.ticketDeckLang=langD;
+  if(ROOM.tkZufall){ROOM.tkZufall=zfNorm(ROOM.tkZufall);g.tkSatz=JSON.parse(JSON.stringify(alle))}   // Shuffle: kompletter Satz zum Nachschauen
   if(WR()){const d=wrDeckNeu();g.deck=d.deck;g.deck2=d.deck2;g.discard2=[];g.haefen={};for(let i=0;i<wrOffen()/2;i++)g.open.push(wrDraw(g,'w'));for(let i=0;i<wrOffen()/2;i++)g.open.push(wrDraw(g,'s'));wrJokerReset(g)}
   else refillOpen(g);
   if(FK())g.fk=FK().anzahl||10;   // Faehrenkarten-Stapel (Italia)
@@ -2705,7 +2782,7 @@ function statsSchreiben(){
       spieler:ROOM.players.map(p=>p.name),
       punkte:ROOM.players.map(p=>p.total||0),
       zuege:(ROOM.game&&ROOM.game.zuege)||0,
-      sieger:sieger.name,custom:!!ROOM.custom,test:!!ROOM.test,variante:(IB()?(ibEinfach()?'5/3':'draft'):SK()?(ibEinfach()?'6/4':'draft'):null)});
+      sieger:sieger.name,shuffle:!!ROOM.tkZufall,starter:(ROOM.game&&ROOM.game.startSpieler)||null,startArt:(ROOM.game&&ROOM.game.startArt)||null,custom:!!ROOM.custom,test:!!ROOM.test,variante:(IB()?(ibEinfach()?'5/3':'draft'):SK()?(ibEinfach()?'6/4':'draft'):null)});
     // Spielverlauf zum Nachschauen (Strecken, Aufträge, Auswertung) – getrennt vom Ergebnis,
     // damit die Rangliste beim Öffnen nicht alle Verläufe mitlädt.
     try{db.ref('replays/'+eRef.key).set(replayDaten())}catch(e){}
@@ -2719,7 +2796,7 @@ function replayDaten(){
   for(const k in G)if(!weg.has(k))g[k]=G[k];
   const players=ROOM.players.map(p=>{const q=Object.assign({},p);delete q.hand;delete q.pin;delete q.gel;delete q.fertig;delete q.last;return q});
   const d={ed:EDITION,status:'over',players,game:g};
-  ['hausregeln','custom','test','dopAb','ibStart','ukAdv','owAlvin'].forEach(k=>{if(ROOM[k]!==undefined&&ROOM[k]!==null)d[k]=ROOM[k]});
+  ['hausregeln','custom','test','dopAb','ibStart','ukAdv','owAlvin','tkZufall'].forEach(k=>{if(ROOM[k]!==undefined&&ROOM[k]!==null)d[k]=ROOM[k]});
   return d;
 }
 let REPLAY=null;   // aktiver Replay-Zustand: {alt:{ROOM,CODE,SEAT,ED,sicht},d,e,sp,pend}
@@ -2993,7 +3070,7 @@ function zufallsReihenfolge(){
   perm.forEach((alt,neu)=>{if(G.startOffers&&G.startOffers[alt]!==undefined)so[neu]=G.startOffers[alt];
     if(G.picked&&G.picked[alt]!==undefined)pk[neu]=G.picked[alt]});
   G.startOffers=so;G.picked=pk;
-  G.rps=null;G.turn=0;ROOM.status='picking';
+  G.rps=null;G.turn=0;ROOM.status='picking';G.startSpieler=ROOM.players[0].name;G.startArt='zufall';
   G.notice='🎲 Reihenfolge ausgelost: '+ROOM.players.map(p=>p.name).join(' → ')+'. '+ROOM.players[0].name+' beginnt!';
   meinenSitzFinden();
   sync();
@@ -3043,9 +3120,11 @@ function pickFertigPruefen(){
   if(!ROOM||ROOM.status!=='picking'||!g())return;
   if(ROOM.players.every((p,i)=>g().picked[i])){
     if(DR()&&g().draft){const u={status:'playing','game/draft':null};if(g().draft.nr===2||!IB()){if(IB())u['game/draft2Done']=true;u['game/frist']=limitMs()?Date.now()+limitMs():0}roomRef.update(u)}
-    else if(SK())roomRef.update({status:'playing','game/ticketDeck':shuffle((g().ticketDeck||[]).slice())});
+    else if(SK())roomRef.update({status:'playing','game/ticketDeck':shuffle((g().ticketDeck||[]).slice()),'game/frist':limitMs()?Date.now()+limitMs():0});
     else if(OW())roomRef.update({status:'heimat','game/owWahl':0,'game/notice':'\ud83c\udfe0 Heimatst\u00e4dte w\u00e4hlen \u2013 der in der Zugreihenfolge letzte Spieler beginnt, der Startspieler w\u00e4hlt zuletzt.'});
-    else roomRef.child('status').set('playing')}
+    // Zugzeit erst jetzt starten: sonst laeuft sie schon waehrend Auslosung und Auftragswahl ab
+    // und der Startspieler verliert sofort seinen ersten Zug.
+    else roomRef.update({status:'playing','game/frist':limitMs()?Date.now()+limitMs():0})}
 }
 let rpsShown=false;
 function rpsWahl(sym){
@@ -3065,7 +3144,7 @@ function rpsWerte(){
   const gewinner=arten.find(a=>schlaegt[a]===arten.find(b=>b!==a));
   const weiter=aktiv.filter(i=>wahl[i]===gewinner);
   if(weiter.length===1){
-    g().turn=weiter[0];g().rps=null;ROOM.status='picking';
+    g().turn=weiter[0];g().rps=null;ROOM.status='picking';g().startSpieler=ROOM.players[weiter[0]].name;g().startArt='rps';
     g().notice=ROOM.players[weiter[0]].name+' gewinnt Schere-Stein-Papier und beginnt!';
     sync();return;
   }
@@ -3243,12 +3322,14 @@ function regelnModal(){
     p('Provinzen-Wertung',Object.keys(PW).sort().map(k=>k+' Spieler: '+PW[k].join('/')).join(' · '))}
   if(M.ersatzregel)p('Sonderstrecke Murmansk – Lieksa',M.ersatzregel);
   if(WR()){p('Transportkarten',M.karten.regel);p('Figuren',(M.figuren||{}).regel);p('Strecken nutzen','Zugstrecken mit Wagenkarten (Waggons), Schiffsstrecken mit Schiffskarten (Schiffe). Joker gelten für beides.');p('Unwegsames Gelände',M.gelaenderegel);p('Kartenrand',M.randregel);p('Häfen',M.haefen.regel);p('Routen-Zielkarten',M.routenkarten_regel)}
+  if(ZF()){const z=zfNorm(ROOM.tkZufall);p('🔀 Zufällige Aufträge (Shuffle)',z.anzahl+' zufällig erzeugte Aufträge · Ø '+z.avg+' Punkte · Faktor '+z.faktor+' (Punkte = Faktor × kürzeste Verbindung in Feldern). Ein Stapel, keine langen Strecken; die Partie zählt als „'+(M.name||'')+' Shuffle“.'+((g()&&g().tkSatz)?' <button class="cancel" id="zfListe" style="margin:6px 0 0;font-size:13px">📋 Alle Aufträge dieser Partie ansehen</button>':''))}
   if(rs.zugzeit)p('Zugzeit',rs.zugzeit);
   const m=modal('<h2>§ Regeln – '+(M.name||'')+'</h2>'
     +(ROOM&&ROOM.custom?'<p style="font-size:12px;color:#b3372c;margin:0 0 8px">In diesem Raum gelten Hausregeln – die Werte unten sind bereits angepasst.</p>':'')
     +'<div style="max-height:60vh;overflow:auto;font-size:14px;text-align:left">'+z.join('')+'</div>'
     +'<button class="cancel" id="zu" style="margin-top:10px">Schließen</button>');
   m.querySelector('#zu').onclick=()=>m.remove();
+  const zl=m.querySelector('#zfListe');if(zl)zl.onclick=()=>zfListeModal();
 }
 
 function renderHud(){
@@ -3482,6 +3563,7 @@ function renderLobby(){
     '<p style="text-align:center;font-size:13px;color:#8a7d63;margin-bottom:12px">Diesen Code an die Mitspieler weitergeben</p>'+
     '<div id="lobCover" style="text-align:center;margin:0 0 12px"></div>';
   ROOM.players.forEach((p,i)=>{html+='<div class="lob-p"><span class="dot" style="width:16px;height:16px;border-radius:50%;background:'+((PCOL.find(x=>x.id===p.col)||PCOL[i]).hex)+'"></span>'+p.name+(i===SEAT?' (du)':'')+(i===0?' · Gastgeber':'')+'</div>'});
+  if(ROOM.tkZufall&&SEAT!==0){const zz=zfNorm(ROOM.tkZufall);html+='<div style="font-size:13px;margin:8px 0 2px;color:#5a4632">🔀 Zufällig generierte Aufträge (Shuffle): '+zz.anzahl+' Aufträge · Ø '+zz.avg+' Punkte · Faktor '+zz.faktor+'</div>'}
   html+='<div style="margin:12px 0 4px;font-size:13px;color:#8a7d63">Deine Spielerfarbe:</div><div class="row" id="colRow" style="justify-content:center"></div>';
   if(SEAT===0){const lm=ROOM.limitMin!==undefined?ROOM.limitMin:(ROOM.limitH?ROOM.limitH*60:0);
     html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Zeit pro Zug (0 Std. 0 Min. = ohne Limit; nach Ablauf werden automatisch 2 Karten gezogen):</div>'
@@ -3511,6 +3593,17 @@ function renderLobby(){
         :'<span>Startaufträge ziehen / behalten</span><span>'+numIn('hrS1',sa.ziehen||5)+' / '+numIn('hrS2',sa.mindestens_behalten||3)+'</span>'))
       +'<span>Nachziehen ziehen / behalten</span><span>'+numIn('hrN1',na.ziehen||4)+' / '+numIn('hrN2',na.mindestens_behalten||1)+'</span>'
       +'</div>';
+    if(zfMoeglich()){const zv=zfVorgabe(),zz=ROOM.tkZufall?zfNorm(ROOM.tkZufall):zv;
+      const zIn=(id,val,step,max)=>'<input type="number" id="'+id+'" value="'+val+'" min="0" max="'+max+'" step="'+step+'" style="width:64px;text-align:center">';
+      html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Aufträge:</div>'
+        +'<div class="row" style="justify-content:center;gap:8px">'
+        +'<label style="font-size:13px"><input type="radio" name="tkMode" value="orig"'+(ROOM.tkZufall?'':' checked')+'> Original ('+MAP.auftraege.length+')</label>'
+        +'<label style="font-size:13px"><input type="radio" name="tkMode" value="zufall"'+(ROOM.tkZufall?' checked':'')+'> 🔀 Zufällig generiert (Shuffle)</label></div>'
+        +'<div id="zfBox" style="display:'+(ROOM.tkZufall?'grid':'none')+';grid-template-columns:auto auto;gap:7px 10px;align-items:center;justify-content:center;font-size:13px;text-align:left;margin-top:6px">'
+        +'<span>Anzahl Aufträge</span>'+zIn('zfN',zz.anzahl,1,400)
+        +'<span>Ø Punkte je Auftrag</span>'+zIn('zfA',zz.avg,0.1,60)
+        +'<span>Faktor Punkte ÷ kürzeste Verbindung (Felder)</span>'+zIn('zfF',zz.faktor,0.05,5)
+        +'<span style="grid-column:1/3;font-size:12px;color:#8a7d63">Vorbelegt mit den Werten des Originalbretts ('+zv.anzahl+' · Ø '+zv.avg+' · Faktor '+zv.faktor+'). Jedes Städtepaar höchstens einmal, mindestens 4 Felder, jede Stadt etwa gleich oft, ein Stapel ohne lange Strecken. Zählt für die Rangliste als „'+(MAP.meta.name||'')+' Shuffle“.</span></div>';}
     html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Start und Spielerreihenfolge:</div>'
       +'<div class="row" style="justify-content:center;gap:8px">'
       +'<label style="font-size:13px"><input type="radio" name="stMode" value="rps"'+(ROOM.startMode!=='zufall'?' checked':'')+'> Schere, Stein, Papier</label>'
@@ -3525,6 +3618,10 @@ function renderLobby(){
   m.querySelector('#lobSw').onclick=()=>spieleWechsler();
   m.querySelector('#lobHome').onclick=()=>zumStart();
   m.querySelectorAll('input[name="stMode"]').forEach(r=>r.onchange=()=>{ROOM.startMode=r.value;sync()});
+  m.querySelectorAll('input[name="tkMode"]').forEach(r=>r.onchange=()=>{ROOM.tkZufall=r.value==='zufall'?zfNorm(ROOM.tkZufall||zfVorgabe()):null;
+    const bx=m.querySelector('#zfBox');if(bx)bx.style.display=ROOM.tkZufall?'grid':'none';sync()});
+  [['zfN','anzahl'],['zfA','avg'],['zfF','faktor']].forEach(([id,key])=>{const el=m.querySelector('#'+id);if(!el)return;
+    el.onchange=()=>{const z=Object.assign({},ROOM.tkZufall||zfVorgabe());z[key]=+el.value;ROOM.tkZufall=zfNorm(z);sync()}});
   m.querySelectorAll('input[name="ibStart"]').forEach(r=>r.onchange=()=>{ROOM.ibStart=r.value;sync()});
   const _ua=m.querySelector('#hrUkAdv');if(_ua)_ua.onchange=()=>{ROOM.ukAdv=_ua.checked?1:0;sync()};
   const _oa=m.querySelector('#hrOwAlvin');if(_oa)_oa.onchange=()=>{ROOM.owAlvin=_oa.checked?1:0;sync()};
@@ -3718,9 +3815,10 @@ function zeigeRangliste(){
           const rang=(e.spieler||[]).map((n,i)=>({n,p:(e.punkte&&e.punkte[i])||0})).sort((x,y)=>y.p-x.p);
           const rd=(e.spieler&&e.spieler.length)?Math.ceil((e.zuege||0)/e.spieler.length):0;
           return '<div style="display:flex;gap:6px;margin-bottom:8px"><div class="opt" style="flex:1;margin:0;cursor:default">'
-            +'<b>'+edName(e.edition)+' · '+dt+'</b>'
+            +'<b>'+edName(e.edition)+(e.shuffle?' Shuffle':'')+' · '+dt+'</b>'
             +'<div style="font-size:13px;margin:4px 0">'+rang.map((r,i)=>(i?' – ':'')+r.n+' <b>'+r.p+'</b>').join('')+'</div>'
-            +'<div style="font-size:12px;color:#8a7d63">'+zeit+' · '+rd+' Runden · Raum '+(e.code||'?')+'</div></div>'
+            +'<div style="font-size:12px;color:#8a7d63">'+zeit+' · '+rd+' Runden · Raum '+(e.code||'?')
+            +(e.starter?' · ▶ '+e.starter+' begann'+(e.startArt==='zufall'?' (🎲)':e.startArt==='rps'?' (✊✋✌️)':''):'')+'</div></div>'
             +(e.replay?'<button class="erep" data-k="'+k+'" title="Karte und Aufträge ansehen" style="width:46px;border-radius:9px;border:1.5px solid var(--brass);background:#fff;font-size:17px">🗺</button>':'')
             +(ADMIN_OK?'<button class="edel" data-k="'+k+'" style="width:46px;border-radius:9px;border:1.5px solid #b3372c;background:#fff;color:#b3372c;font-size:17px">🗑</button>':'')
             +'</div>'}catch(err){return '<div class="opt" style="margin:0 0 8px;color:#b3372c;font-size:13px">Datensatz '+k+' konnte nicht angezeigt werden.</div>'}}).join('');
