@@ -277,7 +277,7 @@ function setEdition(id){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.74 · 01.10.2026';
+const APP_VERSION='7.75 · 02.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -1855,44 +1855,32 @@ function frPflichtMine(){const G=g();return FR()&&G&&G.frPflicht===SEAT&&ROOM.st
 function frNachKarten(){
   if(!FR()||ROOM.test){endTurn();return}
   if(!frLegal().length){g().frGelegt='kann kein Gleis legen (kein passendes freies Gleisbett)';endTurn();return}
-  g().frPflicht=g().turn;window._frHide=false;sync();frPflichtReopen();
+  g().frPflicht=g().turn;window._frHint=undefined;sync();frPflichtReopen();
 }
+// Pflicht-Legen: kein Auswahl-Dialog mehr – kurzer Hinweis, gelegt wird durch
+// Anklicken eines gruen markierten Gleisbetts auf dem Brett.
 function frPflichtReopen(){
-  if(!frPflichtMine()||window._frHide||document.getElementById('frModal'))return;
-  frPflichtModal();
-}
-function frPflichtModal(){
-  document.getElementById('frModal')?.remove();
-  const L=frLegal();
-  if(!L.length){const G=g();delete G.frPflicht;endTurn();return}
-  const gr={};L.forEach(s=>(gr[s.laenge]=gr[s.laenge]||[]).push(s));
-  let html='<h2>🛤 Gleis legen (Pflicht)</h2><p style="font-size:14px;margin-bottom:8px">Nach dem Kartenziehen musst du genau <b>ein Gleis</b> aus dem Vorrat auf ein leeres Gleisbett passender Länge legen – das Gleis bestimmt die Farbe der Strecke. Du kannst das Bett auch direkt auf dem Brett anklicken (grün markiert).</p><div style="max-height:52vh;overflow:auto">';
-  Object.keys(gr).sort((a,b)=>a-b).forEach(l=>{
-    html+='<div style="font-weight:700;margin:8px 0 4px">Länge '+l+' <span style="font-weight:400;color:#8a7d63">('+gr[l].length+' Betten · Gleise: '+frVorratFuer(+l).map(c=>CNAME[c]+' '+frVorratAnz(c,+l)+'×').join(', ')+')</span></div><div data-frl="'+l+'"></div>'});
-  html+='</div><button class="cancel" id="frHide">Brett ansehen (Auswahl bleibt offen)</button>';
-  const m=modal(html);m.id='frModal';
-  Object.keys(gr).forEach(l=>{const w=m.querySelector('[data-frl="'+l+'"]');
-    gr[l].sort((a,b)=>(nodes[a.von].name+nodes[a.nach].name).localeCompare(nodes[b.von].name+nodes[b.nach].name))
-      .forEach(s=>{const b=document.createElement('button');b.className='opt';b.style.cssText='width:auto;padding:6px 10px;margin:2px;font-size:13px';
-        b.textContent=nodes[s.von].name+' – '+nodes[s.nach].name+(dmList(s).length?' ·'+s.nr:'');
-        b.onclick=()=>{m.remove();frFarbModal(s)};w.appendChild(b)})});
-  m.querySelector('#frHide').onclick=()=>{window._frHide=true;m.remove();toast('Gleis legen ist Pflicht – klicke ein grün markiertes Gleisbett an oder öffne die Auswahl über die 🛤-Kachel.')};
+  if(!frPflichtMine()||document.getElementById('frModal'))return;
+  if(!frLegal().length){const G=g();delete G.frPflicht;endTurn();return}
+  if(window._frHint===g().zuege)return;   // je Zug nur einmal melden
+  window._frHint=g().zuege;
+  toast('🛤 Gleis legen (Pflicht): Tippe ein grün markiertes Gleisbett auf dem Brett an.');
 }
 function frFarbModal(s){
   document.getElementById('frModal')?.remove();
   const cols=frVorratFuer(s.laenge);
-  if(!cols.length){toast('Kein Gleis der Länge '+s.laenge+' mehr im Vorrat.');frPflichtModal();return}
-  const m=modal('<h2>'+nodes[s.von].name+' – '+nodes[s.nach].name+'</h2><p style="font-size:14px;margin-bottom:10px">Gleisbett der Länge <b>'+s.laenge+'</b>. Welche Gleisfarbe legst du? Die Strecke kann danach nur mit Karten dieser Farbe (und Jokern) gebaut werden.</p><div id="frCols"></div><button class="cancel" id="frBack">Zurück zur Liste</button>');
+  if(!cols.length){toast('Kein Gleis der Länge '+s.laenge+' mehr im Vorrat – bitte ein anderes Gleisbett antippen.');return}
+  const m=modal('<h2>'+nodes[s.von].name+' – '+nodes[s.nach].name+'</h2><p style="font-size:14px;margin-bottom:10px">Gleisbett der Länge <b>'+s.laenge+'</b>. Welche Gleisfarbe legst du? Die Strecke kann danach nur mit Karten dieser Farbe (und Jokern) gebaut werden.</p><div id="frCols"></div><button class="cancel" id="frBack">Abbrechen (anderes Gleisbett wählen)</button>');
   m.id='frModal';
   const w=m.querySelector('#frCols');
   cols.forEach(c=>{const b=document.createElement('button');b.className='opt';
     b.innerHTML='<span class="chip" style="background:'+CARDCOL[c]+';'+(c==='gelb'||c==='weiss'?'color:#333':'')+'">'+CNAME[c]+'</span> <span style="color:#8a7d63">(noch '+frVorratAnz(c,s.laenge)+'×)</span>';
     b.onclick=()=>{m.remove();frLege(s,c)};w.appendChild(b)});
-  m.querySelector('#frBack').onclick=()=>{m.remove();frPflichtModal()};
+  m.querySelector('#frBack').onclick=()=>{m.remove();toast('Tippe ein grün markiertes Gleisbett auf dem Brett an.')};
 }
 function frLege(s,c){
   if(!frPflichtMine())return;
-  if(frBelegt(s.nr)||frGesperrt(s)||frVorratAnz(c,s.laenge)<=0){toast('Das ist nicht mehr möglich.');frPflichtModal();return}
+  if(frBelegt(s.nr)||frGesperrt(s)||frVorratAnz(c,s.laenge)<=0){toast('Das ist nicht mehr möglich – bitte ein anderes Gleisbett antippen.');return}
   const G=g();
   (G.gleise=G.gleise||{})[s.nr]=c;
   G.gleisVorrat=G.gleisVorrat||frVorratInit();
@@ -3416,7 +3404,7 @@ function renderHud(){
     gk.style.cssText='display:flex;align-items:center;justify-content:center;background:#4a3520;cursor:pointer';
     gk.innerHTML='<span class="fkl" style="color:#f0e6d2;font-size:19px">🛤</span>';
     gk.title='Gleisvorrat: verfügbare Gleise je Farbe und Länge ansehen'+(frPflichtMine()?' – du musst jetzt ein Gleis legen!':'');
-    gk.onclick=()=>{if(frPflichtMine()){window._frHide=false;frPflichtReopen()}else frVorratModal()};
+    gk.onclick=()=>{if(frPflichtMine())toast('🛤 Gleis legen (Pflicht): Tippe ein grün markiertes Gleisbett auf dem Brett an.');frVorratModal()};
     gw.appendChild(gk);
     const gc=document.createElement('div');gc.className='cnt';gc.textContent=frVorratGesamt();gw.appendChild(gc);dock.appendChild(gw);
   }
