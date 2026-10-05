@@ -107,6 +107,13 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 .tcard.sel{border-color:#111;box-shadow:0 0 0 3px #111}
 .tcard.done{border-color:#3e7d32;box-shadow:0 0 0 3px #3e7d32}
 .tcard svg{position:absolute;inset:0;width:100%;height:100%}
+.tbrett{position:absolute;left:6px;top:5px;z-index:2;font-size:11px;font-weight:700;background:#fff9;color:#2b2419;border-radius:5px;padding:1px 6px;pointer-events:none}
+#mgTabs{display:flex;flex-wrap:wrap;gap:5px;align-items:center;padding:5px 8px;background:#3d2f21;border-bottom:2px solid var(--brass)}
+#mgTabs.hidden{display:none}
+.mgtab{padding:5px 11px;border-radius:8px;border:1.5px solid var(--brass);background:#5a4632;color:#f0e6d2;font-size:13px;font-weight:600}
+.mgtab.on{background:#f0e6d2;color:#2b2419}
+.mgdone{color:#3e7d32;font-weight:900}
+.mginfo{margin-left:auto;font-size:12px;color:#f0e6d2;opacity:.85}
 .tcheck{position:absolute;top:6px;right:8px;background:#3e7d32;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .tabs{display:flex;gap:6px;margin-bottom:10px}
 .tabs button{flex:1;padding:9px;border-radius:8px;border:1.5px solid #5a4632;background:#fff;font-size:14px;font-weight:600}
@@ -194,6 +201,7 @@ input[type=text]{padding:11px;border-radius:8px;border:1.5px solid var(--frame);
   <div id="chips"></div>
   <span id="roomtag"></span>
 </div>
+<div id="mgTabs" class="hidden"></div>
 <div id="stage" class="hidden">
   <svg id="svg" viewBox="0 0 1000 670"><defs><filter id="w3d" x="-30%" y="-30%" width="160%" height="160%">
 <feDropShadow dx="1.4" dy="2.4" stdDeviation="1.5" flood-color="#000" flood-opacity="0.5"/>
@@ -238,6 +246,7 @@ function dmList(s){const d=s&&s.doppel_mit;return d===undefined?[]:(Array.isArra
 const LEGACY_DOPAB={afrika:4};
 // Beim Spielstart eingefrorener Wert; alte Raeume ohne Eintrag behalten ihre damalige Regel.
 function dopAb(){
+  if(MEGA())return ((MAP.meta&&MAP.meta.regeln&&MAP.meta.regeln.doppelstrecken_frei_ab)||3);   // Regel des jeweiligen Bretts
   const hr=(ROOM&&ROOM.hausregeln)||{};
   if(hr.doppelstrecken_frei_ab!==undefined)return hr.doppelstrecken_frei_ab;
   if(ROOM&&ROOM.dopAb!==undefined)return ROOM.dopAb;
@@ -247,22 +256,40 @@ function dopAb(){
 function R(){
   const b=(MAP.meta&&MAP.meta.regeln)||{};
   const o=(typeof ROOM!=='undefined'&&ROOM&&ROOM.hausregeln)||null;
-  if(!o)return zfRegeln(ibRegeln(b));
+  if(!o)return megaRegeln(zfRegeln(ibRegeln(b)));
   const r=Object.assign({},b,o);
   if(o.startauftraege)r.startauftraege=Object.assign({},b.startauftraege||{},o.startauftraege);
   if(o.auftraege_nachziehen)r.auftraege_nachziehen=Object.assign({},b.auftraege_nachziehen||{},o.auftraege_nachziehen);
-  return zfRegeln(ibRegeln(r))}
+  return megaRegeln(zfRegeln(ibRegeln(r)))}
 // Iberia: Startaufträge-Variante "5 ziehen / 3 behalten" (zählt für die Rangliste)
 function ibRegeln(r){if(!(MAP.meta&&MAP.meta.festival)||!ibEinfach())return r;return Object.assign({},r,{startauftraege:{ziehen:5,mindestens_behalten:3}})}
 function PTSv(l){const p=R().punkte_pro_laenge||{};return p[l]||0}
-function WAGONS(){if(typeof ROOM!=='undefined'&&ROOM&&ROOM.hausregeln&&ROOM.hausregeln.wagons)return ROOM.hausregeln.wagons;return (MAP.meta&&MAP.meta.wagons_pro_spieler)||45}
+function WAGONS(){if(MEGA())return mgN()*45;if(typeof ROOM!=='undefined'&&ROOM&&ROOM.hausregeln&&ROOM.hausregeln.wagons)return ROOM.hausregeln.wagons;return (MAP.meta&&MAP.meta.wagons_pro_spieler)||45}
 function setEdition(id){
   if(!EDITIONEN[id])return;
-  EDITION=id;MAP=EDITIONEN[id];BH=(MAP.meta&&MAP.meta.board_h)||670;
+  setEditionData(id);
   document.getElementById('svg').setAttribute('viewBox','0 0 1000 '+BH);
   document.documentElement.style.setProperty('--tkbild',"url('"+((MAP.meta&&MAP.meta.tkbild)||'auftrag.jpg')+"')");
   {const V=(MAP.meta&&MAP.meta.tk_vb)||{};
    document.documentElement.style.setProperty('--tkratio',(V.w||991)+'/'+(V.h||621));}
+  boardBuilt=false;world.innerHTML='';steineBereit=false;document.querySelectorAll('#svg defs symbol').forEach(s=>s.remove());for(const k in routeEls)delete routeEls[k];
+}
+// ---------- Super-Mega-Game: mehrere Bretter in einer Partie ----------
+// ROOM.mega = {bretter:[key,...]}; Spielstand je Brett in g().boards[key] = {claims, claims2, pts}.
+// Clientseitig ist g().claims immer ein Alias auf das gerade angezeigte Brett (wird nie gespeichert).
+const MEGA_BRETTER=['langenberg','langenberg_nb','europa','deutschland','niederlande','amerika','asien','afrika'];
+function MEGA(){return !!(typeof ROOM!=='undefined'&&ROOM&&ROOM.mega&&ROOM.mega.bretter&&ROOM.mega.bretter.length>1)}
+function mgBretter(){return MEGA()?ROOM.mega.bretter.filter(k=>EDITIONEN[k]):[]}
+function mgN(){return mgBretter().length||1}
+function mgName(k){const m=(EDITIONEN[k]||{}).meta||{};return m.kurz||m.name||k}
+function mgBoard(k){const G=g();if(!G)return null;G.boards=G.boards||{};const b=G.boards[k]=G.boards[k]||{};
+  const norm=c=>{if(Array.isArray(c)){const o={};c.forEach((v,i)=>{if(v!==null&&v!==undefined)o[i]=v});return o}return c||{}};
+  b.claims=norm(b.claims);b.claims2=norm(b.claims2);b.pts=b.pts||{};return b}
+// claims-Alias auf das aktuelle Brett legen (nach jedem Empfang, nach jedem Brettwechsel)
+function megaAlias(){if(!MEGA()||!g())return;const b=mgBoard(EDITION);if(!b)return;g().claims=b.claims;g().claims2=b.claims2}
+// Nur die Spieldaten einer Edition laden (ohne Brett-DOM) – fuer temporaere Kontextwechsel
+function setEditionData(id){
+  EDITION=id;MAP=EDITIONEN[id];BH=(MAP.meta&&MAP.meta.board_h)||670;
   nodes={};MAP.knoten.forEach(k=>nodes[k.id]=k);
   nameToIds={};TPOSL={};RAND={};AUSSEN_ORTE=new Set();
   MAP.knoten.forEach(k=>{const n=k.name.replace(/ \((Nordost|Ost)\)/,'');
@@ -272,12 +299,75 @@ function setEdition(id){
   MAP.strecken.forEach(s=>{if(seen.has(s.nr))return;const grp=[s];seen.add(s.nr);
     dmList(s).forEach(nr=>{const p=MAP.strecken.find(x=>x.nr===nr);if(p&&!seen.has(p.nr)){grp.push(p);seen.add(p.nr)}});
     conns.push(grp)});
-  boardBuilt=false;world.innerHTML='';steineBereit=false;document.querySelectorAll('#svg defs symbol').forEach(s=>s.remove());for(const k in routeEls)delete routeEls[k];
+  if(MEGA())megaAlias();
 }
+// fn im Kontext eines anderen Bretts ausfuehren (Daten + claims-Alias), danach zuruecksetzen
+function mitBrett(k,fn){
+  if(!MEGA()||!k||k===EDITION||!EDITIONEN[k])return fn();
+  const alt=EDITION;setEditionData(k);
+  try{return fn()}finally{setEditionData(alt)}
+}
+// Anzeige auf ein anderes Brett umschalten
+function megaWechsel(k){
+  if(!MEGA()||!EDITIONEN[k]||k===EDITION)return;
+  setEdition(k);
+  if(ROOM.status!=='lobby'){buildBoard();renderClaims();renderHud();}
+}
+// Zugfolge in Bloecken (Schlangenlinie): Startspieler s, dann s+1 ... , dann rueckwaerts
+function mgSpielerFuerBlock(G,block){
+  const P=ROOM.players.length,s=(G.mgStart!==undefined&&G.mgStart!==null)?G.mgStart:(G.turn||0);
+  if(P<2)return s;const r=block%(2*P),j=r<P?r:2*P-1-r;return (s+j)%P;
+}
+function mgBlock(G){return Math.floor((G.zugNr||0)/mgN())}
+function mgSubZug(G){return (G.zugNr||0)%mgN()}
+// Zug weitergeben (Einzelbrett: reihum; Mega: naechster Teilzug / naechster Block)
+function zugWeiter(G){
+  if(MEGA()){
+    if(G.mgStart===undefined||G.mgStart===null)G.mgStart=G.turn||0;
+    G.zugNr=(G.zugNr||0)+1;
+    if(mgSubZug(G)===0)G.blockBau={};
+    G.turn=mgSpielerFuerBlock(G,mgBlock(G));
+  } else G.turn=(G.turn+1)%ROOM.players.length;
+}
+// Letzte Aktion(en) merken: im Mega-Modus alle Teilzuege des laufenden Blocks
+function lastMerken(p,G){
+  if(!MEGA())return;
+  const i=mgSubZug(G);
+  if(i===0||!Array.isArray(p.lastN))p.lastN=[];
+  p.lastN.push(p.last||'—');p.lastN=p.lastN.slice(-mgN());
+}
+// Regeln im Mega-Modus: ein Auftragsstapel (Start 10/5, Nachziehen 5/1), keine Bahnhoefe (Stufe 2), keine Stapelwahl
+function megaRegeln(r){
+  if(!MEGA())return r;
+  const r2=Object.assign({},r);
+  r2.startauftraege={ziehen:10,mindestens_behalten:5};
+  r2.auftraege_nachziehen={ziehen:5,mindestens_behalten:1};
+  delete r2.bahnhoefe;
+  return r2;
+}
+// Auftragssatz fuer alle Bretter (mit Brett-Kennung b)
+function mgAuftragsSatz(){
+  const alle=[];
+  mgBretter().forEach(k=>mitBrett(k,()=>{
+    const L=ROOM.tkZufall?zfErzeugen(ROOM.tkZufall):MAP.auftraege.filter(t=>!t.typ).map(t=>({von:t.von,nach:t.nach,punkte:t.punkte}));
+    L.forEach(t=>{delete t.lang;t.b=k;alle.push(t)})}));
+  return alle;
+}
+// Brett-Reiter ueber dem Spielfeld
+function mgTabs(){
+  const bar=document.getElementById('mgTabs');if(!bar)return;
+  if(!MEGA()||ROOM.status==='lobby'){bar.classList.add('hidden');return}
+  bar.classList.remove('hidden');
+  const G=g()||{},bb=G.blockBau||{};
+  bar.innerHTML=mgBretter().map(k=>'<button class="mgtab'+(k===EDITION?' on':'')+'" data-k="'+k+'">'+mgName(k)+(bb[k]?' <span class="mgdone" title="In diesem Block hier schon gebaut">✓</span>':'')+'</button>').join('')
+    +(ROOM.status==='playing'&&G.turn!==undefined?'<span class="mginfo">'+(ROOM.players[G.turn]||{}).name+' · Zug '+(mgSubZug(G)+1)+'/'+mgN()+'</span>':'');
+  bar.querySelectorAll('.mgtab').forEach(b=>b.onclick=()=>megaWechsel(b.dataset.k));
+}
+
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.78 · 02.10.2026';
+const APP_VERSION='7.80 · 05.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -310,7 +400,7 @@ let pickShown=false, finalShown=false, lastNotice='';
 // Nach RTDB-Roundtrip fehlende Felder wiederherstellen (leere Arrays/Objekte verschwinden)
 function fix(r){
   if(!r) return r;
-  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fk!==undefined)q.fk=p.fk;if(p.exp!==undefined)q.exp=p.exp;if(p.fertig!==undefined)q.fertig=p.fertig;if(p.schiffe!==undefined)q.schiffe=p.schiffe;if(p.haefen!==undefined)q.haefen=p.haefen;if(p.boxW!==undefined)q.boxW=p.boxW;if(p.boxS!==undefined)q.boxS=p.boxS;if(p.fest!==undefined)q.fest=p.fest;if(p.skx!==undefined)q.skx=p.skx;if(p.ukTech!==undefined)q.ukTech=p.ukTech;if(p.lk!==undefined)q.lk=p.lk;if(p.heimat!==undefined)q.heimat=p.heimat;if(p.anteile!==undefined)q.anteile=p.anteile;if(p.geb!==undefined)q.geb=p.geb;if(p.loks!==undefined)q.loks=p.loks;return q});
+  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.lastN!==undefined)q.lastN=Array.isArray(p.lastN)?p.lastN:Object.values(p.lastN||{});if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fk!==undefined)q.fk=p.fk;if(p.exp!==undefined)q.exp=p.exp;if(p.fertig!==undefined)q.fertig=p.fertig;if(p.schiffe!==undefined)q.schiffe=p.schiffe;if(p.haefen!==undefined)q.haefen=p.haefen;if(p.boxW!==undefined)q.boxW=p.boxW;if(p.boxS!==undefined)q.boxS=p.boxS;if(p.fest!==undefined)q.fest=p.fest;if(p.skx!==undefined)q.skx=p.skx;if(p.ukTech!==undefined)q.ukTech=p.ukTech;if(p.lk!==undefined)q.lk=p.lk;if(p.heimat!==undefined)q.heimat=p.heimat;if(p.anteile!==undefined)q.anteile=p.anteile;if(p.geb!==undefined)q.geb=p.geb;if(p.loks!==undefined)q.loks=p.loks;return q});
   if(r.game){const g=r.game;
     g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
     g.claims=g.claims||{};
@@ -326,15 +416,18 @@ function fix(r){
   return r;
 }
 function sync(){const o={status:ROOM.status,players:ROOM.players};
-  if(ROOM.game)o.game=ROOM.game;if(ROOM.test!==undefined)o.test=ROOM.test;if(ROOM.limitH!==undefined)o.limitH=ROOM.limitH;if(ROOM.limitMin!==undefined)o.limitMin=ROOM.limitMin;if(ROOM.hausregeln!==undefined&&ROOM.hausregeln!==null)o.hausregeln=ROOM.hausregeln;if(ROOM.ibStart!==undefined)o.ibStart=ROOM.ibStart;if(ROOM.ukAdv!==undefined)o.ukAdv=ROOM.ukAdv;if(ROOM.owAlvin!==undefined)o.owAlvin=ROOM.owAlvin;if(ROOM.custom!==undefined)o.custom=ROOM.custom;if(ROOM.edition)o.edition=ROOM.edition;if(ROOM.dopAb!==undefined)o.dopAb=ROOM.dopAb;if(ROOM.startMode)o.startMode=ROOM.startMode;if(ROOM.tkZufall!==undefined)o.tkZufall=ROOM.tkZufall;if(ROOM.statsDone!==undefined)o.statsDone=ROOM.statsDone;
+  if(ROOM.game){o.game=ROOM.game;if(MEGA()){o.game=Object.assign({},ROOM.game);delete o.game.claims;delete o.game.claims2}}if(ROOM.mega!==undefined)o.mega=ROOM.mega;if(ROOM.test!==undefined)o.test=ROOM.test;if(ROOM.limitH!==undefined)o.limitH=ROOM.limitH;if(ROOM.limitMin!==undefined)o.limitMin=ROOM.limitMin;if(ROOM.hausregeln!==undefined&&ROOM.hausregeln!==null)o.hausregeln=ROOM.hausregeln;if(ROOM.ibStart!==undefined)o.ibStart=ROOM.ibStart;if(ROOM.ukAdv!==undefined)o.ukAdv=ROOM.ukAdv;if(ROOM.owAlvin!==undefined)o.owAlvin=ROOM.owAlvin;if(ROOM.custom!==undefined)o.custom=ROOM.custom;if(ROOM.edition)o.edition=ROOM.edition;if(ROOM.dopAb!==undefined)o.dopAb=ROOM.dopAb;if(ROOM.startMode)o.startMode=ROOM.startMode;if(ROOM.tkZufall!==undefined)o.tkZufall=ROOM.tkZufall;if(ROOM.statsDone!==undefined)o.statsDone=ROOM.statsDone;
   return roomRef.update(o)}
 function listen(){
   roomRef.on('value',snap=>{
     const v=fix(snap.val());
     if(!v){toast('Der Raum wurde geschlossen.');return}
     if(REPLAY){REPLAY.pend=v;return}   // Replay laeuft: Stand merken, nach dem Zurueck anwenden
-    if(v.edition&&v.edition!==EDITION&&EDITIONEN[v.edition])setEdition(v.edition);
-    ROOM=v; onState();
+    const mg=!!(v.mega&&v.mega.bretter&&v.mega.bretter.length>1);
+    if(!mg&&v.edition&&v.edition!==EDITION&&EDITIONEN[v.edition])setEdition(v.edition);
+    ROOM=v;
+    if(mg){if(ROOM.mega.bretter.indexOf(EDITION)<0&&ROOM.status!=='lobby')setEdition(ROOM.mega.bretter[0]);megaAlias()}
+    onState();
   });
 }
 
@@ -551,7 +644,7 @@ function refillOpen(g){while(g.open.length<5){const c=drawCard(g);if(c===null)br
 
 // ---------- Landschaftskarten (Afrika) ----------
 const GELNAME={gor:'Wüste & Savanne',pbg:'Dschungel & Wald',wgs:'Gebirge & Fels'};
-function GEL(){return MAP.meta&&MAP.meta.gelaende}
+function GEL(){if(MEGA())return null;return MAP.meta&&MAP.meta.gelaende}   // Mega: Gelaendekarten erst in Stufe 2
 function gelGruppen(){return (GEL()&&GEL().gruppen)||{}}
 function gelTypVon(farbe){const gr=gelGruppen();for(const t in gr)if(gr[t].indexOf(farbe)>=0)return t;return null}
 function gelBild(t){return ((GEL()&&GEL().karten)||{})[t]||''}
@@ -1091,8 +1184,9 @@ function ticketCardRoute(tk,cls,badge){
 // ---------- Zufällig generierte Aufträge ("Shuffle") ----------
 // Aktiv, sobald der Gastgeber in der Lobby "Zufällig generiert" wählt: ROOM.tkZufall = {anzahl, avg, faktor}.
 function ZF(){return !!(typeof ROOM!=='undefined'&&ROOM&&ROOM.tkZufall)}
-// Nur für Editionen mit einfachen Stadt-Stadt-Aufträgen (nicht Weltreise-Routen, nicht Schweizer Länderaufträge).
-function zfMoeglich(){return !(MAP.auftraege||[]).some(t=>t.typ)}
+// In allen Editionen möglich. Erzeugt werden immer einfache Aufträge (Stadt–Stadt, Stadt–Land, Land–Land);
+// Sonderformen wie Weltreise-Routenkarten oder Schweizer Länderaufträge mit Mehrfachziel entfallen bei Shuffle.
+function zfMoeglich(){return true}
 // Kürzeste Verbindungen (in Feldern) zwischen allen Orten. Außenstädte sind Sackgassen (nur Ziel, keine Durchfahrt),
 // Tor-Städte (meta.verbunden) zählen als ein Ort. Wird je Edition einmal berechnet.
 let _zfDist=null,_zfDistEd=null;
@@ -1116,7 +1210,11 @@ function zfDistanzen(){
 // Vorbelegung aus den Original-Aufträgen des Bretts: Anzahl, Ø Punkte, Faktor Punkte ÷ Felder
 function zfVorgabe(){
   const D=zfDistanzen();let n=0,sp=0,sf=0;
-  (MAP.auftraege||[]).forEach(t=>{if(t.typ||!t.nach)return;const d=D[t.von]&&D[t.von][t.nach];if(!d)return;n++;sp+=t.punkte;sf+=t.punkte/d});
+  (MAP.auftraege||[]).forEach(t=>{
+    if(t.typ==='route')return;   // Weltreise-Routenkarten: kein einfacher Auftrag
+    let nach=t.nach,pkt=t.punkte;
+    if(t.typ==='land'){const b=(t.ziele||[]).slice().sort((x,y)=>y.punkte-x.punkte)[0];if(!b)return;nach=b.nach;pkt=b.punkte}   // Schweiz: höchstes Ziel
+    if(!nach)return;const d=D[t.von]&&D[t.von][nach];if(!d)return;n++;sp+=pkt;sf+=pkt/d});
   if(!n)return {anzahl:(MAP.auftraege||[]).length||40,avg:10,faktor:1};
   return {anzahl:MAP.auftraege.length,avg:Math.round(sp/n*10)/10,faktor:Math.round(sf/n*100)/100};
 }
@@ -1166,11 +1264,18 @@ function zfListeModal(){
 }
 function hostStart(){
   const rs=R().startauftraege||{};
-  const alle=ROOM.tkZufall?zfErzeugen(ROOM.tkZufall):MAP.auftraege.map(t=>{const o=t.typ==='land'?{von:t.von,typ:'land',ziele:(t.ziele||[]).map(z=>({nach:z.nach,punkte:z.punkte}))}:(t.typ==='route'?{typ:'route',von:t.von,nach:t.nach,stationen:t.stationen.slice(),punkte:t.punkte,punkte_ungeordnet:t.punkte_ungeordnet,minus:t.minus}:{von:t.von,nach:t.nach,punkte:t.punkte});if(t.lang)o.lang=true;return o});
+  if(MEGA()&&mgBretter().length<2){toast('Super-Mega-Game: bitte mindestens zwei Bretter wählen.');return}
+  const alle=MEGA()?mgAuftragsSatz():ROOM.tkZufall?zfErzeugen(ROOM.tkZufall):MAP.auftraege.map(t=>{const o=t.typ==='land'?{von:t.von,typ:'land',ziele:(t.ziele||[]).map(z=>({nach:z.nach,punkte:z.punkte}))}:(t.typ==='route'?{typ:'route',von:t.von,nach:t.nach,stationen:t.stationen.slice(),punkte:t.punkte,punkte_ungeordnet:t.punkte_ungeordnet,minus:t.minus}:{von:t.von,nach:t.nach,punkte:t.punkte});if(t.lang)o.lang=true;return o});
   const langD=shuffle(alle.filter(t=>t.lang));
   const g={deck:newDeck(),discard:[],open:[],ticketDeck:shuffle(alle.filter(t=>!t.lang)),
     turn:0,drawn:0,claims:{},startOffers:{},picked:{},lastRounds:-1,over:false};
   if(rs.stapelwahl)g.ticketDeckLang=langD;
+  if(MEGA()){   // Super-Mega-Game: Spielstand je Brett, Kartenstapel n-fach, Zugzaehler fuer die Blockfolge
+    g.boards={};mgBretter().forEach(k=>{g.boards[k]={claims:{},claims2:{},pts:{}}});
+    for(let i=1;i<mgN();i++)g.deck=g.deck.concat(newDeck());shuffle(g.deck);
+    g.zugNr=0;g.blockBau={};g.mgStart=null;
+    if(mgBretter().indexOf(EDITION)<0)setEdition(mgBretter()[0]);
+  }
   if(ROOM.tkZufall){ROOM.tkZufall=zfNorm(ROOM.tkZufall);g.tkSatz=JSON.parse(JSON.stringify(alle))}   // Shuffle: kompletter Satz zum Nachschauen
   if(WR()){const d=wrDeckNeu();g.deck=d.deck;g.deck2=d.deck2;g.discard2=[];g.haefen={};for(let i=0;i<wrOffen()/2;i++)g.open.push(wrDraw(g,'w'));for(let i=0;i<wrOffen()/2;i++)g.open.push(wrDraw(g,'s'));wrJokerReset(g)}
   else refillOpen(g);
@@ -1436,11 +1541,17 @@ function endTurn(){
   if(IB()&&(G.festNotiz||[]).length){const t=' · aufgedeckt: '+G.festNotiz.map(x=>x==='draft'?'Zielkarten-Draft-Karte':'Festivalkarte '+festName(x)).join(', ');
     cur().last=(cur().last||'')+t;G.notice=(G.notice||cur().name)+t;delete G.festNotiz}
   delete G.pend;
+  lastMerken(cur(),G);
   if(ROOM.test){G.turn=0;sync();return}
-  if(WR()&&G.lastRounds<0&&wrFiguren(cur())<=((R().figuren_ende!==undefined)?R().figuren_ende:6)){G.lastRounds=ROOM.players.length*((R().letzte_runden)||2);me().last='läutet die Schlussrunden ein';G.notice=cur().name+' hat nur noch '+wrFiguren(cur())+' Figuren – jeder ist noch '+((R().letzte_runden)||2)+'-mal an der Reihe!'}
-  else if(!WR()&&G.lastRounds<0&&cur().wagons<=2&&(!EXPM()||(G.expRest||0)<=2)){G.lastRounds=ROOM.players.length;me().last='läutet die letzte Runde ein';G.notice=cur().name+' hat nur noch '+cur().wagons+' Wagons'+(EXPM()?' und der Expresszug-Vorrat ist auf '+(G.expRest||0)+' gesunken':'')+' – letzte Runde! '+cur().name+' ist als Letzter noch einmal dran.'}
+  if(MEGA()&&G.lastRounds<0&&cur().wagons<=2*mgN()){
+    // Letzte Runde: der Ausloeser beendet seinen Block, danach ist jeder genau noch einen Block lang dran
+    G.lastRounds=(mgN()-1-mgSubZug(G))+ROOM.players.length*mgN();
+    me().last='läutet die letzte Runde ein';
+    G.notice=cur().name+' hat nur noch '+cur().wagons+' Waggons – letzte Runde! Jeder ist noch einmal mit einem vollen Block dran, '+cur().name+' als Letzter.'}
+  else if(WR()&&G.lastRounds<0&&wrFiguren(cur())<=((R().figuren_ende!==undefined)?R().figuren_ende:6)){G.lastRounds=ROOM.players.length*((R().letzte_runden)||2);me().last='läutet die Schlussrunden ein';G.notice=cur().name+' hat nur noch '+wrFiguren(cur())+' Figuren – jeder ist noch '+((R().letzte_runden)||2)+'-mal an der Reihe!'}
+  else if(!MEGA()&&!WR()&&G.lastRounds<0&&cur().wagons<=2&&(!EXPM()||(G.expRest||0)<=2)){G.lastRounds=ROOM.players.length;me().last='läutet die letzte Runde ein';G.notice=cur().name+' hat nur noch '+cur().wagons+' Wagons'+(EXPM()?' und der Expresszug-Vorrat ist auf '+(G.expRest||0)+' gesunken':'')+' – letzte Runde! '+cur().name+' ist als Letzter noch einmal dran.'}
   else if(G.lastRounds>0){G.lastRounds--;if(G.lastRounds===0){G.over=true;ROOM.status='over';finalScore();sync();return}}
-  G.turn=(G.turn+1)%ROOM.players.length;G.frist=limitMs()?Date.now()+limitMs():0;
+  zugWeiter(G);G.frist=limitMs()?Date.now()+limitMs():0;
   if(IB()&&G.draftPend){delete G.draftPend;draftStart(G,2,-1);G.notice='Die Zielkarten-Draft-Karte wurde gezogen – zweiter Draft (Weitergabe nach rechts).'}
   sync();
 }
@@ -1696,6 +1807,7 @@ function tryClaim(s){
     return}
   if(!myTurn()){toast(ROOM.status==='playing'?'Du bist nicht dran – '+cur().name+' ist am Zug.':'');return}
   if(g().drawn>0){toast('Du hast schon Karten gezogen – erst den Zug beenden.');return}
+  if(MEGA()&&(g().blockBau||{})[EDITION]){toast('In diesem Block hast du auf '+mgName(EDITION)+' schon eine Strecke gebaut – pro Brett nur eine. Wechsle das Brett oder mache etwas anderes.');return}
   if(g().claims[s.nr]!==undefined){
     const wrOk=UK()&&g().ukWegerecht===SEAT&&g().claims[s.nr]!==SEAT&&g().claims[s.nr]!=='X'&&(g().claims2||{})[s.nr]===undefined;
     if(!wrOk){toast(UK()&&g().ukWegerecht===SEAT?'Wegerecht: nur auf einer von einem Mitspieler belegten Strecke nutzbar.':'Diese Strecke ist schon gebaut.');return}
@@ -1842,9 +1954,10 @@ function doClaim(s,o,gel){
     else if(bv!==null&&bv===bn){ROOM.players[bv].score+=pkt*2;owTxt=' (+'+(pkt*2)+' an '+ROOM.players[bv].name+' \u2013 kontrolliert beide St\u00e4dte)'}
     else{const teile=[[bv,s.von],[bn,s.nach]].filter(x=>x[0]!==null).map(x=>{ROOM.players[x[0]].score+=pkt;return '+'+pkt+' an '+ROOM.players[x[0]].name+' ('+nodes[x[1]].name+')'});owTxt=' ('+teile.join(', ')+')'}
   } else p.score+=pkt;
+  if(MEGA()){const b=mgBoard(EDITION);b.pts[SEAT]=(b.pts[SEAT]||0)+pkt+(AS()&&s.gebirge?2*s.gebirge:0);(G.blockBau=G.blockBau||{})[EDITION]=true}
   const ukWRB=UK()&&G.claims[s.nr]!==undefined;
   if(ukWRB){(G.claims2=G.claims2||{})[s.nr]=SEAT;delete G.ukWegerecht}else G.claims[s.nr]=SEAT;
-  p.last=(ukWRB?'nutzt das Wegerecht und baut ':'baut ')+nodes[s.von].name+' – '+nodes[s.nach].name+info+(o.pay?' mit '+wrPayText(o.pay):'')+(o.fk?' mit '+o.fk+' Fährenkarte'+(o.fk>1?'n':''):'')+(o.paar?' · zahlt '+o.paar+' Lok-Symbol'+(o.paar>1?'e':'')+' mit gleichfarbigen Paaren':'')+(OW()?owTxt:' (+'+pkt+(gel?', verdoppelt mit '+GELNAME[gel.typ]:'')+')')+asTxt;G.notice=p.name+' '+p.last;
+  p.last=(MEGA()?'['+mgName(EDITION)+'] ':'')+(ukWRB?'nutzt das Wegerecht und baut ':'baut ')+nodes[s.von].name+' – '+nodes[s.nach].name+info+(o.pay?' mit '+wrPayText(o.pay):'')+(o.fk?' mit '+o.fk+' Fährenkarte'+(o.fk>1?'n':''):'')+(o.paar?' · zahlt '+o.paar+' Lok-Symbol'+(o.paar>1?'e':'')+' mit gleichfarbigen Paaren':'')+(OW()?owTxt:' (+'+pkt+(gel?', verdoppelt mit '+GELNAME[gel.typ]:'')+')')+asTxt;G.notice=p.name+' '+p.last;
   if(FR()&&s.bett){const glz=(G.gleise||{})[s.nr];
     if(glz){delete G.gleise[s.nr];G.gleisVorrat=G.gleisVorrat||frVorratInit();
       G.gleisVorrat[frKey(glz,s.laenge)]=frVorratAnz(glz,s.laenge)+1;
@@ -2454,6 +2567,7 @@ function ticketCardLand(tk,cls,badge){
   return '<div class="tcard '+(cls||'')+'"><svg viewBox="0 0 '+VW+' '+VH+'" preserveAspectRatio="none">'+titel+svg+'</svg>'+(badge?'<div class="tcheck">✓</div>':'')+'</div>';
 }
 function ticketCard(tk,cls,badge){
+  if(tk&&tk.b&&MEGA()&&tk.b!==EDITION)return mitBrett(tk.b,()=>ticketCard(tk,cls,badge));
   if(tkRoute(tk))return ticketCardRoute(tk,cls,badge);
   if(tkLand(tk))return ticketCardLand(tk,cls,badge);
   const M=MAP.meta||{},TK=M.tk||{},VB=M.tk_vb||{};
@@ -2497,7 +2611,9 @@ function ticketCard(tk,cls,badge){
       +name(tk.von,r1)+'<tspan fill="#111"> - </tspan>'+name(tk.nach,r2)+'</text>';
   const langX=HOCH?128:70, langY=HOCH?1082:576, langS=HOCH?30:34;
   const pktX=TP.x||(HOCH?572:920), pktY=TP.y||(HOCH?1085:576), pktF=TP.font||48;
-  return '<div class="tcard '+(cls||'')+(tk.lang?' lang':'')+'">'
+  const mgSt=MEGA()?' style="--tkbild:url(\''+((MAP.meta&&MAP.meta.tkbild)||'auftrag.jpg')+'\');--tkratio:'+VW+'/'+VH+'"':'';
+  const mgLb=MEGA()?'<div class="tbrett">'+mgName(EDITION)+'</div>':'';
+  return '<div class="tcard '+(cls||'')+(tk.lang?' lang':'')+'"'+mgSt+'>'+mgLb
     +'<svg viewBox="0 0 '+VW+' '+VH+'" preserveAspectRatio="none">'
     +titel
     +svg
@@ -2557,8 +2673,8 @@ let RAND={};MAP.knoten.forEach(k=>{if(k.rand)RAND[k.id]=k.stadt||k.id});
 function tkLand(t){return !!t&&t.typ==='land'}
 function tkZiele(t){return t.ziele||[]}
 function tkMinP(t){return tkRoute(t)?t.minus:(tkLand(t)?Math.min(...tkZiele(t).map(z=>z.punkte)):t.punkte)}
-function tkErfuellt(pi,t){if(tkRoute(t))return wrRouteStatus(pi,t)!==null;if(!tkLand(t))return connected(pi,t);return tkZiele(t).some(z=>connected(pi,{von:t.von,nach:z.nach}))}
-function tkWert(pi,t){if(tkRoute(t)){const st=wrRouteStatus(pi,t);return st==='ordnung'?t.punkte:(st==='netz'?t.punkte_ungeordnet:-t.minus)}
+function tkErfuellt(pi,t){if(t&&t.b&&MEGA()&&t.b!==EDITION)return mitBrett(t.b,()=>tkErfuellt(pi,t));if(tkRoute(t))return wrRouteStatus(pi,t)!==null;if(!tkLand(t))return connected(pi,t);return tkZiele(t).some(z=>connected(pi,{von:t.von,nach:z.nach}))}
+function tkWert(pi,t){if(t&&t.b&&MEGA()&&t.b!==EDITION)return mitBrett(t.b,()=>tkWert(pi,t));if(tkRoute(t)){const st=wrRouteStatus(pi,t);return st==='ordnung'?t.punkte:(st==='netz'?t.punkte_ungeordnet:-t.minus)}
   if(!tkLand(t))return connected(pi,t)?t.punkte:-t.punkte;
   let best=null;tkZiele(t).forEach(z=>{if((best===null||z.punkte>best)&&connected(pi,{von:t.von,nach:z.nach}))best=z.punkte});
   return best===null?-tkMinP(t):best}
@@ -2715,7 +2831,33 @@ function rangCmp(a,b){
   return ((rb.zErf||0)-(ra.zErf||0))||((rb.plus||0)-(ra.plus||0));
 }
 function rangErste(){const s=[...ROOM.players].sort(rangCmp);return s.filter(p=>rangCmp(p,s[0])===0)}
+// Endwertung im Super-Mega-Game: Strecken, Auftraege und Boni je Brett nach dessen Regel, dann Summe
+function megaFinalScore(){
+  const P=ROOM.players;
+  P.forEach(p=>{p.res={strecken:p.score||0,plus:0,minus:0,bretter:[]};p.total=p.score||0});
+  mgBretter().forEach(k=>mitBrett(k,()=>{
+    const b=mgBoard(k),rs=R();
+    const bonus=rs.laengste_strecke_bonus||0,abon=rs.meiste_auftraege_bonus||0;
+    const lang=bonus?P.map((p,i)=>laengsteFor(i)):null,maxL=lang?Math.max(...lang):0;
+    const cnts=P.map((p,i)=>(p.tickets||[]).filter(t=>t.b===k&&tkErfuellt(i,t)).length),maxC=Math.max(...cnts);
+    const asn=AS()?P.map((p,i)=>asNetz(i)):null,asMax=asn?Math.max(...asn):0;
+    P.forEach((p,i)=>{
+      let tP=0,tM=0;(p.tickets||[]).filter(t=>t.b===k).forEach(t=>{const w=tkWert(i,t);if(w>=0)tP+=w;else tM+=-w});
+      const lb=(lang&&lang[i]===maxL&&maxL>0)?bonus:0;
+      const ab=(abon&&cnts[i]===maxC&&maxC>0)?abon:0;
+      const nb=(asn&&asn[i]===asMax&&asMax>=2)?(rs.entdecker_bonus||10):0;
+      const z={key:k,name:mgName(k),strecken:(b.pts&&b.pts[i])||0,plus:tP,minus:tM,auftr:cnts[i]};
+      if(lang){z.laengste=lang[i];z.bonus=lb}
+      if(abon)z.abonus=ab;
+      if(asn){z.netz=asn[i];z.nbonus=nb}
+      p.res.bretter.push(z);
+      p.res.plus+=tP;p.res.minus+=tM;
+      p.total+=tP-tM+lb+ab+nb;
+    });
+  }));
+}
 function finalScore(){
+  if(MEGA()){megaFinalScore();return}
   ROOM.players.forEach((p,i)=>bhWahlBerechnen(i));
   const bhP=(bhRegel().punkte_pro_ungebautem)||0;
   const bhN=bhAnzahl();
@@ -2778,7 +2920,7 @@ function statsSchreiben(){
     const jetzt=Date.now(),beginn=(ROOM.game&&ROOM.game.start)||0;
     const eRef=db.ref('ergebnisse').push({ts:jetzt,start:beginn,ende:jetzt,replay:true,
       dauerMin:beginn?Math.max(1,Math.round((jetzt-beginn)/60000)):0,
-      code:CODE,edition:(MAP.meta.statId||MAP.meta.name||'Langenberg'),
+      code:CODE,edition:MEGA()?'Super-Mega-Game':(MAP.meta.statId||MAP.meta.name||'Langenberg'),bretter:MEGA()?mgBretter().map(mgName):null,
       spieler:ROOM.players.map(p=>p.name),
       punkte:ROOM.players.map(p=>p.total||0),
       zuege:(ROOM.game&&ROOM.game.zuege)||0,
@@ -2796,7 +2938,7 @@ function replayDaten(){
   for(const k in G)if(!weg.has(k))g[k]=G[k];
   const players=ROOM.players.map(p=>{const q=Object.assign({},p);delete q.hand;delete q.pin;delete q.gel;delete q.fertig;delete q.last;return q});
   const d={ed:EDITION,status:'over',players,game:g};
-  ['hausregeln','custom','test','dopAb','ibStart','ukAdv','owAlvin','tkZufall'].forEach(k=>{if(ROOM[k]!==undefined&&ROOM[k]!==null)d[k]=ROOM[k]});
+  ['hausregeln','custom','test','dopAb','ibStart','ukAdv','owAlvin','tkZufall','mega'].forEach(k=>{if(ROOM[k]!==undefined&&ROOM[k]!==null)d[k]=ROOM[k]});
   return d;
 }
 let REPLAY=null;   // aktiver Replay-Zustand: {alt:{ROOM,CODE,SEAT,ED,sicht},d,e,sp,pend}
@@ -2818,6 +2960,7 @@ function replayStart(raw,e){
   document.getElementById('modals').style.display='none';
   document.getElementById('top').classList.add('hidden');
   document.getElementById('bottom').classList.add('hidden');
+  document.getElementById('mgTabs')?.classList.add('hidden');
   document.getElementById('stage').classList.remove('hidden');
   buildBoard();renderClaims();
   replayLeiste();
@@ -3022,6 +3165,15 @@ function showdownRender(){
 }
 // Abrechnungszeilen eines Spielers – Auswertung am Spielende und Replay nutzen dieselbe Aufstellung
 function abrechnungZeilen(p){const r=p.res||{};
+  if(r.bretter&&r.bretter.length){
+    const z=(a,b)=>'<div class="score-row"><span>'+a+'</span><span>'+b+'</span></div>';
+    return r.bretter.map(x=>'<div style="margin:6px 0 2px;font-size:13px;font-weight:700;color:#5a4632">🧩 '+x.name+'</div>'
+      +z('Strecken',x.strecken||0)+z('Aufträge erfüllt','+'+(x.plus||0))+z('Aufträge offen','−'+(x.minus||0))
+      +(x.laengste!==undefined?z('Längste Strecke ('+x.laengste+')',x.bonus?'+'+x.bonus:'–'):'')
+      +(x.abonus!==undefined?z('Meiste Aufträge ('+x.auftr+')',x.abonus?'+'+x.abonus:'–'):'')
+      +(x.netz!==undefined?z('Entdecker-Bonus – größtes Netz ('+x.netz+')',x.nbonus?'+'+x.nbonus:'–'):'')).join('')
+      +'<div class="score-row" style="font-weight:700"><span>Gesamt (alle Bretter)</span><span>'+(p.total||0)+'</span></div>';
+  }
   return '<div class="score-row"><span>Strecken</span><span>'+(r.strecken||0)+'</span></div>'+
     '<div class="score-row"><span>Aufträge erfüllt</span><span>+'+(r.plus||0)+'</span></div>'+
     '<div class="score-row"><span>Aufträge offen</span><span>−'+(r.minus||0)+'</span></div>'+
@@ -3254,11 +3406,11 @@ function strafZug(){
   if(!frPfl)for(let k=0;k<2;k++){const c=WR()?wrDraw(G,k?'s':'w'):drawCard(G);if(c===null)break;p.hand[c]=(p.hand[c]||0)+1;gez.push(c)}
   delete G.pend;G.drawn=0;delete G.skExpZug;delete G.skTkPlus;G.zuege=(G.zuege||0)+1;
   const t=frPfl?'hat die Zugzeit überschritten':(gez.length?('hat die Zugzeit überschritten – '+gez.length+' Karten automatisch vom Stapel gezogen'):'hat den Zug verstreichen lassen (Stapel leer)');
-  p.last=t;G.notice=p.name+' '+t;
+  p.last=t;G.notice=p.name+' '+t;lastMerken(p,G);
   if(FR()&&(frPfl||gez.length)){const at=frAutoLegen(G);delete G.frPflicht;document.getElementById('frModal')?.remove();
     if(at){p.last+=' · '+at;G.notice=p.name+' '+p.last}}
   if(G.lastRounds>0){G.lastRounds--;if(G.lastRounds===0){G.over=true;ROOM.status='over';finalScore();sync();return}}
-  G.turn=(G.turn+1)%ROOM.players.length;G.frist=Date.now()+limitMs();sync();
+  zugWeiter(G);G.frist=Date.now()+limitMs();sync();
 }
 setInterval(()=>{if(ROOM&&ROOM.game&&limitMs()&&ROOM.status==='playing'){renderHud();
   const G=g();if(G&&G.frist&&G.frist<Date.now()&&!G.over&&!window._strafT){
@@ -3270,7 +3422,8 @@ function renderChat(){
   const mh=msgs.length?msgs.slice(-25).map(m=>'<div class="msg"><b>'+m.n+':</b> '+m.t+'</div>').join(''):'<div class="msg" style="color:#8a7d63">Noch keine Nachrichten.</div>';
   let ah='';
   ROOM.players.forEach((p,i)=>{
-    ah+='<div class="last"><b style="color:'+pSchrift(p.col,i)+'">'+p.name+':</b> '+(p.last||'—')+'</div>'});
+    if(MEGA()&&Array.isArray(p.lastN)&&p.lastN.length>1)p.lastN.forEach((t,j)=>{ah+='<div class="last"><b style="color:'+pSchrift(p.col,i)+'">'+p.name+' ('+(j+1)+'):</b> '+t+'</div>'});
+    else ah+='<div class="last"><b style="color:'+pSchrift(p.col,i)+'">'+p.name+':</b> '+(p.last||'—')+'</div>'});
   if(mBox.dataset.h!==mh){mBox.dataset.h=mh;mBox.innerHTML=mh;mBox.scrollTop=mBox.scrollHeight}
   if(aBox.dataset.h!==ah){aBox.dataset.h=ah;aBox.innerHTML=ah}
 }
@@ -3324,7 +3477,8 @@ function regelnModal(){
   if(WR()){p('Transportkarten',M.karten.regel);p('Figuren',(M.figuren||{}).regel);p('Strecken nutzen','Zugstrecken mit Wagenkarten (Waggons), Schiffsstrecken mit Schiffskarten (Schiffe). Joker gelten für beides.');p('Unwegsames Gelände',M.gelaenderegel);p('Kartenrand',M.randregel);p('Häfen',M.haefen.regel);p('Routen-Zielkarten',M.routenkarten_regel)}
   if(ZF()){const z=zfNorm(ROOM.tkZufall);p('🔀 Zufällige Aufträge (Shuffle)',z.anzahl+' zufällig erzeugte Aufträge · Ø '+z.avg+' Punkte · Faktor '+z.faktor+' (Punkte = Faktor × kürzeste Verbindung in Feldern). Ein Stapel, keine langen Strecken; die Partie zählt als „'+(M.name||'')+' Shuffle“.'+((g()&&g().tkSatz)?' <button class="cancel" id="zfListe" style="margin:6px 0 0;font-size:13px">📋 Alle Aufträge dieser Partie ansehen</button>':''))}
   if(rs.zugzeit)p('Zugzeit',rs.zugzeit);
-  const m=modal('<h2>§ Regeln – '+(M.name||'')+'</h2>'
+  if(MEGA())z.unshift('<p style="margin:0 0 9px"><b>🧩 Super-Mega-Game:</b> Bretter '+mgBretter().map(mgName).join(' + ')+'. Waggons je Spieler '+WAGONS()+' (gemeinsamer Vorrat). Zugfolge in Blöcken zu '+mgN()+' Zügen, Richtung wechselt nach jeder Runde. Je Block höchstens eine Strecke pro Brett. Letzte Runde ab '+(2*mgN())+' Waggons: jeder noch ein voller Block. Aufträge aus einem gemeinsamen Stapel (Start 10/5, Nachziehen 5/1). Streckenpunkte, Tunnel/Fähren und Boni nach der Regel des jeweiligen Bretts (unten: Regeln des angezeigten Bretts).</p>');
+  const m=modal('<h2>§ Regeln – '+(MEGA()?'Super-Mega-Game · '+(M.name||''):(M.name||''))+'</h2>'
     +(ROOM&&ROOM.custom?'<p style="font-size:12px;color:#b3372c;margin:0 0 8px">In diesem Raum gelten Hausregeln – die Werte unten sind bereits angepasst.</p>':'')
     +'<div style="max-height:60vh;overflow:auto;font-size:14px;text-align:left">'+z.join('')+'</div>'
     +'<button class="cancel" id="zu" style="margin-top:10px">Schließen</button>');
@@ -3334,6 +3488,7 @@ function regelnModal(){
 
 function renderHud(){
   if(!g())return;
+  mgTabs();
   const p=cur();
   const ch=document.getElementById('chips');ch.innerHTML='';
   ROOM.players.forEach((pl,i)=>{const hex=PCOL.find(c=>c.id===pl.col).hex;
@@ -3354,7 +3509,7 @@ function renderHud(){
   if(PA()){const ab=document.createElement('button');ab.className='rulesChip';ab.textContent='📜';
     ab.title='Anteilsscheine – Übersicht & Wertung';ab.onclick=()=>paUebersicht();ch.appendChild(ab);}
   // Kopfzeile bleibt den Spieler-Chips vorbehalten; nur echte Warnungen erscheinen hier.
-  document.getElementById('roomtag').textContent=(ROOM.custom?'Eigene Regeln':'')+(ROOM.test?(ROOM.custom?' · ':'')+'TESTMODUS':'')+(g().lastRounds>0?((ROOM.custom||ROOM.test)?' · ':'')+(g().lastRounds>ROOM.players.length?'Letzte 2 Runden!':'Letzte Runde!'):'');
+  document.getElementById('roomtag').textContent=(MEGA()?'🧩 '+mgN()+' Bretter'+(ROOM.custom||ROOM.test||g().lastRounds>0?' · ':''):'')+(ROOM.custom?'Eigene Regeln':'')+(ROOM.test?(ROOM.custom?' · ':'')+'TESTMODUS':'')+(g().lastRounds>0?((ROOM.custom||ROOM.test)?' · ':'')+(g().lastRounds>ROOM.players.length?'Letzte 2 Runden!':'Letzte Runde!'):'');
   // Raumcode und Zugzeit stehen jetzt in der Kopfzeile von "Verlauf & Chat".
   const ct=document.getElementById('chatTitle');
   if(ct)ct.textContent='Verlauf & Chat · '+CODE+(limitMs()?' · '+(Math.floor(limitMs()/3600000)>0?Math.floor(limitMs()/3600000)+'h':'')+((Math.floor(limitMs()/60000)%60)>0?(Math.floor(limitMs()/60000)%60)+'m':'')+'/Zug':'');
@@ -3559,10 +3714,11 @@ document.getElementById('btnMyTickets').onclick=showMyTickets;
 // ---------- Lobby ----------
 function renderLobby(){
   document.getElementById('lobbyModal')?.remove();
-  let html='<h2 style="text-align:center">Warteraum</h2><div class="codebig">'+CODE+'</div>'+(ROOM.custom?'<div style="font-size:13px;color:#b3372c;font-weight:600;text-align:center;margin-bottom:8px">⚠ Eigene Regeln aktiv – dieses Spiel zählt nicht für die Rangliste.</div>':'')+
+  let html='<h2 style="text-align:center">Warteraum</h2><div class="codebig">'+CODE+'</div>'+(ROOM.custom?'<div style="font-size:13px;color:#8a7d63;font-weight:600;text-align:center;margin-bottom:8px">⚙ Eigene Regeln aktiv (Hausregeln).</div>':'')+
     '<p style="text-align:center;font-size:13px;color:#8a7d63;margin-bottom:12px">Diesen Code an die Mitspieler weitergeben</p>'+
     '<div id="lobCover" style="text-align:center;margin:0 0 12px"></div>';
   ROOM.players.forEach((p,i)=>{html+='<div class="lob-p"><span class="dot" style="width:16px;height:16px;border-radius:50%;background:'+((PCOL.find(x=>x.id===p.col)||PCOL[i]).hex)+'"></span>'+p.name+(i===SEAT?' (du)':'')+(i===0?' · Gastgeber':'')+'</div>'});
+  if(ROOM.mega&&SEAT!==0){html+='<div style="font-size:13px;margin:8px 0 2px;color:#5a4632">🧩 Super-Mega-Game: '+((ROOM.mega.bretter||[]).map(k=>(EDITIONEN[k]||{meta:{}}).meta.name||k).join(' + ')||'Bretter werden gewählt …')+'</div>'}
   if(ROOM.tkZufall&&SEAT!==0){const zz=zfNorm(ROOM.tkZufall);html+='<div style="font-size:13px;margin:8px 0 2px;color:#5a4632">🔀 Zufällig generierte Aufträge (Shuffle): '+zz.anzahl+' Aufträge · Ø '+zz.avg+' Punkte · Faktor '+zz.faktor+'</div>'}
   html+='<div style="margin:12px 0 4px;font-size:13px;color:#8a7d63">Deine Spielerfarbe:</div><div class="row" id="colRow" style="justify-content:center"></div>';
   if(SEAT===0){const lm=ROOM.limitMin!==undefined?ROOM.limitMin:(ROOM.limitH?ROOM.limitH*60:0);
@@ -3575,12 +3731,12 @@ function renderLobby(){
     const sa=Object.assign({},br.startauftraege,(hr.startauftraege||{}));
     const na=Object.assign({},br.auftraege_nachziehen,(hr.auftraege_nachziehen||{}));
     const numIn=(id,val,w)=>'<input type="number" id="'+id+'" value="'+val+'" min="0" max="99" style="width:'+(w||58)+'px;text-align:center">';
-    html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Hausregeln (Abweichungen vom Standard – Spiel zählt dann nicht für die Rangliste; Ausnahme: Doppelstrecken-Option):</div>'
+    html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Hausregeln (Abweichungen vom Standard – das Spiel zählt trotzdem für die Rangliste):</div>'
       +'<div style="text-align:left;font-size:13px;display:grid;grid-template-columns:auto auto;gap:7px 10px;align-items:center;justify-content:center">'
       +'<span>Wagons pro Spieler</span>'+numIn('hrWag',hv('wagons',bm.wagons_pro_spieler||45))
       +'<span>Bonus Längste Strecke (0 = aus)</span>'+numIn('hrBL',hv('laengste_strecke_bonus',br.laengste_strecke_bonus||0))
       +'<span>Bonus Meiste Aufträge (0 = aus)</span>'+numIn('hrBA',hv('meiste_auftraege_bonus',br.meiste_auftraege_bonus||0))
-      +'<span>Doppelstrecken bei 3 Spielern <small style="color:#8a7d63">(zählt weiter für die Rangliste)</small></span><label style="justify-self:start"><input type="checkbox" id="hrDop"'+(((hr.doppelstrecken_frei_ab!==undefined?hr.doppelstrecken_frei_ab:(br.doppelstrecken_frei_ab||3))<=3)?' checked':'')+'> erlaubt</label>'
+      +'<span>Doppelstrecken bei 3 Spielern</span><label style="justify-self:start"><input type="checkbox" id="hrDop"'+(((hr.doppelstrecken_frei_ab!==undefined?hr.doppelstrecken_frei_ab:(br.doppelstrecken_frei_ab||3))<=3)?' checked':'')+'> erlaubt</label>'
       +(!((br.bahnhoefe||{}).anzahl)&&!WR()?'<span>🏛 Bahnhöfe als Zusatzoption</span><label style="justify-self:start"><input type="checkbox" id="hrBhf"'+((hr.bahnhoefe&&hr.bahnhoefe.anzahl)?' checked':'')+'> 3 Bahnhöfe je Spieler wie in Europa: Kosten 1/2/3 gleichfarbige Karten, ein Bahnhof nutzt am Spielende genau eine fremde Strecke an dieser Stadt, je nicht gebautem Bahnhof +4 Punkte</label>':'')
       +(UK()?'<span>Technologien</span><label style="justify-self:start"><input type="checkbox" id="hrUkAdv"'+(ROOM.ukAdv?' checked':'')+'> Fortgeschrittene Technologiekarten dazu (Dampfstrahlpumpen, Wassertender, Riskante Verträge, Ausgleichshebel, Dieselantrieb)</label>':'')
       +(OW()?'<span>👽 Alvin, der Außerirdische</span><label style="justify-self:start"><input type="checkbox" id="hrOwAlvin"'+(ROOM.owAlvin?' checked':'')+'> Variante spielen: Alvin startet in Roswell (dort keine Heimatstadt, kein Marker). Wer eine Strecke zu ihm baut, fängt ihn (+10) und versetzt ihn in eine eigene Stadt. Am Spielende +10 für den Besitzer der Alvin-Stadt.</label>':'')
@@ -3593,11 +3749,19 @@ function renderLobby(){
         :'<span>Startaufträge ziehen / behalten</span><span>'+numIn('hrS1',sa.ziehen||5)+' / '+numIn('hrS2',sa.mindestens_behalten||3)+'</span>'))
       +'<span>Nachziehen ziehen / behalten</span><span>'+numIn('hrN1',na.ziehen||4)+' / '+numIn('hrN2',na.mindestens_behalten||1)+'</span>'
       +'</div>';
+    {const mb=(ROOM.mega&&ROOM.mega.bretter)||[],an=!!ROOM.mega;
+      html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Super-Mega-Game (mehrere Bretter in einer Partie):</div>'
+        +'<label style="font-size:13px;display:block;text-align:left"><input type="checkbox" id="mgOn"'+(an?' checked':'')+'> 🧩 Super-Mega-Game spielen</label>'
+        +'<div id="mgBox" style="display:'+(an?'block':'none')+';text-align:left;font-size:13px;margin-top:6px">'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px">'
+        +MEGA_BRETTER.map(k=>'<label><input type="checkbox" class="mgB" value="'+k+'"'+(mb.indexOf(k)>=0?' checked':'')+'> '+(EDITIONEN[k].meta.name||k)+'</label>').join('')+'</div>'
+        +'<div style="font-size:12px;color:#8a7d63;margin-top:6px">Mindestens 2 Bretter; Langenberg und Niederbonsfeld schließen sich gegenseitig aus. Waggons je Spieler = Bretter × 45 · ein gemeinsamer Auftragsstapel (Start 10 ziehen / 5 behalten, Nachziehen 5 / 1) · Zugfolge in Blöcken (jeder so oft hintereinander wie Bretter, Reihenfolge wechselt die Richtung) · je Block höchstens eine Strecke pro Brett · letzte Runde ab Bretter × 2 Waggons. Bahnhöfe und Geländekarten folgen in Stufe 2. Die Hausregeln zu Waggons, Start-/Nachzieh-Aufträgen und Bahnhöfen gelten im Super-Mega-Game nicht. Zählt für die Rangliste als „Super-Mega-Game“.'
+        +(an&&mb.length<2?'<br><b style="color:#b3372c">Bitte mindestens zwei Bretter wählen.</b>':'')+'</div></div>';}
     if(zfMoeglich()){const zv=zfVorgabe(),zz=ROOM.tkZufall?zfNorm(ROOM.tkZufall):zv;
       const zIn=(id,val,step,max)=>'<input type="number" id="'+id+'" value="'+val+'" min="0" max="'+max+'" step="'+step+'" style="width:64px;text-align:center">';
       html+='<div style="margin:14px 0 4px;font-size:13px;color:#8a7d63">Aufträge:</div>'
         +'<div class="row" style="justify-content:center;gap:8px">'
-        +'<label style="font-size:13px"><input type="radio" name="tkMode" value="orig"'+(ROOM.tkZufall?'':' checked')+'> Original ('+MAP.auftraege.length+')</label>'
+        +'<label style="font-size:13px"><input type="radio" name="tkMode" value="orig"'+(ROOM.tkZufall?'':' checked')+'> Original'+(ROOM.mega?' (je Brett)':' ('+MAP.auftraege.length+')')+'</label>'
         +'<label style="font-size:13px"><input type="radio" name="tkMode" value="zufall"'+(ROOM.tkZufall?' checked':'')+'> 🔀 Zufällig generiert (Shuffle)</label></div>'
         +'<div id="zfBox" style="display:'+(ROOM.tkZufall?'grid':'none')+';grid-template-columns:auto auto;gap:7px 10px;align-items:center;justify-content:center;font-size:13px;text-align:left;margin-top:6px">'
         +'<span>Anzahl Aufträge</span>'+zIn('zfN',zz.anzahl,1,400)
@@ -3608,7 +3772,7 @@ function renderLobby(){
       +'<div class="row" style="justify-content:center;gap:8px">'
       +'<label style="font-size:13px"><input type="radio" name="stMode" value="rps"'+(ROOM.startMode!=='zufall'?' checked':'')+'> Schere, Stein, Papier</label>'
       +'<label style="font-size:13px"><input type="radio" name="stMode" value="zufall"'+(ROOM.startMode==='zufall'?' checked':'')+'> 🎲 Zufällige Reihenfolge</label></div>';
-    html+='<button class="go" id="lobGo" '+(ROOM.players.length<2?'disabled':'')+'>Spiel starten ('+ROOM.players.length+' Spieler)</button>';}
+    html+='<button class="go" id="lobGo" '+((ROOM.players.length<2||(ROOM.mega&&((ROOM.mega.bretter||[]).length<2)))?'disabled':'')+'>Spiel starten ('+ROOM.players.length+' Spieler)</button>';}
   if(SEAT===0&&ROOM.players.length===1)html+='<button class="cancel" id="lobTest">🔧 Testmodus allein starten (freies Bauen)</button>';
   else html+='<p style="text-align:center;font-size:14px;margin-top:10px">Warten auf den Gastgeber …</p>';
   html+='<button class="cancel" id="lobSw">🔀 Meine laufenden Spiele</button>'
@@ -3618,6 +3782,13 @@ function renderLobby(){
   m.querySelector('#lobSw').onclick=()=>spieleWechsler();
   m.querySelector('#lobHome').onclick=()=>zumStart();
   m.querySelectorAll('input[name="stMode"]').forEach(r=>r.onchange=()=>{ROOM.startMode=r.value;sync()});
+  const mgOn=m.querySelector('#mgOn');if(mgOn)mgOn.onchange=()=>{
+    if(mgOn.checked){const b=MEGA_BRETTER.indexOf(EDITION)>=0?[EDITION]:[];ROOM.mega={bretter:b}}else ROOM.mega=null;
+    const bx=m.querySelector('#mgBox');if(bx)bx.style.display=mgOn.checked?'block':'none';sync()};
+  m.querySelectorAll('.mgB').forEach(cb=>cb.onchange=()=>{
+    const mb=new Set(((ROOM.mega&&ROOM.mega.bretter)||[]));
+    if(cb.checked){mb.add(cb.value);if(cb.value==='langenberg')mb.delete('langenberg_nb');if(cb.value==='langenberg_nb')mb.delete('langenberg')}else mb.delete(cb.value);
+    ROOM.mega={bretter:MEGA_BRETTER.filter(k=>mb.has(k))};sync()});
   m.querySelectorAll('input[name="tkMode"]').forEach(r=>r.onchange=()=>{ROOM.tkZufall=r.value==='zufall'?zfNorm(ROOM.tkZufall||zfVorgabe()):null;
     const bx=m.querySelector('#zfBox');if(bx)bx.style.display=ROOM.tkZufall?'grid':'none';sync()});
   [['zfN','anzahl'],['zfA','avg'],['zfF','faktor']].forEach(([id,key])=>{const el=m.querySelector('#'+id);if(!el)return;
@@ -3744,7 +3915,7 @@ function zeigeRangliste(){
     erg.forEach(e=>{e.spieler=arrOf(e.spieler).filter(x=>x!=null);e.punkte=arrOf(e.punkte)});
     if(!erg.length){toast('Noch keine beendeten Spiele in der Wertung.');return}
     const namen=[...new Set([].concat(...erg.map(e=>e.spieler||[])))].sort();
-    const edOpts=Object.values(EDITIONEN).map(e=>({id:(e.meta.statId||e.meta.name),name:e.meta.name}));
+    const edOpts=Object.values(EDITIONEN).map(e=>({id:(e.meta.statId||e.meta.name),name:e.meta.name})).concat([{id:'Super-Mega-Game',name:'🧩 Super-Mega-Game'}]);
     const edName=id=>{const t=edOpts.find(o=>o.id===id);return t?t.name:(id||'Langenberg')};
     const selCss='padding:7px;border-radius:8px;border:1.5px solid var(--frame);background:#fff;font-size:13px;max-width:44vw';
     const m=modal('<h2>🏆 Ranglisten</h2>'
@@ -3757,7 +3928,7 @@ function zeigeRangliste(){
     const fEd=m.querySelector('#fEd'),fSp=m.querySelector('#fSp'),fZt=m.querySelector('#fZt');
     const filterAktiv=()=>!!(fEd.value||fSp.value||+fZt.value);
     function passt(e){
-      if(e.custom||e.test)return false;
+      if(e.test)return false;   // Hausregeln und Varianten zählen seit v7.79 mit
       if(fEd.value&&(e.edition||'Zug um Zug Langenberg')!==fEd.value)return false;
       if(fSp.value&&!(e.spieler||[]).some(n=>n.toLowerCase()===fSp.value.toLowerCase()))return false;
       if(+fZt.value&&(e.ts||0)<Date.now()-(+fZt.value)*86400000)return false;
@@ -3815,7 +3986,7 @@ function zeigeRangliste(){
           const rang=(e.spieler||[]).map((n,i)=>({n,p:(e.punkte&&e.punkte[i])||0})).sort((x,y)=>y.p-x.p);
           const rd=(e.spieler&&e.spieler.length)?Math.ceil((e.zuege||0)/e.spieler.length):0;
           return '<div style="display:flex;gap:6px;margin-bottom:8px"><div class="opt" style="flex:1;margin:0;cursor:default">'
-            +'<b>'+edName(e.edition)+(e.shuffle?' Shuffle':'')+' · '+dt+'</b>'
+            +'<b>'+edName(e.edition)+(e.shuffle?' Shuffle':'')+' · '+dt+'</b>'+(e.bretter&&e.bretter.length?'<div style="font-size:12px;color:#5a4632">'+e.bretter.join(' + ')+'</div>':'')
             +'<div style="font-size:13px;margin:4px 0">'+rang.map((r,i)=>(i?' – ':'')+r.n+' <b>'+r.p+'</b>').join('')+'</div>'
             +'<div style="font-size:12px;color:#8a7d63">'+zeit+' · '+rd+' Runden · Raum '+(e.code||'?')
             +(e.starter?' · ▶ '+e.starter+' begann'+(e.startArt==='zufall'?' (🎲)':e.startArt==='rps'?' (✊✋✌️)':''):'')+'</div></div>'
@@ -3824,7 +3995,7 @@ function zeigeRangliste(){
             +'</div>'}catch(err){return '<div class="opt" style="margin:0 0 8px;color:#b3372c;font-size:13px">Datensatz '+k+' konnte nicht angezeigt werden.</div>'}}).join('');
       const au=box.querySelector('#admUn');
       if(au)au.onclick=async()=>{if(await adminOk()){ADMIN_OK=true;spieleListe()}};
-      box.querySelectorAll('.erep').forEach(b=>b.onclick=()=>replayOeffnen(b.dataset.k,ergObj[b.dataset.k]));
+      box.querySelectorAll('.erep').forEach(b=>b.onclick=()=>{const e=ergObj[b.dataset.k];if(e&&e.bretter&&e.bretter.length){toast('Der Spielverlauf für Super-Mega-Games folgt in Stufe 3.');return}replayOeffnen(b.dataset.k,e)});
       box.querySelectorAll('.edel').forEach(b=>b.onclick=()=>ergebnisLoeschen(b.dataset.k,ergObj[b.dataset.k],()=>{
         delete ergObj[b.dataset.k];spieleListe()}));
     }
@@ -4071,6 +4242,7 @@ stage.addEventListener('wheel',e=>{e.preventDefault();scale=Math.min(4,Math.max(
 
 // ---------- Startbildschirm ----------
 function zumStart(){
+  document.getElementById('mgTabs')?.classList.add('hidden');
   if(REPLAY){REPLAY=null;const bar=document.getElementById('replayBar');if(bar)bar.remove();document.getElementById('modals').style.display=''}
   try{if(roomRef)roomRef.off()}catch(e){}
   if(window._strafT){clearTimeout(window._strafT);window._strafT=null}
