@@ -381,7 +381,7 @@ function mgTabs(){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.83 · 06.10.2026';
+const APP_VERSION='7.84 · 07.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -3464,9 +3464,9 @@ function botBauwahl(i,plan){
     kand.push({s,o,prio:prio+s.laenge*0.3})};
   Object.values(plan.wunsch).forEach(w=>pruefe(w.s,w.prio*10));
   if(kand.length){kand.sort((a,b)=>b.prio-a.prio);return kand[0]}
-  // Nichts vom Plan bezahlbar: in der Endphase oder ohne offene Auftraege lange Strecken fuer Punkte bauen
+  // Nichts vom Plan bezahlbar: erst in der Endphase, bei wenigen Waggons oder uebervoller Hand lange Strecken fuer Punkte bauen
   const hand=Object.values(p.hand).reduce((a,b)=>a+b,0);
-  if(G.lastRounds>=0||!plan.offen.length||hand>=10){
+  if(G.lastRounds>=0||p.wagons<=10||hand>=14||(!plan.offen.length&&!G.ticketDeck.length)){
     MAP.strecken.forEach(s=>{if(s.laenge>=(G.lastRounds>=0?1:3))pruefe(s,s.laenge)});
     if(kand.length){kand.sort((a,b)=>b.prio-a.prio);return kand[0]}
   }
@@ -3517,7 +3517,7 @@ function botTickets(i){
   const G=g(),p=ROOM.players[i],rs=R().auftraege_nachziehen||{};
   const n=Math.min(rs.ziehen||4,G.ticketDeck.length),offer=G.ticketDeck.splice(0,n);
   const bew=offer.map(t=>botBewerte(i,t)).sort((a,b)=>b.wert-a.wert);
-  const keep=[];bew.forEach((b,k)=>{if(k===0||(b.felder<=Math.max(4,p.wagons-6)&&b.wert>=0.9))keep.push(b.t)});
+  const keep=[];bew.forEach((b,k)=>{if(k===0||(b.felder<=Math.max(4,p.wagons-4)&&b.wert>=0.8))keep.push(b.t)});
   const keepMin=rs.mindestens_behalten||1;while(keep.length<keepMin&&bew[keep.length])keep.push(bew[keep.length].t);
   offer.forEach(t=>{if(keep.indexOf(t)>=0)p.tickets.push(t);else if(!R().auftraege_raus)tkZurueck(G,t,false)});
   p.last='zieht '+offer.length+' Aufträge und behält '+keep.length;G.notice=p.name+' '+p.last;
@@ -3527,9 +3527,10 @@ function botZug(){
   const G=g(),i=G.turn,p=ROOM.players[i],alt=SEAT;SEAT=i;
   try{
     const plan=botPlan(i);
+    // Alle Auftraege erledigt (oder unerreichbar) und noch genug Waggons: neue Auftraege ziehen
+    if(!plan.offen.length&&G.lastRounds<0&&p.wagons>=8&&G.ticketDeck.length){botTickets(i);return}
     const bau=botBauwahl(i,plan);
     if(bau){botBauen(bau.s,bau.o);return}
-    if(!plan.offen.length&&G.lastRounds<0&&p.wagons>=12&&G.ticketDeck.length&&Math.random()<0.8){botTickets(i);return}
     botKarten(i,plan);
   }finally{SEAT=alt}
 }
@@ -4169,7 +4170,9 @@ function zeigeRangliste(){
     // damit ein einzelner alter Datensatz nicht die ganze Rangliste blockiert.
     erg.forEach(e=>{e.spieler=arrOf(e.spieler).filter(x=>x!=null);e.punkte=arrOf(e.punkte)});
     if(!erg.length){toast('Noch keine beendeten Spiele in der Wertung.');return}
-    const namen=[...new Set([].concat(...erg.map(e=>e.spieler||[])))].sort();
+    const namenVon=liste=>[...new Set([].concat(...liste.map(e=>e.spieler||[])))].sort();
+    const namen=namenVon(erg);
+    const botSpiele=erg.filter(e=>e.bot&&!e.test).length;
     const edOpts=Object.values(EDITIONEN).map(e=>({id:(e.meta.statId||e.meta.name),name:e.meta.name})).concat([{id:'Super-Mega-Game',name:'🧩 Super-Mega-Game'}]);
     const edName=id=>{const t=edOpts.find(o=>o.id===id);return t?t.name:(id||'Langenberg')};
     const selCss='padding:7px;border-radius:8px;border:1.5px solid var(--frame);background:#fff;font-size:13px;max-width:44vw';
@@ -4197,16 +4200,18 @@ function zeigeRangliste(){
         tab[k].spiele++;tab[k].punkte+=(e.punkte&&e.punkte[i])||0;
         if(e.sieger&&e.sieger.toLowerCase()===k)tab[k].siege++})});
       const a=Object.values(tab);
-      const quelle=filterAktiv()?'Gefiltert: '+rel.length+' Spiel(e)':'Über alle beendeten Spiele ('+rel.length+')';
+      const quelle=(fEd.value==='__bot'?'🤖 Solo gegen Bot: '+rel.length+' Spiel(e)':filterAktiv()?'Gefiltert: '+rel.length+' Spiel(e)':'Über alle beendeten Spiele ('+rel.length+')')
+        +(botSpiele&&fEd.value!=='__bot'?' · <a href="#" id="zuBot" style="color:#5a4632">🤖 '+botSpiele+' Spiel(e) gegen Bots → eigene Wertung</a>':'');
       if(!a.length){box.innerHTML='<p style="text-align:center;color:#8a7d63;padding:14px 0">Keine Spiele im gewählten Filter.</p>';return}
       a.sort((x,y)=>(y.siege-x.siege)||(y.punkte-x.punkte));
       box.innerHTML='<div style="font-size:13px;color:#8a7d63;margin-bottom:8px">'+quelle+'</div>'
         +a.map((p,i)=>zeile(i+1,p.name,p.siege+' Siege · '+p.spiele+' Spiele · \u00f8 '+(p.spiele?Math.round(p.punkte/p.spiele):0)+' Pkt.')).join('');
+      const zb=box.querySelector('#zuBot');if(zb)zb.onclick=ev=>{ev.preventDefault();fEd.value='__bot';akt()};
     }
     const gewaehlt=new Set();
     function direkt(){
       let hh='<div style="font-size:13px;color:#8a7d63;margin-bottom:6px">Spieler antippen – gewertet werden Spiele in genau dieser Besetzung'+(filterAktiv()?' (Filter aktiv)':'')+'.</div><div class="row" style="justify-content:flex-start;margin:0 0 10px">';
-      namen.forEach(n=>{hh+='<button class="opt vs'+(gewaehlt.has(n)?' sel':'')+'" data-n="'+n+'" style="width:auto;padding:7px 11px;margin:0">'+n+'</button>'});
+      namenVon(erg.filter(passt)).forEach(n=>{hh+='<button class="opt vs'+(gewaehlt.has(n)?' sel':'')+'" data-n="'+n+'" style="width:auto;padding:7px 11px;margin:0">'+n+'</button>'});
       hh+='</div><div id="vsErg"></div>';
       box.innerHTML=hh;
       box.querySelectorAll('.vs').forEach(b=>b.onclick=()=>{
