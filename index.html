@@ -383,7 +383,7 @@ function mgTabs(){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.85 · 08.10.2026';
+const APP_VERSION='7.86 · 09.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -416,7 +416,7 @@ let pickShown=false, finalShown=false, lastNotice='';
 // Nach RTDB-Roundtrip fehlende Felder wiederherstellen (leere Arrays/Objekte verschwinden)
 function fix(r){
   if(!r) return r;
-  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.bot)q.bot=true;if(p.lastN!==undefined)q.lastN=Array.isArray(p.lastN)?p.lastN:Object.values(p.lastN||{});if(p.lastPrev!==undefined)q.lastPrev=Array.isArray(p.lastPrev)?p.lastPrev:Object.values(p.lastPrev||{});if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fk!==undefined)q.fk=p.fk;if(p.exp!==undefined)q.exp=p.exp;if(p.fertig!==undefined)q.fertig=p.fertig;if(p.schiffe!==undefined)q.schiffe=p.schiffe;if(p.haefen!==undefined)q.haefen=p.haefen;if(p.boxW!==undefined)q.boxW=p.boxW;if(p.boxS!==undefined)q.boxS=p.boxS;if(p.fest!==undefined)q.fest=p.fest;if(p.skx!==undefined)q.skx=p.skx;if(p.ukTech!==undefined)q.ukTech=p.ukTech;if(p.lk!==undefined)q.lk=p.lk;if(p.heimat!==undefined)q.heimat=p.heimat;if(p.anteile!==undefined)q.anteile=p.anteile;if(p.geb!==undefined)q.geb=p.geb;if(p.loks!==undefined)q.loks=p.loks;return q});
+  r.players=(r.players||[]).map(p=>{const q={name:p.name,col:p.col,wagons:p.wagons??WAGONS(),hand:p.hand||{},tickets:p.tickets||[],score:p.score||0};if(p.total!==undefined)q.total=p.total;if(p.last!==undefined)q.last=p.last;if(p.bot)q.bot=true;if(p.staerke!==undefined)q.staerke=p.staerke;if(p.botFehl!==undefined)q.botFehl=p.botFehl;if(p.botWart!==undefined)q.botWart=p.botWart;if(p.lastN!==undefined)q.lastN=Array.isArray(p.lastN)?p.lastN:Object.values(p.lastN||{});if(p.lastPrev!==undefined)q.lastPrev=Array.isArray(p.lastPrev)?p.lastPrev:Object.values(p.lastPrev||{});if(p.pin!==undefined)q.pin=p.pin;if(p.res!==undefined)q.res=p.res;if(p.bahnhoefe!==undefined)q.bahnhoefe=p.bahnhoefe;if(p.gel!==undefined)q.gel=p.gel;if(p.fk!==undefined)q.fk=p.fk;if(p.exp!==undefined)q.exp=p.exp;if(p.fertig!==undefined)q.fertig=p.fertig;if(p.schiffe!==undefined)q.schiffe=p.schiffe;if(p.haefen!==undefined)q.haefen=p.haefen;if(p.boxW!==undefined)q.boxW=p.boxW;if(p.boxS!==undefined)q.boxS=p.boxS;if(p.fest!==undefined)q.fest=p.fest;if(p.skx!==undefined)q.skx=p.skx;if(p.ukTech!==undefined)q.ukTech=p.ukTech;if(p.lk!==undefined)q.lk=p.lk;if(p.heimat!==undefined)q.heimat=p.heimat;if(p.anteile!==undefined)q.anteile=p.anteile;if(p.geb!==undefined)q.geb=p.geb;if(p.loks!==undefined)q.loks=p.loks;return q});
   if(r.game){const g=r.game;
     g.deck=g.deck||[];g.discard=g.discard||[];g.open=g.open||[];g.ticketDeck=g.ticketDeck||[];
     g.claims=g.claims||{};
@@ -912,6 +912,11 @@ function skNachBau(s,o,fertig){
   const eFarbe=(o.col&&o.col!=='lok'&&CARDCOL[o.col])?o.col:null;
   const eMax=Math.min(skMaxFeld(),(eFarbe?(p.hand[eFarbe]||0):0)+(p.hand.lok||0));
   const expFrei=G.skExpZug?[]:skFrei(p);
+  if(istBot(SEAT)){   // Bot: nur bei deutlichem Waggon-Ueberschuss, ohne Zusatzkarten
+    if(bezahlt>=3&&p.wagons>=12){let f=(s.farbe==='grau')?null:s.farbe;
+      if(!f){let bestS=-1;skLinien().forEach(l=>{let sum=0;for(let v=1;v<=skMaxFeld();v++)if(skSeatAuf(l,v)===SEAT)sum+=v;if(sum>bestS&&skFeldFrei(l,Math.min(skMaxFeld(),bezahlt))){bestS=sum;f=l}})}
+      const frei=f?skFeldFrei(f,Math.min(skMaxFeld(),bezahlt)):0;if(frei)skSetzen(f,frei,0,eFarbe,0)}
+    fertig();return}
   let farbe=(s.farbe==='grau')?null:s.farbe, extra=0, exp=0;
   const html='<h2>🗺 Provinzen-Plan</h2>'
     +'<p style="font-size:14px;margin-bottom:8px">Du hast <b>'+bezahlt+'</b> Wagenkarte'+(bezahlt===1?'':'n')+' ausgespielt. Du darfst einen Waggon auf den Plan legen – er bleibt bis Spielende dort und fehlt dir für Strecken.</p>'
@@ -1281,7 +1286,7 @@ function zfListeModal(){
 function hostStart(){
   const rs=R().startauftraege||{};
   if(MEGA()&&mgBretter().length<2){toast('Super-Mega-Game: bitte mindestens zwei Bretter wählen.');return}
-  if(botAnzahl()&&!botMoeglich()){toast('Bots spielen nur in den Standard-Editionen und nicht im Super-Mega-Game – bitte Bots entfernen oder Edition wechseln.');return}
+  if(botAnzahl()&&!botMoeglich()){toast('Bots spielen in dieser Edition (noch) nicht bzw. nicht im Super-Mega-Game – bitte Bots entfernen oder Edition wechseln.');return}
   const alle=MEGA()?mgAuftragsSatz():ROOM.tkZufall?zfErzeugen(ROOM.tkZufall):MAP.auftraege.map(t=>{const o=t.typ==='land'?{von:t.von,typ:'land',ziele:(t.ziele||[]).map(z=>({nach:z.nach,punkte:z.punkte}))}:(t.typ==='route'?{typ:'route',von:t.von,nach:t.nach,stationen:t.stationen.slice(),punkte:t.punkte,punkte_ungeordnet:t.punkte_ungeordnet,minus:t.minus}:{von:t.von,nach:t.nach,punkte:t.punkte});if(t.lang)o.lang=true;return o});
   const langD=shuffle(alle.filter(t=>t.lang));
   const g={deck:newDeck(),discard:[],open:[],ticketDeck:shuffle(alle.filter(t=>!t.lang)),
@@ -1984,6 +1989,7 @@ function doClaim(s,o,gel){
       p.last+=' · das '+CNAME[glz]+'-Gleis geht zurück in den Vorrat';G.notice=p.name+' '+p.last}}
   if(IB()){const av=[...new Set([festStapel(s.von),festStapel(s.nach)].filter(x=>x&&(G.festOffen||{})[x]>0))];
     const nimm=x=>{const k=festNimm(G,p,x);p.last+=' · nimmt '+k+' Festivalkarte'+(k>1?'n':'')+' '+festName(x);G.notice=p.name+' '+p.last};
+    if(av.length===2&&istBot(SEAT)){av.sort((x,y)=>G.festOffen[y]-G.festOffen[x]);nimm(av[0]);endTurn();return}
     if(av.length===2){const m=modal('<h2>🎪 Festivalkarten</h2><p style="font-size:14px;margin-bottom:10px">Beide Städte haben offene Festivalkarten – du darfst nur <b>eine</b> Stadt nehmen.</p>'
         +av.map((x,i)=>'<button class="go" id="fw'+i+'">'+festName(x)+' ('+G.festOffen[x]+' Karte'+(G.festOffen[x]>1?'n':'')+')</button>').join(''));
       av.forEach((x,i)=>{m.querySelector('#fw'+i).onclick=()=>{m.remove();nimm(x);endTurn()}});return}
@@ -2287,7 +2293,7 @@ function owAlvinFang(s,weiter){
   G.notice=p.name+' '+p.last;
   const st=owStaedte(SEAT);
   if(!st.length){G.alvinVon=SEAT;toast('\ud83d\udc7d Alvin gefangen: +10 Punkte! Ohne eigene kontrollierte Stadt bleibt Alvin stehen.');weiter();return}
-  if(st.length===1){G.alvin=st[0];G.alvinVon=SEAT;p.last+=' und setzt ihn nach '+nodes[st[0]].name;G.notice=p.name+' '+p.last;toast('\ud83d\udc7d Alvin gefangen: +10 Punkte! Er zieht nach '+nodes[st[0]].name+'.');weiter();return}
+  if(st.length===1||istBot(SEAT)){G.alvin=st[0];G.alvinVon=SEAT;p.last+=' und setzt ihn nach '+nodes[st[0]].name;G.notice=p.name+' '+p.last;toast('\ud83d\udc7d Alvin gefangen: +10 Punkte! Er zieht nach '+nodes[st[0]].name+'.');weiter();return}
   const m=modal('<h2>\ud83d\udc7d Alvin gefangen! (+10)</h2><p style="font-size:14px;margin-bottom:10px">Setze Alvin in eine deiner kontrollierten St\u00e4dte \u2013 dort kann ihn nur ein anderer Spieler wieder fangen:</p>'
     +st.map((id,i)=>'<button class="go" id="oa'+i+'">'+nodes[id].name+'</button>').join(''));
   st.forEach((id,i)=>{m.querySelector('#oa'+i).onclick=()=>{m.remove();
@@ -2311,6 +2317,14 @@ function owMarkerAngebot(s,fertig){
   const kand=[s.von,s.nach].filter(id=>owBesitzer(id)===null&&!(owAlvinAn()&&id==='roswell'));
   const kombis=ROOM.test?[{col:null,use:0,lok:0,gratis:true}]:owMarkerKombis((p&&p.hand)||{});
   if(frei<=0||!kand.length||!kombis.length){fertig();return}
+  if(istBot(SEAT)){   // Bot: Marker auf die Stadt mit den meisten Strecken, bezahlt aus einem Farbueberschuss (mind. 4 Karten)
+    const grad=id=>MAP.strecken.filter(x=>x.von===id||x.nach===id).length;
+    const stadt=kand.slice().sort((x,y)=>grad(y)-grad(x))[0],k=kombis.find(x=>x.use===2&&(p.hand[x.col]||0)>=4);
+    if(k&&grad(stadt)>=3&&(p.wagons||0)>8){const G2=g();
+      p.hand[k.col]-=2;if(!p.hand[k.col])delete p.hand[k.col];G2.discard.push(k.col,k.col);
+      G2.marker=G2.marker||{};G2.marker[stadt]=SEAT;
+      p.last+=' \u00b7 setzt einen Stadtmarker auf '+nodes[stadt].name+' (2\u00d7 '+CNAME[k.col]+')';G2.notice=p.name+' '+p.last}
+    fertig();return}
   let selK=0;
   const m=modal('<h2>\ud83d\udccd Stadtmarker setzen?</h2>'
     +'<p style="font-size:14px;margin-bottom:6px">Du darfst jetzt <b>einen</b> Stadtmarker auf eine der gerade verbundenen St\u00e4dte legen ('+frei+' Marker \u00fcbrig).</p>'
@@ -2973,7 +2987,7 @@ function statsSchreiben(){
       spieler:ROOM.players.map(p=>p.name),
       punkte:ROOM.players.map(p=>p.total||0),
       zuege:(ROOM.game&&ROOM.game.zuege)||0,
-      sieger:sieger.name,bot:botAnzahl()>0,shuffle:!!ROOM.tkZufall,starter:(ROOM.game&&ROOM.game.startSpieler)||null,startArt:(ROOM.game&&ROOM.game.startArt)||null,custom:!!ROOM.custom,test:!!ROOM.test,variante:(IB()?(ibEinfach()?'5/3':'draft'):SK()?(ibEinfach()?'6/4':'draft'):null)});
+      sieger:sieger.name,bot:botAnzahl()>0,bots:botAnzahl()?Object.fromEntries(ROOM.players.filter(p=>p.bot).map(p=>[p.name,p.staerke||'normal'])):null,shuffle:!!ROOM.tkZufall,starter:(ROOM.game&&ROOM.game.startSpieler)||null,startArt:(ROOM.game&&ROOM.game.startArt)||null,custom:!!ROOM.custom,test:!!ROOM.test,variante:(IB()?(ibEinfach()?'5/3':'draft'):SK()?(ibEinfach()?'6/4':'draft'):null)});
     // Spielverlauf zum Nachschauen (Strecken, Aufträge, Auswertung) – getrennt vom Ergebnis,
     // damit die Rangliste beim Öffnen nicht alle Verläufe mitlädt.
     try{db.ref('replays/'+eRef.key).set(replayDaten())}catch(e){}
@@ -3374,30 +3388,45 @@ function zeigeRps(){
   const z=m.querySelector('#rpsZuf');if(z)z.onclick=()=>{m.remove();zufallsReihenfolge()};
 }
 // ---------- Bot-Mitspieler (Solospiel) ----------
-// Bots sind normale Eintraege in ROOM.players mit bot:true. Gesteuert werden sie vom Geraet des
-// Gastgebers (ROOM.hostName): dort laeuft nach jedem Spielstand botTick(), das fuer den Bot
-// Startauftraege waehlt, bei Schere-Stein-Papier wuerfelt und am Zug handelt. Die Spielaktionen
-// nutzen dieselben Funktionen wie ein Mensch (doClaim, endTurn, Kartenstapel), nur ohne Dialoge.
-const BOT_EDITIONEN=['langenberg','langenberg_nb','amerika','europa','deutschland','niederlande','skandinavien','pennsylvania','indien','italia','afrika','polen','japan'];
+// Bots sind normale Eintraege in ROOM.players mit bot:true (dazu staerke: ruhig | normal | aggressiv).
+// Gesteuert werden sie vom Geraet des Gastgebers (ROOM.hostName): dort laeuft nach jedem Spielstand
+// botTick(), das fuer den Bot Startauftraege waehlt (auch Draft, Heimatstadt), bei Schere-Stein-Papier
+// wuerfelt und am Zug handelt. Die Spielaktionen nutzen dieselben Funktionen wie ein Mensch
+// (doClaim, endTurn, Kartenstapel), nur ohne Dialoge. Der Bot sieht nur, was jeder sieht:
+// das Brett, die Auslage und die eigene Hand – nie die Aufträge oder Karten der Mitspieler.
+const BOT_EDITIONEN=['langenberg','langenberg_nb','amerika','europa','deutschland','niederlande','skandinavien','pennsylvania','indien','italia','afrika','polen','japan',
+  'asien','schweiz','polarlichter','frankreich','old_west','united_kingdom','iberia','suedkorea','weltreise','grosse_seen'];
+const BOT_NAMEN=['Eminem','Aphroe','Alligatoah','Busta'];
+const BOT_STAERKEN={ruhig:'zieht lieber neue Aufträge, statt das Spiel zu beenden',normal:'baut seine Aufträge und beendet, wenn die Waggons knapp werden',aggressiv:'beobachtet die Netze der Mitspieler und baut ihnen Strecken zu'};
 function botMoeglich(){return BOT_EDITIONEN.indexOf(EDITION)>=0&&!MEGA()}
 function istBot(i){const p=ROOM&&ROOM.players&&ROOM.players[i];return !!(p&&p.bot)}
 function botAnzahl(){return (ROOM&&ROOM.players||[]).filter(p=>p.bot).length}
+function botStaerke(i){const p=ROOM.players[i];return (p&&p.staerke)||'normal'}
 function botHost(){if(!ROOM||!ROOM.players||SEAT===null)return false;const me0=ROOM.players[SEAT];if(!me0||me0.bot)return false;
   return ROOM.hostName?me0.name===ROOM.hostName:SEAT===0}
-function botName(){const n=botAnzahl();return n?'Bot '+(n+1):'Bot'}
-function botHinzufuegen(name){
-  if(!botMoeglich()){toast('Bots gibt es nur in den Standard-Editionen (ohne Sonderregeln) und nicht im Super-Mega-Game.');return}
+function botName(){const used=(ROOM&&ROOM.players||[]).map(p=>p.name.toLowerCase());const n=BOT_NAMEN.find(x=>!used.includes(x.toLowerCase()));return n||('Bot '+(botAnzahl()+1))}
+function botFarbenFrei(){return PCOL.filter(c=>!ROOM.players.some(p=>p.col===c.id))}
+function botHinzufuegen(name,col,staerke){
+  if(!botMoeglich()){toast('Bots gibt es in dieser Edition (noch) nicht – und nicht im Super-Mega-Game.');return}
   if(ROOM.players.length>=5){toast('Der Raum ist voll (5 Spieler).');return}
   if(botAnzahl()>=4){toast('Höchstens 4 Bots.');return}
   name=(name||'').trim().slice(0,14)||botName();
   if(ROOM.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){toast('Der Name ist schon vergeben.');return}
-  const frei=PCOL.find(c=>!ROOM.players.some(p=>p.col===c.id));
-  ROOM.players.push({name,col:frei.id,wagons:WAGONS(),hand:{},tickets:[],score:0,bot:true});
+  const frei=botFarbenFrei();if(!frei.length){toast('Keine Spielerfarbe mehr frei.');return}
+  const c=frei.find(x=>x.id===col)||frei[0];
+  if(!BOT_STAERKEN[staerke])staerke='normal';
+  ROOM.players.push({name,col:c.id,wagons:WAGONS(),hand:{},tickets:[],score:0,bot:true,staerke});
   if(!ROOM.hostName)ROOM.hostName=me().name;
   sync();
 }
 function botEntfernen(i){if(!istBot(i))return;ROOM.players.splice(i,1);sync()}
 let _botT=null,_botZug=null,_botPick={};
+// Merker fuer Einmal-Aktionen (Startwahl, Draft, Heimatstadt): nach 4 s darf erneut versucht werden,
+// falls der Schreibvorgang verloren ging
+function botFrei(k){return !(_botPick[k]&&Date.now()-_botPick[k]<4000)}
+// Sicherheitsnetz: alle 2 s pruefen, ob ein Bot dran ist (falls ein Schreibvorgang verloren ging)
+let _botZugT=0;
+setInterval(()=>{try{if(typeof ROOM!=='undefined'&&ROOM&&ROOM.game&&botAnzahl()){if(_botZug&&!_botT&&Date.now()-_botZugT>12000)_botZug=null;botTick()}}catch(e){}},2000);
 function botDelay(){return (typeof window!=='undefined'&&window.BOT_DELAY)||1500}
 function botTick(){
   if(!botHost()||!g()||REPLAY||ROOM.test)return;
@@ -3410,82 +3439,208 @@ function botTick(){
     if(todo.length)_botT=setTimeout(()=>{_botT=null;todo.forEach(i=>roomRef.child('game/rps/wahl/'+i).set(['stein','papier','schere'][Math.floor(Math.random()*3)]));
       setTimeout(()=>{if(ROOM.status==='rps')rpsWerte()},Math.min(500,botDelay()))},Math.round(botDelay()*0.6));
     return}
+  if(ROOM.status==='picking'&&DR()&&G.draft){   // Zielkarten-Draft (Iberia, Südkorea)
+    const D=G.draft;
+    if(D.phase==='pick'){
+      const i=ROOM.players.findIndex((p,j)=>p.bot&&!(D.done||{})[j]&&((D.hands||{})[j]||[]).length&&botFrei(CODE+':d'+D.nr+':'+D.runde+':'+j));
+      if(i>=0){_botPick[CODE+':d'+D.nr+':'+D.runde+':'+i]=Date.now();_botT=setTimeout(()=>{_botT=null;try{botDraftPick(i)}catch(e){console.error('Bot-Draft',e)}},Math.round(botDelay()*0.4))}
+      return}
+    if(D.phase==='keep'){
+      const i=ROOM.players.findIndex((p,j)=>p.bot&&!(G.picked||{})[j]&&botFrei(CODE+':k'+D.nr+':'+j));
+      if(i>=0){_botPick[CODE+':k'+D.nr+':'+i]=Date.now();_botT=setTimeout(()=>{_botT=null;try{botDraftKeep(i)}catch(e){console.error('Bot-Draft-Behalten',e)}},Math.round(botDelay()*0.4))}
+      return}
+    return}
   if(ROOM.status==='picking'){
     const key=CODE+':'+(G.start||0);
-    const i=ROOM.players.findIndex((p,j)=>p.bot&&!(G.picked||{})[j]&&(G.startOffers||{})[j]!==undefined&&!_botPick[key+':'+j]);
-    if(i>=0){_botPick[key+':'+i]=true;_botT=setTimeout(()=>{_botT=null;try{botStartWahl(i)}catch(e){console.error('Bot-Startwahl',e)}},Math.round(botDelay()*0.5))}
+    const i=ROOM.players.findIndex((p,j)=>p.bot&&!(G.picked||{})[j]&&(G.startOffers||{})[j]!==undefined&&botFrei(key+':'+j));
+    if(i>=0){_botPick[key+':'+i]=Date.now();_botT=setTimeout(()=>{_botT=null;try{botStartWahl(i)}catch(e){console.error('Bot-Startwahl',e)}},Math.round(botDelay()*0.5))}
+    return}
+  if(ROOM.status==='heimat'&&OW()){   // Old West: Heimatstadt waehlen
+    const d=owDran(),key=CODE+':h'+(G.owWahl||0);
+    if(d>=0&&istBot(d)&&botFrei(key)){_botPick[key]=Date.now();_botT=setTimeout(()=>{_botT=null;try{botHeimat(d)}catch(e){console.error('Bot-Heimat',e)}},Math.round(botDelay()*0.5))}
     return}
   if(ROOM.status==='playing'&&!G.over&&istBot(G.turn)&&!G.tkPend){
     const key=G.zuege+':'+G.turn+':'+G.drawn;
     if(_botZug===key)return;   // fuer diesen Stand schon unterwegs
-    _botZug=key;
+    _botZug=key;_botZugT=Date.now();
     _botT=setTimeout(()=>{_botT=null;if(ROOM.status!=='playing'||!istBot(g().turn))return;
       try{botZug()}catch(e){console.error('Bot-Zug',e);botNotfall()}},botDelay());
   }
 }
 // Wenn etwas schiefgeht: Zug nicht haengen lassen, sondern Karten ziehen und weitergeben
-function botNotfall(){const G=g(),i=G.turn,alt=SEAT;SEAT=i;try{const p=ROOM.players[i];while(G.drawn<2){if(!botNimmBlind(G,p))break}p.last='zieht Karten';endTurn()}finally{SEAT=alt}}
-// ---- Wegsuche: kuerzester noch erreichbarer Weg fuer Spieler i (eigene Strecken kosten 0) ----
-function botBaubarStrecke(s,i){
+function botNotfall(){const G=g(),i=G.turn,alt=SEAT;SEAT=i;try{const p=ROOM.players[i];while(G.drawn<2){if(!botNimmBlind(G,p))break}p.last='zieht Karten';if(FR())delete G.frPflicht;endTurn()}finally{SEAT=alt}}
+// Waggon-Bedarf einer Strecke (Asien: Gebirgsfelder kosten extra Waggons)
+function botFelder(s){return s.laenge+((AS()&&s.gebirge)||0)}
+// Figuren eines Spielers (Weltreise/Grosse Seen: Waggons + Schiffe) und ob ein Weg damit baubar ist
+function botFig(p){return WR()?wrFiguren(p):(p.wagons||0)}
+function botReicht(p,pf){if(!pf)return false;if(WR())return (pf.fW||0)<=(p.wagons||0)&&(pf.fS||0)<=(p.schiffe||0);return pf.felder<=(p.wagons||0)}
+function botHatFiguren(p,s){if(WR())return s.typ==='schiff'?(p.schiffe||0)>=s.laenge:(p.wagons||0)>=s.laenge;return (p.wagons||0)>=botFelder(s)}
+function botSummen(pf){pf.felder=pf.neu.reduce((a,s)=>a+botFelder(s),0);pf.fW=pf.neu.reduce((a,s)=>a+(s.typ==='schiff'?0:s.laenge),0);pf.fS=pf.neu.reduce((a,s)=>a+(s.typ==='schiff'?s.laenge:0),0);return pf}
+// Strecke fuer Spieler i baubar? plan=true: auch Strecken, die erst noch vorbereitet werden muessen
+// (Frankreich: Gleis legen, UK: Technologie kaufen, Old West: Netzanschluss)
+function botBaubarStrecke(s,i,plan){
   const G=g();if(G.claims[s.nr]!==undefined)return false;
-  if(s.bett)return false;
   if(s.express&&!(EXPM()&&(G.expRest||0)>0))return false;
   const par=dmList(s);
   if(par.length){const belegt=par.map(nr=>G.claims[nr]).filter(v=>v!==undefined);
     if(belegt.includes(i))return false;
     if(belegt.length&&par.length<2&&ROOM.players.length<dopAb())return false}
-  if(PL()&&plBauSperre(s))return false;
+  if(PL()&&s.spezial&&MAP.strecken.some(x=>x.spezial===s.spezial&&G.claims[x.nr]===i))return false;
+  if(FR()&&s.bett){if(!frGleis(s.nr)){if(!plan||frGesperrt(s)||!frVorratFuer(s.laenge).length)return false}}
+  else if(s.bett)return false;
+  if(UK()&&!plan&&ukBauSperre(s,ROOM.players[i]))return false;
+  if(OW()&&!plan){const p=ROOM.players[i];if(!p.heimat)return false;const netz=plNetz(i,p.heimat);if(!netz.has(s.von)&&!netz.has(s.nach))return false}
   return true;
 }
-function botPfad(i,von,nach){
-  const G=g(),A=nameToIds[von]||[],B=new Set(nameToIds[nach]||[]);if(!A.length||!B.size)return null;
-  const adj={};
-  MAP.strecken.forEach(s=>{let w;if(G.claims[s.nr]===i||G.claims[s.nr]==='X')w=0;else if(botBaubarStrecke(s,i))w=s.laenge+(s.tunnel?0.6:0)+(s.faehre?s.faehre*0.7:0);else return;
-    (adj[s.von]=adj[s.von]||[]).push([s.nach,w,s]);(adj[s.nach]=adj[s.nach]||[]).push([s.von,w,s])});
-  (MAP.meta.verbunden||[]).forEach(v=>{(adj[v[0]]=adj[v[0]]||[]).push([v[1],0,null]);(adj[v[1]]=adj[v[1]]||[]).push([v[0],0,null])});
-  const d={},prev={},q=[];A.forEach(a=>{d[a]=0;q.push([0,a])});
-  while(q.length){q.sort((x,y)=>x[0]-y[0]);const [c,u]=q.shift();if(c>d[u])continue;
-    if(RAND[u]&&!A.includes(u))continue;
-    (adj[u]||[]).forEach(([v,w,s])=>{if(d[v]===undefined||c+w<d[v]){d[v]=c+w;prev[v]=[u,s];q.push([c+w,v])}})}
-  let best=null;B.forEach(b=>{if(d[b]!==undefined&&(best===null||d[b]<d[best]))best=b});
-  if(best===null)return null;
-  const neu=[];let u=best;while(prev[u]){const [pu,s]=prev[u];if(s&&G.claims[s.nr]!==i)neu.push(s);u=pu}
-  return {kosten:d[best],neu,felder:neu.reduce((a,s)=>a+s.laenge,0)};
+function botGewicht(s,i){let w=botFelder(s)+(s.tunnel?0.6:0)+(s.faehre?s.faehre*0.7:0);
+  if(FR()&&s.bett&&!frGleis(s.nr))w+=0.8;
+  if(UK()&&ukBauSperre(s,ROOM.players[i]))w+=1.5;
+  return w}
+// Graph fuer die Wegsuche: eigene Strecken kosten 0, fremde Strecken nur ueber Bahnhoefe
+function botGraph(i,opt){
+  const G=g(),p=ROOM.players[i],adj={},bhOk=!!(opt&&opt.bahnhof)&&bhAnzahl()>0;
+  const eigeneBh=new Set((p.bahnhoefe||[]).map(e=>bhHier(e)).filter(Boolean));
+  const add=(a,b,w,s,typ)=>{(adj[a]=adj[a]||[]).push([b,w,s,typ]);(adj[b]=adj[b]||[]).push([a,w,s,typ])};
+  MAP.strecken.forEach(s=>{const c=G.claims[s.nr];
+    if(c===i||c==='X'||(G.claims2&&G.claims2[s.nr]===i)){add(s.von,s.nach,0,s,0);return}
+    if(c!==undefined&&c!==null){if(!bhAnzahl())return;
+      if(eigeneBh.has(s.von)||eigeneBh.has(s.nach)){add(s.von,s.nach,0.5,s,2);return}
+      if(bhOk)add(s.von,s.nach,3,s,1);return}
+    if(botBaubarStrecke(s,i,true))add(s.von,s.nach,botGewicht(s,i),s,0)});
+  (MAP.meta.verbunden||[]).forEach(v=>add(v[0],v[1],0,null,0));
+  return adj;
 }
-// Plan: alle offenen Auftraege mit erreichbarem Weg; gewuenschte Strecken mit Prioritaet
+// Dijkstra von mehreren Startknoten zu einer Zielmenge; hoechstens eine fremde Strecke (Bahnhof)
+function botDijk(adj,A,B,i){
+  const G=g(),d={},prev={},q=[],bes=bhBesetzt();
+  A.forEach(a=>{d[a+'|0']=0;q.push([0,a,0])});
+  while(q.length){q.sort((x,y)=>x[0]-y[0]);const [c,u,f]=q.shift();if(c>d[u+'|'+f])continue;
+    if(RAND[u]&&!A.includes(u)&&!B.has(u))continue;   // Aussenorte sind Sackgassen
+    (adj[u]||[]).forEach(([v,w,s,typ])=>{let f2=f;
+      if(typ===1){if(f)return;if(bes.has(bhId(u))&&bes.has(bhId(v)))return;f2=1}
+      const k=v+'|'+f2;if(d[k]===undefined||c+w<d[k]){d[k]=c+w;prev[k]=[u+'|'+f,s,typ,u,v];q.push([c+w,v,f2])}})}
+  let best=null;B.forEach(b=>[0,1].forEach(f=>{const k=b+'|'+f;if(d[k]!==undefined&&(best===null||d[k]<d[best]))best=k}));
+  if(best===null)return null;
+  const neu=[],knoten=new Set();let bh=null,k=best;knoten.add(best.split('|')[0]);
+  while(prev[k]){const [pk,s,typ,u,v]=prev[k];knoten.add(pk.split('|')[0]);
+    if(s&&typ===0&&G.claims[s.nr]!==i)neu.push(s);
+    if(typ===1)bh={city:bes.has(bhId(u))?v:u,s};
+    k=pk}
+  return botSummen({kosten:d[best],neu,bh,knoten});
+}
+function botPfad(i,von,nach,opt){
+  const A=nameToIds[von]||[],B=new Set(nameToIds[nach]||[]);if(!A.length||!B.size)return null;
+  const adj=botGraph(i,opt);
+  const pf=botDijk(adj,A,B,i);if(!pf)return null;
+  // Old West: jede Strecke muss am eigenen Netz haengen – notfalls Anschlussweg zum Netz dazurechnen
+  if(OW()){const p=ROOM.players[i];if(p.heimat){const netz=plNetz(i,p.heimat);
+    if(![...pf.knoten].some(n=>netz.has(n))){const an=botDijk(adj,[...netz],pf.knoten,i);if(!an)return null;
+      an.neu.forEach(s=>{if(!pf.neu.some(x=>x.nr===s.nr))pf.neu.push(s)});botSummen(pf);pf.kosten+=an.kosten}}}
+  return pf;
+}
+// Plan: alle offenen Auftraege mit erreichbarem Weg (ggf. ueber einen Bahnhof); gewuenschte Strecken mit Prioritaet
+function botZielpaare(t){return tkLand(t)?tkZiele(t).map(z=>({nach:z.nach,punkte:z.punkte})):[{nach:t.nach,punkte:t.punkte}]}
 function botPlan(i){
-  const p=ROOM.players[i],plan={offen:[],wunsch:{},unerreichbar:[]};
-  (p.tickets||[]).forEach(t=>{if(tkErfuellt(i,t))return;
-    const pf=botPfad(i,t.von,t.nach);
-    if(!pf||pf.felder>p.wagons){plan.unerreichbar.push(t);return}
-    plan.offen.push({t,pf});
-    pf.neu.forEach(s=>{const w=plan.wunsch[s.nr]||(plan.wunsch[s.nr]={s,prio:0});w.prio+=t.punkte/Math.max(1,pf.felder)+1})});
+  const p=ROOM.players[i],plan={offen:[],wunsch:{},unerreichbar:[],bahnhof:[]};
+  let bhRest=bhAnzahl()?bhAnzahl()-(p.bahnhoefe||[]).length:0;
+  (p.tickets||[]).forEach(t=>{if(tkRoute(t)||tkErfuellt(i,t))return;
+    let best=null;
+    botZielpaare(t).forEach(z=>{const pf=botPfad(i,t.von,z.nach);if(!pf||!botReicht(p,pf))return;
+      const w=z.punkte/Math.max(1,pf.felder);if(!best||w>best.w)best={pf,w,punkte:z.punkte}});
+    if(bhRest>0){let bb=null;   // Bahnhof lohnt: Auftrag sonst unerreichbar oder der Umweg ist mindestens 6 Felder laenger
+      botZielpaare(t).forEach(z=>{const pf=botPfad(i,t.von,z.nach,{bahnhof:true});if(!pf||!pf.bh||!botReicht(p,pf))return;
+        const w=z.punkte/Math.max(1,pf.felder);if(!bb||w>bb.w)bb={pf,w,punkte:z.punkte}});
+      if(bb&&(!best||best.pf.felder>=bb.pf.felder+6)&&bb.punkte>=(bhRegel().punkte_pro_ungebautem||4)){best=bb;bhRest--;plan.bahnhof.push({t,city:bb.pf.bh.city,fertig:!bb.pf.neu.length})}}
+    if(!best){plan.unerreichbar.push(t);return}
+    plan.offen.push({t,pf:best.pf,punkte:best.punkte});
+    best.pf.neu.forEach(s=>{const w=plan.wunsch[s.nr]||(plan.wunsch[s.nr]={s,prio:0});w.prio+=best.punkte/Math.max(1,best.pf.felder)+1})});
+  plan.restFelder=plan.offen.reduce((a,o)=>a+o.pf.felder,0);
   return plan;
 }
-function botOption(s,p){
-  const opts=bauOptionen(s,p.hand,0,null,!!R().lok_nur_faehre_tunnel&&!s.faehre&&!s.tunnel);
-  if(!opts.length)return null;
-  opts.sort((a,b)=>(a.lok-b.lok)||((p.hand[b.col]||0)-(p.hand[a.col]||0)));
-  return opts[0];
+// Kartenbedarf fuer die geplanten Strecken (je Farbe; grau = flexibel), Joker fuer Tunnel/Faehren
+function botBedarf(plan){const bedarf={};let lok=0;
+  Object.values(plan.wunsch).forEach(w=>{const s=w.s,f=(FR()&&s.bett)?(frGleis(s.nr)||'grau'):s.farbe;
+    if(WR()){const k=(s.typ==='schiff'?'s:':'w:')+f;bedarf[k]=(bedarf[k]||0)+s.laenge*(s.gelaende?2:1);return}
+    if(s.faehre)lok+=s.faehre;if(f!=='grau')bedarf[f]=(bedarf[f]||0)+s.laenge;if(s.tunnel)lok+=1});
+  bedarf.lok=lok;return bedarf}
+// Beliebige Karten fuer Sonderzahlungen automatisch waehlen (Ersatzfelder, Polarlichter-Paare, UK-Tausch)
+function botMix(p,o,bedarf){
+  if(!o.ersatz&&!o.paar&&!o.subst)return o;
+  const hand=Object.assign({},p.hand);if(o.use)hand[o.col]=(hand[o.col]||0)-o.use;if(o.lok)hand.lok=(hand.lok||0)-o.lok;
+  const mix={},sur=k=>(hand[k]||0)-((bedarf&&bedarf[k])||0);
+  if(o.paar){delete hand.lok;let need=o.paar;const cols=Object.keys(hand).filter(k=>hand[k]>=2).sort((a,b)=>sur(b)-sur(a));
+    for(const k of cols){while(need>0&&hand[k]>=2){hand[k]-=2;mix[k]=(mix[k]||0)+2;need--}}if(need>0)return null}
+  else{let need=o.ersatz?o.ersatzKarten:o.substK;const keys=Object.keys(hand).filter(k=>hand[k]>0&&(o.ersatz||k!=='lok')).sort((a,b)=>sur(b)-sur(a));
+    for(const k of keys){while(need>0&&hand[k]>0){hand[k]--;mix[k]=(mix[k]||0)+1;need--}}if(need>0)return null}
+  return Object.assign({},o,{mix});
 }
+function botStrecke(s){return (FR()&&s.bett)?Object.assign({},s,{farbe:frGleis(s.nr)||'grau'}):s}
+// Bezahloption: ohne Sonderzahlung, wenige Joker, Farbe mit dem groessten Ueberschuss
+function botOption(s,p,bedarf,nurUeberschuss){
+  s=botStrecke(s);
+  if(WR()){if(nurUeberschuss)return null;const o=bauOptionenWR(s,p.hand);return o.length?o[0]:null}   // sortiert: ohne Verfall, wenige Joker
+  const opts0=UK()?ukBauOptionen(s,p):bauOptionen(s,p.hand,p.fk||0,FK(),!!R().lok_nur_faehre_tunnel&&!s.faehre&&!s.tunnel);
+  const opts=opts0.map(o=>botMix(p,o,bedarf)).filter(Boolean);
+  if(!opts.length)return null;
+  const sur=o=>((p.hand[o.col]||0)-o.use)-((bedarf&&bedarf[o.col])||0);
+  const lokSur=o=>((p.hand.lok||0)-o.lok)-((bedarf&&bedarf.lok)||0);
+  let kand=opts;
+  if(nurUeberschuss)kand=opts.filter(o=>(!o.use||sur(o)>=0)&&(!o.lok||lokSur(o)>=0)&&!o.mix);
+  if(!kand.length)return null;
+  kand.sort((a,b)=>((a.mix?1:0)-(b.mix?1:0))||(a.lok-b.lok)||(sur(b)-sur(a)));
+  return kand[0];
+}
+// Darf der Bot das Spielende einlaeuten? (ruhig: erst nach 3 erfolglosen Auftragszuegen oder leerem Stapel)
+function botTkZiehbar(G){if(IB()&&!G.draft2Done)return false;return G.ticketDeck.length>0}
+function botEndeOk(i){const G=g(),p=ROOM.players[i];if(botStaerke(i)!=='ruhig')return true;
+  return G.lastRounds>=0||(p.botFehl||0)>=3||!botTkZiehbar(G)||(p.botWart||0)>=8}   // Notbremse: 8 Zuege nur Karten gezogen
 function botBauwahl(i,plan){
-  const p=ROOM.players[i],G=g(),kand=[];
-  const pruefe=(s,prio)=>{const exp=!!(s.express&&EXPM()&&(G.expRest||0)>0);if(!botBaubarStrecke(s,i)||(!exp&&p.wagons<s.laenge))return;const o=botOption(s,p);if(!o)return;
+  const p=ROOM.players[i],G=g(),kand=[],bedarf=botBedarf(plan),endeOk=botEndeOk(i);
+  const pruefe=(s,prio)=>{const exp=!!(s.express&&EXPM()&&(G.expRest||0)>0);if(!botBaubarStrecke(s,i)||(!exp&&!botHatFiguren(p,s)))return;
+    if(!exp&&!endeOk&&botFig(p)-botFelder(s)<=(WR()?((R().figuren_ende!==undefined)?R().figuren_ende:6):2))return;   // ruhig: letzte Runde nicht ausloesen
+    const o=botOption(s,p,bedarf);if(!o)return;
     if(s.tunnel&&G.lastRounds<0){const puffer=((p.hand[o.col]||0)-o.use)+((p.hand.lok||0)-o.lok);if(puffer<1)return}
     kand.push({s,o,prio:prio+s.laenge*0.3})};
   Object.values(plan.wunsch).forEach(w=>pruefe(w.s,w.prio*10));
   if(kand.length){kand.sort((a,b)=>b.prio-a.prio);return kand[0]}
-  // Nichts vom Plan bezahlbar: erst in der Endphase, bei wenigen Waggons oder uebervoller Hand lange Strecken fuer Punkte bauen
+  // Nichts vom Plan bezahlbar: in der Endphase, bei wenigen Waggons oder uebervoller Hand lange Strecken fuer Punkte bauen
   const hand=Object.values(p.hand).reduce((a,b)=>a+b,0);
-  if(G.lastRounds>=0||p.wagons<=10||hand>=14||(!plan.offen.length&&!G.ticketDeck.length)){
+  const spaet=botStaerke(i)==='ruhig'?(G.lastRounds>=0||hand>=14||(!plan.offen.length&&!botTkZiehbar(G))):(G.lastRounds>=0||botFig(p)<=(WR()?14:10)||hand>=14||(!plan.offen.length&&!botTkZiehbar(G)));
+  if(spaet){
     MAP.strecken.forEach(s=>{if(s.laenge>=(G.lastRounds>=0?1:3))pruefe(s,s.laenge)});
     if(kand.length){kand.sort((a,b)=>b.prio-a.prio);return kand[0]}
   }
   if(EXPM()&&(G.expRest||0)>0&&p.wagons<=6){MAP.strecken.forEach(s=>{if(s.express)pruefe(s,s.laenge)});if(kand.length){kand.sort((a,b)=>b.prio-a.prio);return kand[0]}}
   return null;
 }
+// Aggressiv: Strecken, die ein gegnerisches Netz offensichtlich braucht (verbindet zwei Teilnetze
+// oder ist der letzte Ausgang einer Stadt am Netz) – nur aus dem Kartenueberschuss, nie zu Lasten
+// der eigenen Auftraege. Beurteilt wird allein das sichtbare Brett.
+function botKomponenten(j){const G=g(),par={},find=x=>par[x]===x?x:par[x]=find(par[x]);
+  MAP.strecken.forEach(s=>{if(G.claims[s.nr]!==j&&!(G.claims2&&G.claims2[s.nr]===j))return;
+    if(par[s.von]===undefined)par[s.von]=s.von;if(par[s.nach]===undefined)par[s.nach]=s.nach;par[find(s.von)]=find(s.nach)});
+  const m=new Map();for(const k in par)m.set(k,find(k));return m}
+function botBlock(i,plan){
+  const G=g(),p=ROOM.players[i],n=ROOM.players.length;if(n<2||G.lastRounds>=0)return null;
+  const bedarf=botBedarf(plan);let best=null;
+  for(let j=0;j<n;j++){if(j===i)continue;const comp=botKomponenten(j);if(!comp.size)continue;
+    MAP.strecken.forEach(s=>{if(s.tunnel||s.express||!botBaubarStrecke(s,i))return;
+      const a=comp.get(s.von),b=comp.get(s.nach);let score=0;
+      if(a!==undefined&&b!==undefined)score=a!==b?3:0;
+      else if(a!==undefined||b!==undefined){const other=a!==undefined?s.nach:s.von;
+        const frei=MAP.strecken.filter(x=>x.nr!==s.nr&&(x.von===other||x.nach===other)&&G.claims[x.nr]===undefined).length;
+        score=frei<=1?2:(frei===2?1.2:0)}
+      if(score<1)return;
+      const par=dmList(s);if(par.length&&n>=dopAb()&&par.some(nr=>G.claims[nr]===undefined))return;   // Parallelgleis bleibt frei: Blockade sinnlos
+      if(botFig(p)-botFelder(s)<plan.restFelder+2)return;   // Waggons fuer die eigenen Auftraege bleiben
+      if(!botEndeOk(i)&&botFig(p)-botFelder(s)<=(WR()?6:2))return;
+      const o=botOption(s,p,bedarf,true);if(!o)return;
+      const val=score*2-s.laenge*0.25+PTSv(s.laenge)*0.15;
+      if(!best||val>best.val)best={s,o,score,val,gegen:ROOM.players[j].name}})}
+  return best;
+}
 function botBauen(s,o){
-  const p=me();
+  const p=me();s=botStrecke(s);
   if(s.tunnel){   // Tunnel wie beim Menschen: 3 Karten aufdecken, Zusatzkarten zahlen oder abbrechen
     const G=g(),rev=[];for(let k=0;k<3;k++){const c=drawCard(G);if(c!==null)rev.push(c)}
     const allLok=o.use===0,extra=rev.filter(c=>allLok?c==='lok':(c===o.col||c==='lok')).length;
@@ -3501,47 +3656,164 @@ function botBauen(s,o){
     if(eigen>=noetig&&eigen>=andere)gel={typ:t,karten:noetig,lok:0}}
   doClaim(s,o,gel);
 }
+// Bahnhof bauen (Europa): Farbe mit dem groessten Ueberschuss, sonst Joker
+function botBahnhof(i,plan){
+  const G=g(),p=ROOM.players[i];if(!bhAnzahl()||!plan.bahnhof.length)return false;
+  const gebaut=(p.bahnhoefe||[]).length;if(gebaut>=bhAnzahl())return false;
+  const bes=bhBesetzt(),b=plan.bahnhof.find(x=>!bes.has(bhId(x.city)));if(!b)return false;
+  const kosten=bhKosten(gebaut),bedarf=botBedarf(plan);let o=null,bestSur=-1e9;
+  ['rot','orange','gelb','gruen','blau','pink','weiss','schwarz'].forEach(col=>{const have=p.hand[col]||0;if(have<kosten)return;const sur=have-kosten-(bedarf[col]||0);if(sur>bestSur){bestSur=sur;o={col,use:kosten,lok:0}}});
+  if(!o&&(p.hand.lok||0)>=kosten)o={col:'rot',use:0,lok:kosten};
+  if(!o)return false;
+  doBahnhof(b.city,o);return true;
+}
+// United Kingdom: Technologien kaufen (eine je Zug, vor dem Kartenziehen)
+function botUkTech(i,plan){
+  const G=g(),p=ROOM.players[i];if(!UK()||G.drawn>0||G.ukGekauft)return;
+  const need={};const zaehl=(id,w)=>{need[id]=(need[id]||0)+w};
+  Object.values(plan.wunsch).forEach(w=>{const s=w.s,pr=w.prio;if(ukIstNY(s))return;
+    [(nodes[s.von]||{}).land,(nodes[s.nach]||{}).land].forEach(ld=>{if(ld==='wales')zaehl('konzession_wales',pr);if(ld==='schottland')zaehl('konzession_schottland',pr);if(ld==='irland'||ld==='frankreich')zaehl('konzession_irland_frankreich',pr)});
+    if(s.faehre)zaehl('schiffsschrauben',pr);if(s.laenge===3)zaehl('stoker',pr+2);if(s.laenge>=4)zaehl('dampfkessel',pr)});
+  if(!ukHat(p,'stoker'))zaehl('stoker',1);   // der Heizer wird fast immer gebraucht
+  const techs=ukAlleTechs().filter(t=>need[t.id]&&!ukStatus(t,p)).sort((a,b)=>(need[b.id]-need[a.id])||(a.kosten-b.kosten));
+  const bedarf=botBedarf(plan),N=ukSubstN(p);
+  for(const t of techs){
+    const loks=p.hand.lok||0,zahlLok=Math.min(loks,t.kosten),fehlt=t.kosten-zahlLok;
+    let mix=null;
+    if(fehlt>0){const hand=Object.assign({},p.hand);delete hand.lok;let rest=fehlt*N;mix={};
+      const keys=Object.keys(hand).filter(k=>hand[k]>0).sort((a,b)=>((hand[b]-(bedarf[b]||0))-(hand[a]-(bedarf[a]||0))));
+      for(const k of keys){const sur=Math.max(0,hand[k]-(bedarf[k]||0));const n=Math.min(sur,rest);if(n){mix[k]=n;rest-=n}}
+      if(rest>0)continue}
+    if(ukKaufSperre(t,p))continue;
+    ukKaufen2(t.id,zahlLok,mix);return;
+  }
+}
+// Frankreich: nach dem Kartenziehen ein Gleis auf ein leeres Gleisbett legen (Pflicht)
+function botGleis(i,plan){
+  const G=g(),p=ROOM.players[i],L=frLegal();if(!L.length){G.frGelegt='kann kein Gleis legen (kein passendes freies Gleisbett)';return}
+  let s=L.find(x=>plan.wunsch[x.nr]);
+  if(!s){const w=Object.values(plan.wunsch);s=L[Math.floor(Math.random()*L.length)];
+    if(w.length){const naeh=L.filter(x=>w.some(q=>q.s.von===x.von||q.s.nach===x.von||q.s.von===x.nach||q.s.nach===x.nach));if(naeh.length)s=naeh[Math.floor(Math.random()*naeh.length)]}}
+  const cols=frVorratFuer(s.laenge);let c=cols[0],bestN=-1;
+  cols.forEach(x=>{const n=p.hand[x]||0;if(n>bestN){bestN=n;c=x}});
+  (G.gleise=G.gleise||{})[s.nr]=c;G.gleisVorrat=G.gleisVorrat||frVorratInit();
+  G.gleisVorrat[frKey(c,s.laenge)]=frVorratAnz(c,s.laenge)-1;
+  G.frGelegt='legt ein '+CNAME[c]+'-Gleis (Länge '+s.laenge+') auf das Gleisbett '+nodes[s.von].name+' – '+nodes[s.nach].name;
+}
 function botNimmOffen(G,p,idx){const c=G.open[idx];const nc=drawCard(G);if(nc===null)G.open.splice(idx,1);else G.open[idx]=nc;
   p.hand[c]=(p.hand[c]||0)+1;lokReset(G);(G.pend=G.pend||[]).push(c);G.drawn+=(c==='lok'&&!R().lok_frei_ziehen)?2:1}
 function botNimmBlind(G,p){const c=drawCard(G);if(c===null)return false;p.hand[c]=(p.hand[c]||0)+1;(G.pend=G.pend||[]).push('?');G.drawn+=1;return true}
+// Weltreise/Grosse Seen: Hafen bauen (ganzer Zug) in einer eigenen Hafenstadt mit erfuellten Auftraegen
+function botHafen(i){
+  const G=g(),p=ROOM.players[i];if(!WR()||G.drawn>0)return false;
+  if((p.haefen||[]).length>=wrHafenMax())return false;
+  const st=wrHafenStaedte(i);if(!st.length)return false;
+  const cnt={};st.forEach(id=>{const name=nodes[id].name;cnt[id]=(p.tickets||[]).filter(t=>tkErfuellt(i,t)&&wrTicketStaedte(t).includes(name)).length});
+  const best=st.filter(id=>cnt[id]>0).sort((a,b)=>cnt[b]-cnt[a])[0];if(!best)return false;
+  const opts=wrHafenOptionen(p.hand);if(!opts.length)return false;const o=opts[0];
+  wrHandAbziehen(p,G,o.pay);G.haefen=G.haefen||{};G.haefen[best]=i;(p.haefen=p.haefen||[]).push(best);
+  p.last='baut einen Hafen in '+nodes[best].name+' ('+wrPayText(o.pay)+')';G.notice=p.name+' '+p.last;G.drawn=2;endTurn();return true;
+}
+// Weltreise/Grosse Seen: Karten aus zwei Stapeln (Wagen/Schiffe) nach Bedarf der geplanten Strecken
+function botKartenWR(i,plan){
+  const G=g(),p=ROOM.players[i],bedarf=botBedarf(plan);
+  const have=k=>{const t=k[0],f=k.slice(2);if(f==='grau')return 0;if(t==='w')return wrWagenZahl(p.hand,f);return (p.hand['schiff_'+f+'_1']||0)+2*(p.hand['schiff_'+f+'_2']||0)};
+  const fehlt=k=>Math.max(0,(bedarf[k]||0)-have(k));
+  // Hafen-Sammelziel: 2 Wagen- und 2 Schiffskarten (je mit Hafensymbol) derselben Farbe, sobald eine eigene Hafenstadt mit erfuelltem Auftrag erreichbar ist
+  const hafenZiel=(p.haefen||[]).length<wrHafenMax()&&wrHafenStaedte(i).some(id=>(p.tickets||[]).some(t=>tkErfuellt(i,t)&&wrTicketStaedte(t).includes(nodes[id].name)));
+  const hafenStand=f=>Math.min(2,p.hand['wagen_'+f+'_hafen']||0)+Math.min(2,p.hand['schiff_'+f+'_1']||0);
+  const hafenBest=hafenZiel?Math.max(...WR_FARBEN.map(hafenStand)):0;
+  const hafenWert=c=>{if(!hafenZiel||!wrHafenKarte(c))return 0;
+    if(c==='joker')return hafenBest>=2?1.2:0;
+    const f=wrFarbe(c),eigen=/_hafen$/.test(c)?(p.hand['wagen_'+f+'_hafen']||0):(p.hand['schiff_'+f+'_1']||0);
+    if(eigen>=2)return 0;const st=hafenStand(f);return st>=hafenBest&&st>=1?2:(st>=1?1.2:0.6)};
+  const wert=c=>{if(c==='joker')return 0;const f=wrFarbe(c),t=wrIstSchiff(c)?'s':'w';let v=fehlt(t+':'+f);if(bedarf[t+':grau'])v+=0.5;
+    if(v>0&&wrTyp(c)==='s2')v+=0.5;return Math.max(v,hafenWert(c))};
+  const needS=Object.keys(bedarf).filter(k=>k[0]==='s').reduce((a,k)=>a+fehlt(k),0),needW=Object.keys(bedarf).filter(k=>k[0]==='w').reduce((a,k)=>a+fehlt(k),0);
+  let schritte=0;
+  while(G.drawn<2&&schritte++<3){
+    let bestIdx=-1,bestVal=0;G.open.forEach((c,idx)=>{if(c==='joker'&&G.drawn>0)return;const v=wert(c);if(v>bestVal){bestVal=v;bestIdx=idx}});
+    if(bestIdx<0&&G.drawn===0&&G.open.indexOf('joker')>=0&&(p.hand.joker||0)<2)bestIdx=G.open.indexOf('joker');
+    if(bestIdx>=0){const c=G.open[bestIdx];G.open.splice(bestIdx,1);p.hand[c]=(p.hand[c]||0)+1;(G.pend=G.pend||[]).push(c);G.drawn+=(c==='joker')?2:1;
+      const st=wrIstSchiff(c)?'s':'w';let nc=wrDraw(G,st);if(nc===null)nc=wrDraw(G,st==='w'?'s':'w');if(nc!==null)G.open.splice(Math.min(bestIdx,G.open.length),0,nc);wrJokerReset(G)}
+    else{const st=needS>needW?'s':'w';let c=wrDraw(G,st);if(c===null)c=wrDraw(G,st==='w'?'s':'w');
+      if(c===null){const idx=G.open.findIndex(x=>x!=='joker');if(idx<0)break;const x=G.open.splice(idx,1)[0];p.hand[x]=(p.hand[x]||0)+1;(G.pend=G.pend||[]).push(x);G.drawn+=1}
+      else{p.hand[c]=(p.hand[c]||0)+1;(G.pend=G.pend||[]).push('?');G.drawn+=1}}
+  }
+  if(!G.drawn){if(G.lastRounds<0&&botTkZiehbar(G)){botTickets(i);return}p.last='kann keine Karten ziehen'}
+  endTurn();
+}
 function botKarten(i,plan){
   const G=g(),p=ROOM.players[i];
-  // Bedarf je Farbe aus den geplanten Strecken (grau = flexibel), Joker fuer Tunnel/Faehren
-  const bedarf={};let lokBedarf=0;
-  Object.values(plan.wunsch).forEach(w=>{const s=w.s;if(s.faehre)lokBedarf+=s.faehre;if(s.farbe!=='grau')bedarf[s.farbe]=(bedarf[s.farbe]||0)+s.laenge;if(s.tunnel)lokBedarf+=1});
+  if(WR()){botKartenWR(i,plan);return}
+  // Suedkorea: Expresszug-Karte fuer zusaetzliche Wagenkarten (bei kleiner Hand)
+  if(SK()&&G.drawn===0&&!G.skExpZug&&Object.values(p.hand).reduce((a,b)=>a+b,0)<8){const fr=skFrei(p);if(fr.length)skExpKarten(Math.max(...fr))}
+  const bedarf=botBedarf(plan);
   let schritte=0;
   while(G.drawn<2&&schritte++<3){
     let bestIdx=-1,bestVal=0;
     G.open.forEach((c,idx)=>{if(c==='lok')return;const fehlt=(bedarf[c]||0)-(p.hand[c]||0);if(fehlt>bestVal){bestVal=fehlt;bestIdx=idx}});
-    if(bestIdx<0&&G.drawn===0&&lokBedarf>(p.hand.lok||0)&&G.open.indexOf('lok')>=0&&!R().lok_frei_ziehen){bestIdx=G.open.indexOf('lok')}
+    if(bestIdx<0&&G.drawn===0&&bedarf.lok>(p.hand.lok||0)&&G.open.indexOf('lok')>=0&&!R().lok_frei_ziehen){bestIdx=G.open.indexOf('lok')}
     if(bestIdx>=0&&G.open[bestIdx]!==undefined)botNimmOffen(G,p,bestIdx);
     else if(!botNimmBlind(G,p)){   // Stapel leer: notfalls offene Karte
       const idx=G.open.findIndex(c=>c!=='lok');if(idx>=0)botNimmOffen(G,p,idx);else break}
   }
-  if(!G.drawn){p.last='kann keine Karten ziehen';}
+  if(!G.drawn){   // Stapel und Ablage leer: lieber Auftraege ziehen oder irgendeine bezahlbare Strecke bauen
+    if(G.lastRounds<0&&botTkZiehbar(G)){botTickets(i);return}
+    let kand=null;MAP.strecken.forEach(s=>{if(!botBaubarStrecke(s,i)||!botHatFiguren(p,s))return;const o=botOption(s,p,bedarf);if(o&&(!kand||s.laenge>kand.s.laenge))kand={s,o}});
+    if(kand){botBauen(kand.s,kand.o);return}
+    p.last='kann keine Karten ziehen'}
+  if(FR()&&G.drawn)botGleis(i,plan);
   endTurn();
 }
 // Auftraege bewerten: Punkte je noch zu bauendem Feld (unerreichbar = schlecht)
-function botBewerte(i,t){const pf=botPfad(i,t.von,t.nach);if(!pf)return {t,wert:-1e9,felder:1e9};
-  return {t,wert:t.punkte/Math.max(1,pf.felder)+(pf.felder===0?100:0),felder:pf.felder}}
+function botBewerte(i,t){
+  if(tkRoute(t))return {t,wert:-1e9,felder:1e9};
+  const p=ROOM.players[i]||{};
+  let best=null;
+  botZielpaare(t).forEach(z=>{const pf=botPfad(i,t.von,z.nach);if(!pf||!botReicht(p,pf))return;const w=z.punkte/Math.max(1,pf.felder)+(pf.felder===0?100:0);if(!best||w>best.wert)best={t,wert:w,felder:pf.felder}});
+  if(!best&&bhAnzahl()){botZielpaare(t).forEach(z=>{const pf=botPfad(i,t.von,z.nach,{bahnhof:true});if(!pf||!botReicht(p,pf))return;const w=z.punkte/Math.max(1,pf.felder+4);if(!best||w>best.wert)best={t,wert:w,felder:pf.felder}})}
+  return best||{t,wert:-1e6-(tkMinP(t)||0),felder:1e9};   // unerreichbar: moeglichst wenig Minuspunkte
+}
 function botTickets(i){
   const G=g(),p=ROOM.players[i],rs=R().auftraege_nachziehen||{};
-  const n=Math.min(rs.ziehen||4,G.ticketDeck.length),offer=G.ticketDeck.splice(0,n);
+  let plus=0;
+  if(SK()&&!G.skExpZug){const fr=skFrei(p);if(fr.length&&G.ticketDeck.length>(rs.ziehen||3)){plus=Math.max(...fr);skExpVerbrauchen(plus)}}
+  const n=Math.min((rs.ziehen||4)+plus,G.ticketDeck.length),offer=G.ticketDeck.splice(0,n);
   const bew=offer.map(t=>botBewerte(i,t)).sort((a,b)=>b.wert-a.wert);
-  const keep=[];bew.forEach((b,k)=>{if(k===0||(b.felder<=Math.max(4,p.wagons-4)&&b.wert>=0.8))keep.push(b.t)});
+  const fig=botFig(p);
+  const keep=[];bew.forEach((b,k)=>{if(k===0||(b.felder<=Math.min(fig,Math.max(2,fig-4))&&b.wert>=0.8))keep.push(b.t)});
   const keepMin=rs.mindestens_behalten||1;while(keep.length<keepMin&&bew[keep.length])keep.push(bew[keep.length].t);
   offer.forEach(t=>{if(keep.indexOf(t)>=0)p.tickets.push(t);else if(!R().auftraege_raus)tkZurueck(G,t,false)});
-  p.last='zieht '+offer.length+' Aufträge und behält '+keep.length;G.notice=p.name+' '+p.last;
+  // Erfolg = mindestens ein behaltener Auftrag ist mit den restlichen Waggons erreichbar
+  const erfolg=bew.some(b=>keep.indexOf(b.t)>=0&&b.wert>=0&&b.felder<=botFig(p));
+  if(!erfolg)p.botFehl=(p.botFehl||0)+1;   // zaehlt ueber die Partie (ruhig: nach 3 Fehlzuegen darf das Ende kommen)
+  p.last=(plus?'setzt die Expresszug-Karte +'+plus+' ein und ':'')+'zieht '+offer.length+' Aufträge und behält '+keep.length;G.notice=p.name+' '+p.last;
   endTurn();
 }
 function botZug(){
   const G=g(),i=G.turn,p=ROOM.players[i],alt=SEAT;SEAT=i;
   try{
-    const plan=botPlan(i);
-    // Alle Auftraege erledigt (oder unerreichbar) und noch genug Waggons: neue Auftraege ziehen
-    if(!plan.offen.length&&G.lastRounds<0&&p.wagons>=8&&G.ticketDeck.length){botTickets(i);return}
+    let plan=botPlan(i);
+    if(UK()){botUkTech(i,plan);plan=botPlan(i)}
+    const ruhig=botStaerke(i)==='ruhig';
+    // Alle Auftraege erledigt (oder unerreichbar) und noch Waggons: neue Auftraege ziehen
+    // (ruhig: auch spaet im Spiel, solange nicht schon 3 unerfuellte Auftraege auf der Hand liegen)
+    const unerledigt=(p.tickets||[]).filter(t=>!tkErfuellt(i,t)).length;
+    if(!plan.offen.length&&G.lastRounds<0&&botFig(p)>=(ruhig?5:8)+(WR()?6:0)&&(!ruhig||unerledigt<3)&&botTkZiehbar(G)){p.botWart=0;botTickets(i);return}
+    const wart=p.botWart||0;   // Zuege in Folge, in denen nur Karten gezogen wurden
+    // Bahnhof, der einen Auftrag sofort vervollstaendigt
+    if(plan.bahnhof.some(b=>b.fertig)){p.botWart=0;if(botBahnhof(i,{bahnhof:plan.bahnhof.filter(b=>b.fertig),wunsch:plan.wunsch}))return;p.botWart=wart}
     const bau=botBauwahl(i,plan);
-    if(bau){botBauen(bau.s,bau.o);return}
+    if(WR()&&(G.lastRounds>=0||!bau)&&botHafen(i)){p.botWart=0;return}
+    if(botStaerke(i)==='aggressiv'){const bl=botBlock(i,plan);
+      const erf=bau&&plan.offen.some(o=>o.pf.neu.length===1&&o.pf.neu[0].nr===bau.s.nr);
+      if(bl&&(!bau||(bl.score>=3&&!erf))){p.botWart=0;botBauen(bl.s,bl.o);
+        const q=ROOM.players[i];if(G.claims[bl.s.nr]===i){q.last=(q.last||'')+' · blockiert '+bl.gegen;G.notice=q.name+' '+q.last;
+          roomRef.child('players/'+i+'/last').set(q.last);roomRef.child('game/notice').set(G.notice)}return}}
+    if(bau){p.botWart=0;botBauen(bau.s,bau.o);return}
+    if(plan.bahnhof.length){p.botWart=0;if(botBahnhof(i,plan))return}
+    p.botWart=wart+1;
     botKarten(i,plan);
   }finally{SEAT=alt}
 }
@@ -3555,10 +3827,10 @@ function botStartWahl(i){
   try{
     const bew=off.map(t=>botBewerte(i,t)).sort((a,b)=>b.wert-a.wert);
     const lMax=rs.lange_max!==undefined?rs.lange_max:(rs.lange_ziehen?1:99);
-    const minN=rs.mindestens_behalten||3;
+    const minN=rs.behalten||rs.mindestens_behalten||(rs.lange_ziehen?(rs.min_normale_ohne_lang||3):3);
     bew.forEach(b=>{if(b.wert<0)return;const langN=keep.filter(t=>t.lang).length;
       if(b.t.lang&&langN>=lMax)return;
-      if(keep.length<minN||(b.felder<=Math.max(6,p.wagons/4)&&b.wert>=1))keep.push(b.t)});
+      if(keep.length<minN||(b.felder<=Math.max(6,botFig(p)/4)&&b.wert>=1))keep.push(b.t)});
     while(keep.length<minN&&bew[keep.length])keep.push(bew[keep.length].t);
     if(rs.lange_ziehen){const langN=keep.filter(t=>t.lang).length,normN=keep.length-langN,need=langN?(rs.min_normale_mit_lang||2):(rs.min_normale_ohne_lang||3);
       bew.forEach(b=>{if(keep.length-keep.filter(t=>t.lang).length<need&&!b.t.lang&&keep.indexOf(b.t)<0)keep.push(b.t)})}
@@ -3573,6 +3845,50 @@ function botStartWahl(i){
   if(zl.length)ops.push(roomRef.child('game/ticketDeckLang').transaction(d=>(d||[]).concat(zl)));
   Promise.all(ops).then(pickFertigPruefen).catch(()=>{});
 }
+// Zielkarten-Draft (Iberia, Suedkorea): je Runde die beste Karte waehlen, am Ende genau 4 behalten
+function botDraftPick(i){
+  const G=g(),D=G.draft,hand=((D.hands||{})[i])||[];if(!hand.length)return;
+  const p=ROOM.players[i],meine=(p.tickets||[]).concat(((D.gew||{})[i])||[]);
+  const alt=SEAT;SEAT=i;let idx=0;
+  try{const bew=hand.map((t,k)=>{const b=botBewerte(i,t);let w=b.wert;
+      if(meine.some(x=>[x.von,x.nach].some(a=>a&&(a===t.von||a===t.nach))))w+=0.3;   // passt zu den eigenen Zielen
+      if(meine.some(x=>tkGleich(x,t)))w=-1e9;return {k,w}});
+    bew.sort((a,b)=>b.w-a.w);idx=bew[0].k}finally{SEAT=alt}
+  const n=ROOM.players.length;
+  roomRef.child('game/draft').transaction(d=>{if(!d||d.phase!=='pick')return;d.hands=d.hands||{};d.gew=d.gew||{};d.done=d.done||{};
+    if(d.done[i])return d;const h=d.hands[i]||[];if(idx>=h.length)return d;
+    const card=h.splice(idx,1)[0];d.hands[i]=h;d.gew[i]=(d.gew[i]||[]).concat([card]);d.done[i]=true;
+    let alle=true;for(let k=0;k<n;k++)if(!d.done[k])alle=false;
+    if(alle){const nh={};for(let k=0;k<n;k++)nh[((k+d.dir)%n+n)%n]=d.hands[k]||[];d.hands=nh;d.done={};d.runde=(d.runde||1)+1;
+      let leer=true;for(let k=0;k<n;k++)if((nh[k]||[]).length)leer=false;if(leer||d.runde>6)d.phase='keep'}
+    return d}).catch(()=>{});
+}
+function botDraftKeep(i){
+  const G=g(),D=G.draft||{},p=ROOM.players[i],gew=((D.gew||{})[i])||[];
+  const alt=SEAT;SEAT=i;let keep=[];
+  try{const bew=gew.map(t=>botBewerte(i,t)).sort((a,b)=>b.wert-a.wert);keep=bew.slice(0,Math.min(4,gew.length)).map(b=>b.t)}finally{SEAT=alt}
+  const zk=[];gew.forEach(t=>{if(keep.indexOf(t)>=0){if(!p.tickets.some(x=>tkGleich(x,t)))p.tickets.push(t)}else zk.push(t)});
+  G.picked[i]=true;zk.forEach(t=>G.ticketDeck.push(t));
+  const upd={};upd['players/'+i]=JSON.parse(JSON.stringify(p));upd['game/picked/'+i]=true;
+  const ops=[roomRef.update(upd)];
+  if(zk.length)ops.push(roomRef.child('game/ticketDeck').transaction(d=>{const a=(d||[]).concat(zk);return D.nr===1?shuffle(a):a}));
+  Promise.all(ops).then(pickFertigPruefen).catch(()=>{});pickFertigPruefen();
+}
+// Old West: Heimatstadt – die Auftragsstadt, von der aus die anderen Auftragsstaedte am naechsten liegen
+function botHeimat(i){
+  const G=g(),p=ROOM.players[i];if(ROOM.status!=='heimat'||owDran()!==i)return;
+  const staedte=[];(p.tickets||[]).forEach(t=>[t.von,t.nach].forEach(n=>{if(staedte.indexOf(n)<0)staedte.push(n)}));
+  let best=null,bestD=1e9;
+  const alt=SEAT;SEAT=i;
+  try{staedte.forEach(n=>{const ids=(nameToIds[n]||[]).filter(id=>owWaehlbar(id)&&!RAND[id]);if(!ids.length)return;
+      let d=0;staedte.forEach(m=>{if(m===n)return;const pf=botPfad(i,n,m);d+=pf?pf.felder:40});
+      if(d<bestD){bestD=d;best=ids[0]}})}finally{SEAT=alt}
+  if(!best){const frei=MAP.knoten.filter(k=>owWaehlbar(k.id)&&!RAND[k.id]);if(!frei.length)return;best=frei[Math.floor(Math.random()*frei.length)].id}
+  G.marker=G.marker||{};G.marker[best]=i;p.heimat=best;G.owWahl=(G.owWahl||0)+1;
+  p.last='wählt '+nodes[best].name+' als Heimatstadt';G.notice=p.name+' '+p.last;
+  if(G.owWahl>=ROOM.players.length){ROOM.status='playing';G.frist=limitMs()?Date.now()+limitMs():0;G.notice+=' – alle Heimatstädte stehen fest: '+cur().name+' beginnt!'}
+  sync();
+}
 function onState(){
   if(p0Name&&ROOM.players&&(!ROOM.players[SEAT]||ROOM.players[SEAT].name!==p0Name))meinenSitzFinden();
   if(ROOM.status==='lobby'){draftKeepFertig=0;draftKey='';renderLobby();return}
@@ -3583,7 +3899,7 @@ function onState(){
   buildBoard();
   if(ROOM.status==='rps'){zeigeRps();renderClaims();renderHud();renderChat();
     if(g().notice&&g().notice!==lastNotice){lastNotice=g().notice;toast(g().notice)}
-    if(SEAT===0)rpsWerte();return}
+    if(SEAT===0)rpsWerte();botTick();return}
   document.getElementById('rpsModal')?.remove();
   if(ROOM.status==='picking'){
     if(!sitzOk()){renderClaims();renderHud();renderChat();return}
@@ -3754,7 +4070,7 @@ function renderHud(){
   const ch=document.getElementById('chips');ch.innerHTML='';
   ROOM.players.forEach((pl,i)=>{const hex=PCOL.find(c=>c.id===pl.col).hex;
     const d=document.createElement('div');d.className='pchip'+(g().turn===i?' aktiv':'');
-    d.title=pl.name+(pl.bot?' (Bot)':'')+(i===SEAT?' (du)':'');
+    d.title=pl.name+(pl.bot?' (Bot · '+(pl.staerke||'normal')+')':'')+(i===SEAT?' (du)':'');
     const tf=PTEXT[pl.col]?';color:'+PTEXT[pl.col]:'';
     d.innerHTML='<span class="ini" style="background:'+hex+tf+'">'+(i===SEAT?'★':pl.name.slice(0,2).toUpperCase())+'</span>'
       +'<span class="sc" style="background:'+hex+tf+'">'+(pl.score||0)+'</span>'
@@ -3978,7 +4294,7 @@ function renderLobby(){
   let html='<h2 style="text-align:center">Warteraum</h2><div class="codebig">'+CODE+'</div>'+(ROOM.custom?'<div style="font-size:13px;color:#8a7d63;font-weight:600;text-align:center;margin-bottom:8px">⚙ Eigene Regeln aktiv (Hausregeln).</div>':'')+
     '<p style="text-align:center;font-size:13px;color:#8a7d63;margin-bottom:12px">Diesen Code an die Mitspieler weitergeben</p>'+
     '<div id="lobCover" style="text-align:center;margin:0 0 12px"></div>';
-  ROOM.players.forEach((p,i)=>{html+='<div class="lob-p"><span class="dot" style="width:16px;height:16px;border-radius:50%;background:'+((PCOL.find(x=>x.id===p.col)||PCOL[i]).hex)+'"></span>'+p.name+(p.bot?' 🤖':'')+(i===SEAT?' (du)':'')+(i===0?' · Gastgeber':'')+(p.bot&&SEAT===0?' <button class="botX" data-i="'+i+'" style="margin-left:auto;width:auto;padding:2px 9px;border-radius:7px;border:1.5px solid #b3372c;background:#fff;color:#b3372c;font-size:12px">✕</button>':'')+'</div>'});
+  ROOM.players.forEach((p,i)=>{html+='<div class="lob-p"><span class="dot" style="width:16px;height:16px;border-radius:50%;background:'+((PCOL.find(x=>x.id===p.col)||PCOL[i]).hex)+'"></span>'+p.name+(p.bot?' 🤖 <span style="color:#8a7d63;font-size:12px">'+(p.staerke||'normal')+'</span>':'')+(i===SEAT?' (du)':'')+(i===0?' · Gastgeber':'')+(p.bot&&SEAT===0?' <button class="botX" data-i="'+i+'" style="margin-left:auto;width:auto;padding:2px 9px;border-radius:7px;border:1.5px solid #b3372c;background:#fff;color:#b3372c;font-size:12px">✕</button>':'')+'</div>'});
   if(SEAT===0&&botMoeglich()&&ROOM.players.length<5)html+='<button class="cancel" id="botAdd" style="margin:4px 0 0;font-size:13px">🤖 Bot hinzufügen</button>';
   if(ROOM.mega&&SEAT!==0){html+='<div style="font-size:13px;margin:8px 0 2px;color:#5a4632">🧩 Super-Mega-Game: '+((ROOM.mega.bretter||[]).map(k=>(EDITIONEN[k]||{meta:{}}).meta.name||k).join(' + ')||'Bretter werden gewählt …')+'</div>'}
   if(ROOM.tkZufall&&SEAT!==0){const zz=zfNorm(ROOM.tkZufall);html+='<div style="font-size:13px;margin:8px 0 2px;color:#5a4632">🔀 Zufällig generierte Aufträge (Shuffle): '+zz.anzahl+' Aufträge · Ø '+zz.avg+' Punkte · Faktor '+zz.faktor+'</div>'}
@@ -4063,8 +4379,20 @@ function renderLobby(){
   const _ua=m.querySelector('#hrUkAdv');if(_ua)_ua.onchange=()=>{ROOM.ukAdv=_ua.checked?1:0;sync()};
   const _oa=m.querySelector('#hrOwAlvin');if(_oa)_oa.onchange=()=>{ROOM.owAlvin=_oa.checked?1:0;sync()};
   const ba=m.querySelector('#botAdd');if(ba)ba.onclick=()=>{
-    const d=modal('<h2>🤖 Bot hinzufügen</h2><p style="font-size:14px;margin-bottom:8px">Der Bot spielt vom Gerät des Gastgebers aus – die Seite muss dafür geöffnet bleiben.</p><input type="text" id="botN" maxlength="14" value="'+botName()+'" style="margin-bottom:10px"><button class="go" id="botOk">Hinzufügen</button><button class="cancel" id="botNo">Abbrechen</button>');
-    d.querySelector('#botNo').onclick=()=>d.remove();d.querySelector('#botOk').onclick=()=>{const n=d.querySelector('#botN').value;d.remove();botHinzufuegen(n)}};
+    const frei=botFarbenFrei();let col=frei.length?frei[0].id:null,st='normal';
+    const d=modal('<h2>🤖 Bot hinzufügen</h2><p style="font-size:13px;color:#8a7d63;margin-bottom:8px">Der Bot spielt vom Gerät des Gastgebers aus – die Seite muss dafür geöffnet bleiben.</p>'
+      +'<div style="font-size:13px;color:#8a7d63;margin:6px 0 2px">Name</div><input type="text" id="botN" maxlength="14" value="'+botName()+'" style="margin-bottom:8px">'
+      +'<div style="font-size:13px;color:#8a7d63;margin:6px 0 4px">Farbe</div><div class="row" id="botCol" style="justify-content:center;margin-bottom:8px"></div>'
+      +'<div style="font-size:13px;color:#8a7d63;margin:6px 0 4px">Spielstärke</div><div id="botSt"></div>'
+      +'<button class="go" id="botOk">Hinzufügen</button><button class="cancel" id="botNo">Abbrechen</button>');
+    const cr=d.querySelector('#botCol');
+    const malen=()=>{cr.innerHTML='';frei.forEach(c=>{const b2=document.createElement('button');
+      b2.style.cssText='width:36px;height:36px;border-radius:50%;background:'+c.hex+';border:'+(col===c.id?'4px solid #b08d3e':'2px solid #00000030');
+      b2.onclick=()=>{col=c.id;malen()};cr.appendChild(b2)})};malen();
+    const sw=d.querySelector('#botSt');
+    const stMalen=()=>{sw.innerHTML='';Object.keys(BOT_STAERKEN).forEach(k=>{const b2=document.createElement('button');b2.className='opt'+(st===k?' sel':'');
+      b2.innerHTML='<b>'+k+'</b> <span style="font-size:12px;color:#8a7d63">– '+BOT_STAERKEN[k]+'</span>';b2.onclick=()=>{st=k;stMalen()};sw.appendChild(b2)})};stMalen();
+    d.querySelector('#botNo').onclick=()=>d.remove();d.querySelector('#botOk').onclick=()=>{const n=d.querySelector('#botN').value;d.remove();botHinzufuegen(n,col,st)}};
   m.querySelectorAll('.botX').forEach(x=>x.onclick=()=>botEntfernen(+x.dataset.i));
   const b=m.querySelector('#lobGo');if(b)b.onclick=hostStart;const bt=m.querySelector('#lobTest');if(bt)bt.onclick=()=>{ROOM.test=true;hostStart()};
   const _ls=m.querySelector('#limStd'),_lm=m.querySelector('#limMin');
@@ -4182,7 +4510,8 @@ function zeigeRangliste(){
     const ergObj=s2.val()||{}, erg=Object.values(ergObj);
     // Firebase kann Arrays als Objekte zurueckgeben – vorab normalisieren,
     // damit ein einzelner alter Datensatz nicht die ganze Rangliste blockiert.
-    erg.forEach(e=>{e.spieler=arrOf(e.spieler).filter(x=>x!=null);e.punkte=arrOf(e.punkte)});
+    erg.forEach(e=>{e.spieler=arrOf(e.spieler).filter(x=>x!=null);e.punkte=arrOf(e.punkte);
+      if(e.bots){const bn=n=>e.bots[n]?'🤖 '+n+' ('+e.bots[n]+')':n;e.spieler=e.spieler.map(bn);if(e.sieger)e.sieger=bn(e.sieger)}});
     if(!erg.length){toast('Noch keine beendeten Spiele in der Wertung.');return}
     const namenVon=liste=>[...new Set([].concat(...liste.map(e=>e.spieler||[])))].sort();
     const namen=namenVon(erg);
