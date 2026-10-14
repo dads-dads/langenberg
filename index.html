@@ -383,7 +383,7 @@ function mgTabs(){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.88 · 14.10.2026';
+const APP_VERSION='7.89 · 14.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -439,12 +439,18 @@ function listen(){
     const v=fix(snap.val());
     if(!v){toast('Der Raum wurde geschlossen.');return}
     if(REPLAY){REPLAY.pend=v;return}   // Replay laeuft: Stand merken, nach dem Zurueck anwenden
-    const mg=!!(v.mega&&v.mega.bretter&&v.mega.bretter.length>1);
-    if(!mg&&v.edition&&v.edition!==EDITION&&EDITIONEN[v.edition])setEdition(v.edition);
-    ROOM=v;
-    if(mg){if(ROOM.mega.bretter.indexOf(EDITION)<0&&ROOM.status!=='lobby')setEdition(ROOM.mega.bretter[0]);megaAlias()}
-    onState();
+    // Firebase meldet eigene Schreibvorgaenge sofort (synchron). Waehrend ein Bot am Zug ist, ist SEAT
+    // auf den Bot umgestellt – der neue Stand wird erst nach der Bot-Aktion mit dem eigenen Sitz verarbeitet.
+    if(typeof BOT_AKTIV!=='undefined'&&BOT_AKTIV){BOT_PEND=v;return}
+    stateAnwenden(v);
   });
+}
+function stateAnwenden(v){
+  const mg=!!(v.mega&&v.mega.bretter&&v.mega.bretter.length>1);
+  if(!mg&&v.edition&&v.edition!==EDITION&&EDITIONEN[v.edition])setEdition(v.edition);
+  ROOM=v;
+  if(mg){if(ROOM.mega.bretter.indexOf(EDITION)<0&&ROOM.status!=='lobby')setEdition(ROOM.mega.bretter[0]);megaAlias()}
+  onState();
 }
 
 // ---------- Deck & Spielaufbau ----------
@@ -3425,6 +3431,11 @@ function botHinzufuegen(name,col,staerke){
 }
 function botEntfernen(i){if(!istBot(i))return;ROOM.players.splice(i,1);sync()}
 let _botT=null,_botZug=null,_botPick={};
+// Waehrend einer Bot-Aktion ist SEAT auf den Bot umgestellt; Zustandsmeldungen von Firebase werden
+// solange zurueckgehalten (BOT_PEND) und danach mit dem eigenen Sitz angewendet.
+let BOT_AKTIV=false,BOT_PEND=null;
+function botAktion(i,fn){const alt=SEAT;SEAT=i;BOT_AKTIV=true;
+  try{fn()}finally{SEAT=alt;BOT_AKTIV=false;if(BOT_PEND){const v=BOT_PEND;BOT_PEND=null;try{stateAnwenden(v)}catch(e){console.error('Bot-Nachtrag',e)}}}}
 // Merker fuer Einmal-Aktionen (Startwahl, Draft, Heimatstadt): nach 4 s darf erneut versucht werden,
 // falls der Schreibvorgang verloren ging
 function botFrei(k){return !(_botPick[k]&&Date.now()-_botPick[k]<4000)}
@@ -3472,7 +3483,7 @@ function botTick(){
   }
 }
 // Wenn etwas schiefgeht: Zug nicht haengen lassen, sondern Karten ziehen und weitergeben
-function botNotfall(){const G=g(),i=G.turn,alt=SEAT;SEAT=i;try{const p=ROOM.players[i];while(G.drawn<2){if(!botNimmBlind(G,p))break}p.last='zieht Karten';if(FR())delete G.frPflicht;endTurn()}finally{SEAT=alt}}
+function botNotfall(){const G=g(),i=G.turn;botAktion(i,()=>{const p=ROOM.players[i];while(G.drawn<2){if(!botNimmBlind(G,p))break}p.last='zieht Karten';if(FR())delete G.frPflicht;endTurn()})}
 // Waggon-Bedarf einer Strecke (Asien: Gebirgsfelder kosten extra Waggons)
 function botFelder(s){return s.laenge+((AS()&&s.gebirge)||0)}
 // Figuren eines Spielers (Weltreise/Grosse Seen: Waggons + Schiffe) und ob ein Weg damit baubar ist
@@ -3808,8 +3819,10 @@ function botTickets(i){
   if(SK()&&!G.skExpZug){const fr=skFrei(p);if(fr.length&&G.ticketDeck.length>(rs.ziehen||3)){plus=Math.max(...fr);skExpVerbrauchen(plus)}}
   const n=Math.min((rs.ziehen||4)+plus,G.ticketDeck.length),offer=G.ticketDeck.splice(0,n);
   const bew=offer.map(t=>botBewerte(i,t)).sort((a,b)=>b.wert-a.wert);
-  const fig=botFig(p);
-  const keep=[];bew.forEach((b,k)=>{if(k===0||(b.felder<=Math.min(fig,Math.max(2,fig-4))&&b.wert>=0.8))keep.push(b.t)});
+  // Zusaetzliche Auftraege nur, wenn sie zusammen mit den schon geplanten Strecken in die Waggons passen
+  const fig=botFig(p);let budget=Math.min(fig,Math.max(2,fig-4))-botPlan(i).restFelder;
+  const keep=[];bew.forEach((b,k)=>{if(k===0){keep.push(b.t);if(b.felder<1e8)budget-=b.felder;return}
+    if(b.felder<1e8&&b.felder<=budget&&b.wert>=0.8){keep.push(b.t);budget-=b.felder}});
   const keepMin=rs.mindestens_behalten||1;while(keep.length<keepMin&&bew[keep.length])keep.push(bew[keep.length].t);
   offer.forEach(t=>{if(keep.indexOf(t)>=0)p.tickets.push(t);else if(!R().auftraege_raus)tkZurueck(G,t,false)});
   // Erfolg = mindestens ein behaltener Auftrag ist mit den restlichen Waggons erreichbar
@@ -3820,8 +3833,8 @@ function botTickets(i){
   endTurn();
 }
 function botZug(){
-  const G=g(),i=G.turn,p=ROOM.players[i],alt=SEAT;SEAT=i;
-  try{
+  const G=g(),i=G.turn,p=ROOM.players[i];
+  botAktion(i,()=>{
     let plan=botPlan(i);
     if(UK()){botUkTech(i,plan);plan=botPlan(i)}
     const ruhig=botStaerke(i)==='ruhig';
@@ -3847,7 +3860,7 @@ function botZug(){
     if(plan.bahnhof.length){p.botWart=0;if(botBahnhof(i,plan))return}
     p.botWart=wart+1;
     botKarten(i,plan);
-  }finally{SEAT=alt}
+  });
 }
 // Startauftraege: Angebot je nach Edition (Liste, kurz/lang-Stapelwahl, lange Strecken)
 function botStartWahl(i){
