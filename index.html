@@ -331,7 +331,23 @@ function zugWeiter(G){
     G.zugNr=(G.zugNr||0)+1;
     if(mgSubZug(G)===0)G.blockBau={};
     G.turn=mgSpielerFuerBlock(G,mgBlock(G));
+    // Letzte Runde: Bloecke von Spielern ueberspringen, die ihren letzten Block schon gespielt haben
+    if(G.mgFinal){const of=mgFinalOffen(G);let k=0;
+      while(of.length&&of.indexOf(G.turn)<0&&k++<4*ROOM.players.length){G.zugNr+=mgN();G.turn=mgSpielerFuerBlock(G,mgBlock(G))}}
   } else G.turn=(G.turn+1)%ROOM.players.length;
+}
+const MG_SCHLUSS=2;   // Super-Mega-Game: Schlussbloecke je Spieler nach dem Einlaeuten
+function mgFinalRest(G){const r=(G.mgFinal||{}).rest;return ROOM.players.map((p,i)=>Number((r||{})[i])||0)}
+function mgFinalOffen(G){return mgFinalRest(G).map((n,i)=>n>0?i:-1).filter(i=>i>=0)}
+// Ende eines Teilzugs in den Schlussrunden: war es der letzte Teilzug eines gewerteten Blocks, hat dieser
+// Spieler einen seiner Schlussbloecke gespielt. true = alle sind fertig, Spielende.
+function mgFinalSchritt(G){
+  if(mgSubZug(G)!==mgN()-1||mgBlock(G)<(G.mgFinal.ab||0))return false;
+  const r=mgFinalRest(G);if(r[G.turn]>0)r[G.turn]--;
+  G.mgFinal.rest=r;const summe=r.reduce((a,b)=>a+b,0);G.lastRounds=Math.max(1,summe);
+  if(!summe)return true;
+  G.notice=(G.notice?G.notice+' · ':'')+'Schlussrunden – noch dran: '+r.map((n,i)=>n?ROOM.players[i].name+' '+n+'×':null).filter(Boolean).join(', ');
+  return false;
 }
 // Letzte Aktion(en) merken: im Mega-Modus alle Teilzuege des laufenden Blocks
 function lastMerken(p,G){
@@ -383,7 +399,7 @@ function mgTabs(){
 const CARDCOL = {rot:'#C0392B',orange:'#E67E22',gelb:'#F1C40F',gruen:'#27AE60',blau:'#2980B9',pink:'#E056A0',weiss:'#F8F6EF',schwarz:'#2F2F2F',lok:'#8e6bb5'};
 const CNAME = {rot:'Rot',orange:'Orange',gelb:'Gelb',gruen:'Grün',blau:'Blau',pink:'Pink',weiss:'Weiß',schwarz:'Schwarz',lok:'Joker',grau:'beliebig'};
 // Bei jeder Auslieferung hochzaehlen – wird auf dem Startbildschirm angezeigt
-const APP_VERSION='7.89 · 14.10.2026';
+const APP_VERSION='7.91 · 27.10.2026';
 const PCOL = [{id:'blau',hex:'#00b0f0'},{id:'rot',hex:'#ff0000'},{id:'gruen',hex:'#21ff3c'},{id:'gelb',hex:'#ffff00'},{id:'schwarz',hex:'#111111'},{id:'weiss',hex:'#f8f6ef'},{id:'lila',hex:'#9b59d0'}];
 // Schriftfarbe auf hellem Grund: Gelb ist als Text nicht lesbar
 const PTEXT = {gelb:'#111111',weiss:'#111111'};
@@ -1575,12 +1591,15 @@ function endTurn(){
   lastMerken(cur(),G);
   if(ROOM.test){G.turn=0;sync();return}
   if(MEGA()&&G.lastRounds<0&&cur().wagons<=2*mgN()){
-    // Letzte Runde: der Ausloeser beendet seinen Block, danach ist jeder genau noch einen Block lang dran
-    G.lastRounds=(mgN()-1-mgSubZug(G))+ROOM.players.length*mgN();
-    me().last='läutet die letzte Runde ein';
-    G.notice=cur().name+' hat nur noch '+cur().wagons+' Waggons – letzte Runde! Jeder ist noch einmal mit einem vollen Block dran, '+cur().name+' als Letzter.'}
+    // Schlussrunden: der Ausloeser beendet seinen Block, danach ist jeder (auch der Ausloeser) genau noch
+    // MG_SCHLUSS volle Bloecke dran. Die Reihenfolge laeuft weiter (Schlange oder reihum); Bloecke von Spielern,
+    // die ihre Schlussbloecke schon gespielt haben, werden uebersprungen (wichtig bei Schlange: A B B A).
+    G.mgFinal={rest:ROOM.players.map(()=>MG_SCHLUSS),ab:mgBlock(G)+1};G.lastRounds=ROOM.players.length*MG_SCHLUSS;
+    me().last='läutet die Schlussrunden ein';
+    G.notice=cur().name+' hat nur noch '+cur().wagons+' Waggons – Schlussrunden! Nach diesem Block ist jeder – auch '+cur().name+' – genau noch zweimal mit einem vollen Block dran.'}
   else if(WR()&&G.lastRounds<0&&wrFiguren(cur())<=((R().figuren_ende!==undefined)?R().figuren_ende:6)){G.lastRounds=ROOM.players.length*((R().letzte_runden)||2);me().last='läutet die Schlussrunden ein';G.notice=cur().name+' hat nur noch '+wrFiguren(cur())+' Figuren – jeder ist noch '+((R().letzte_runden)||2)+'-mal an der Reihe!'}
   else if(!MEGA()&&!WR()&&G.lastRounds<0&&cur().wagons<=2&&(!EXPM()||(G.expRest||0)<=2)){G.lastRounds=ROOM.players.length;me().last='läutet die letzte Runde ein';G.notice=cur().name+' hat nur noch '+cur().wagons+' Wagons'+(EXPM()?' und der Expresszug-Vorrat ist auf '+(G.expRest||0)+' gesunken':'')+' – letzte Runde! '+cur().name+' ist als Letzter noch einmal dran.'}
+  else if(MEGA()&&G.mgFinal){if(mgFinalSchritt(G)){G.over=true;ROOM.status='over';finalScore();sync();return}}
   else if(G.lastRounds>0){G.lastRounds--;if(G.lastRounds===0){G.over=true;ROOM.status='over';finalScore();sync();return}}
   zugWeiter(G);G.frist=limitMs()?Date.now()+limitMs():0;
   if(IB()&&G.draftPend){delete G.draftPend;draftStart(G,2,-1);G.notice='Die Zielkarten-Draft-Karte wurde gezogen – zweiter Draft (Weitergabe nach rechts).'}
@@ -4029,7 +4048,8 @@ function strafZug(){
   p.last=t;G.notice=p.name+' '+t;lastMerken(p,G);
   if(FR()&&(frPfl||gez.length)){const at=frAutoLegen(G);delete G.frPflicht;document.getElementById('frModal')?.remove();
     if(at){p.last+=' · '+at;G.notice=p.name+' '+p.last}}
-  if(G.lastRounds>0){G.lastRounds--;if(G.lastRounds===0){G.over=true;ROOM.status='over';finalScore();sync();return}}
+  if(MEGA()&&G.mgFinal){if(mgFinalSchritt(G)){G.over=true;ROOM.status='over';finalScore();sync();return}}
+  else if(G.lastRounds>0){G.lastRounds--;if(G.lastRounds===0){G.over=true;ROOM.status='over';finalScore();sync();return}}
   zugWeiter(G);G.frist=Date.now()+limitMs();sync();
 }
 setInterval(()=>{if(ROOM&&ROOM.game&&limitMs()&&ROOM.status==='playing'){renderHud();
@@ -4150,7 +4170,7 @@ function renderHud(){
     const dran=g().turn===SEAT;
     wb.innerHTML='<b class="dranTxt" style="color:'+(dran?'#2c7a3f':'#5a4632')+'">'
       +(dran?'DU BIST DRAN':p.name+' ist dran')+'</b>'
-      +(g().lastRounds>0?' <b style="color:#c1121f">'+(g().lastRounds>ROOM.players.length?'LETZTE 2 RUNDEN':'LETZTE RUNDE')+'</b>':'')
+      +(g().lastRounds>0?' <b style="color:#c1121f">'+(MEGA()&&g().mgFinal?'SCHLUSSRUNDEN':g().lastRounds>ROOM.players.length?'LETZTE 2 RUNDEN':'LETZTE RUNDE')+'</b>':'')
       +(rz?'<span class="zeitTxt"> · '+rz.txt+'</span>':'')}
   else wb.classList.add('hidden');
   const o=document.getElementById('open');o.innerHTML='';
